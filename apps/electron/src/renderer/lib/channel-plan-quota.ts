@@ -5,7 +5,7 @@ const PLAN_QUOTA_PROVIDERS = new Set<ProviderType>([
 ])
 
 export function supportsChannelPlanQuota(channel: Pick<Channel, 'provider' | 'baseUrl' | 'serverManaged'> | null | undefined): boolean {
-  // Profer 代管渠道的额度由 Profer 账户计费，不应使用其服务端凭据查询第三方账户数据。
+  // Mira 代管渠道的额度由 Mira 账户计费，不应使用其服务端凭据查询第三方账户数据。
   if (!channel || channel.serverManaged) return false
   return PLAN_QUOTA_PROVIDERS.has(channel.provider) || channel.baseUrl.includes('api.kimi.com/coding')
 }

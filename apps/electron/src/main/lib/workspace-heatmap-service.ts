@@ -87,7 +87,7 @@ export function usageToTotalTokens(usage: {
     + (usage.output_tokens ?? 0)
 }
 
-/** 将时间戳格式化为运行 Profer 的设备所在时区的自然日。 */
+/** 将时间戳格式化为运行 Mira 的设备所在时区的自然日。 */
 export function timestampToLocalDate(timestamp: number): string {
   const date = new Date(timestamp)
   const year = date.getFullYear()

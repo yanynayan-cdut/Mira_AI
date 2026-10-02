@@ -705,7 +705,7 @@ export function decryptApiKey(channelId: string): string {
  */
 const inflightCodexRefresh = new Map<string, Promise<CodexOAuthCredentials>>()
 
-/** 保存 Pi 或 Profer 刷新后的完整 Codex OAuth 凭据。 */
+/** 保存 Pi 或 Mira 刷新后的完整 Codex OAuth 凭据。 */
 export function persistCodexOAuthCredentials(channelId: string, credentials: CodexOAuthCredentials): void {
   const channel = getChannelById(channelId)
   if (!channel || channel.provider !== 'openai-codex') {
@@ -766,7 +766,7 @@ export async function resolveCodexAccessToken(channelId: string): Promise<string
   return (await resolveCodexOAuthCredentials(channelId)).access
 }
 
-/** 保存 Pi 或 Profer 刷新后的完整 xAI OAuth 凭据。 */
+/** 保存 Pi 或 Mira 刷新后的完整 xAI OAuth 凭据。 */
 export function persistXaiOAuthCredentials(channelId: string, credentials: XaiOAuthCredentials): void {
   const channel = getChannelById(channelId)
   if (!channel || channel.provider !== 'xai') {
@@ -868,7 +868,7 @@ export async function testChannel(channelId: string): Promise<ChannelTestResult>
       case 'google':
         return await testGoogle(channel.baseUrl, apiKey, proxyUrl)
       default:
-        return { success: false, message: `不支持的供应商: ${channel.provider}。你可能过去使用的是 Profer 商业版，请重新下载商业版覆盖安装，当前版本为开源版本。` }
+        return { success: false, message: `不支持的供应商: ${channel.provider}。你可能过去使用的是 Mira 商业版，请重新下载商业版覆盖安装，当前版本为开源版本。` }
     }
   } catch (error) {
     const message = error instanceof Error ? error.message : '未知错误'
@@ -880,7 +880,7 @@ export async function testChannel(channelId: string): Promise<ChannelTestResult>
  * 测试 Anthropic 兼容 API 连接（Anthropic / DeepSeek / Kimi API / Kimi Coding Plan / MiniMax）
  *
  * DeepSeek / Kimi 的 Anthropic API 端点无需 /v1 前缀。
- * Kimi Coding Plan 必须发送 Profer User-Agent，否则返回 403。
+ * Kimi Coding Plan 必须发送 Mira User-Agent，否则返回 403。
  */
 async function testAnthropicCompatible(
   baseUrl: string,
@@ -1489,7 +1489,7 @@ export async function getChannelPlanQuota(channelId: string): Promise<import('@p
 
   const provider = channel.provider
   if (channel.serverManaged) {
-    return createUnsupportedPlanQuota(provider, 'Profer 代管渠道不支持查询第三方订阅额度')
+    return createUnsupportedPlanQuota(provider, 'Mira 代管渠道不支持查询第三方订阅额度')
   }
 
   const supportsPlanQuota = provider === 'openai-codex' || supportsProviderPlanQuota(provider) || channel.baseUrl.includes('api.kimi.com/coding')
@@ -1648,7 +1648,7 @@ interface AnthropicModelItem {
  * 从 Anthropic 兼容 API 拉取模型列表（Anthropic / DeepSeek / Kimi API / Kimi Coding Plan / MiniMax）
  *
  * DeepSeek / Kimi 的 Anthropic API 端点无需 /v1 前缀。
- * Kimi Coding Plan 必须发送 Profer User-Agent。
+ * Kimi Coding Plan 必须发送 Mira User-Agent。
  * 文档: https://docs.anthropic.com/en/api/models-list
  */
 interface OllamaTagItem {

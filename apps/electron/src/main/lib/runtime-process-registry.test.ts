@@ -33,9 +33,9 @@ describe('runtime process registry classification', () => {
 
   test('识别 Git Bash 的 /盘符/项目目录，避免退回会话临时 cwd', () => {
     expect(resolveServiceWorkingDirectory(
-      'cd /d/profer/Profer-main && nohup bun run dev > dev.log 2>&1 &',
+      'cd /d/profer/Mira-main && nohup bun run dev > dev.log 2>&1 &',
       'C:/Users/me/.profer/agent-workspaces/profer/session-a',
-    )).toBe('D:/profer/Profer-main')
+    )).toBe('D:/profer/Mira-main')
   })
 
   test('无显式 cd 时保持 Pi 实际 cwd', () => {

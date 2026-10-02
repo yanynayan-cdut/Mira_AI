@@ -14,7 +14,7 @@ export interface GptImageConnectionTestResult {
 
 /**
  * 测试图片生成连接，不执行生图，避免测试动作产生图片或费用。
- * 官方模式检查 Profer 团队账号与官方模型健康接口；自带 Key 模式检查
+ * 官方模式检查 Mira 团队账号与官方模型健康接口；自带 Key 模式检查
  * 对应 provider 的 models 接口。
  */
 export async function testGptImageConnection(): Promise<GptImageConnectionTestResult> {
@@ -24,7 +24,7 @@ export async function testGptImageConnection(): Promise<GptImageConnectionTestRe
     const { getTeamAuthWithRefresh } = await import('./auth-service')
     const auth = await getTeamAuthWithRefresh()
     if (!auth) {
-      return { success: false, message: '请先登录 Profer 团队账号' }
+      return { success: false, message: '请先登录 Mira 团队账号' }
     }
 
     try {
@@ -38,11 +38,11 @@ export async function testGptImageConnection(): Promise<GptImageConnectionTestRe
       )
       if (!response.ok) {
         if (response.status === 401 || response.status === 403) {
-          return { success: false, message: 'Profer 团队账号登录已失效，请重新登录' }
+          return { success: false, message: 'Mira 团队账号登录已失效，请重新登录' }
         }
         return { success: false, message: `官方生图服务检查失败 (${response.status})` }
       }
-      return { success: true, message: '连接成功，Profer 官方生图服务可用' }
+      return { success: true, message: '连接成功，Mira 官方生图服务可用' }
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error)
       return { success: false, message: `官方生图服务连接失败: ${message}` }

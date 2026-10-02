@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 额度页分组水印字体；仅由 CreditsSettings 的分组名称使用。 */
+@font-face {
+  font-family: 'Mira Group Display';
+  src: url('../assets/fonts/mira-group-display.ttf') format('truetype');
+  font-display: swap;
+  font-weight: 400;
+  font-style: normal;
+}
+
 /* ===== 全局字体与渲染优化 =====
  * 优先 Inter Variable（自托管，见 main.tsx 引入） → SF Pro Text（macOS 系统） → system-ui；
  * 数字使用 tabular-nums，配合 cv11/ss01/ss03 让字形接近 Vercel / Linear 的现代感。
@@ -1358,13 +1367,9 @@
   }
 }
 
-/* 顶栏唯一的拖拽层。
- *
- * 右边界紧贴右侧操作胶囊左缘：胶囊宽度由 --topbar-actions-width 实测（含 Windows
- * 窗口按钮），因此 drag 矩形与操作胶囊几何相邻、不重叠。
- * 过去「整条顶栏 drag + 滚动层 drag」只能靠 no-drag 从大矩形里扣除按钮小块，
- * 在 Windows 125%/150%/175% 缩放下会被 OS 判成标题栏点击（按钮单击无效/需双击）。
- * 这里的 12px 必须与 .topbar-actions-slot 的 right 偏移保持一致。 */
+/* 顶栏窗口拖动层只覆盖 Tab 内容行之外的上下留白；不能与 Tab/工具控件矩形重叠。
+ * 右边界仍紧贴右侧操作胶囊左缘：上下留白的 drag 矩形不会覆盖操作区，
+ * 右侧 inset 与 .topbar-actions-slot 的 right 间距保持一致。 */
 .topbar-editorial .topbar-drag-surface {
   right: calc(var(--topbar-actions-width, 0px) + 12px);
 }
@@ -1733,7 +1738,7 @@
   display: none;
 }
 
-/* ===== 全局 Profer 滚动条 =====
+/* ===== 全局 Mira 滚动条 =====
  * 应用内所有滚动容器默认使用 6px 细滚动条，中性灰（--muted-foreground），
  * 随主题/皮肤 token 自动适配明暗；平时透明，鼠标移入容器时淡入显示，
  * 悬停 thumb 加深。显式隐藏仍用 .scrollbar-none。

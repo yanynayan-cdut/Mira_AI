@@ -123,7 +123,7 @@ beforeEach(async () => {
   registry.register({
     agentId: 'profer-stable',
     instanceId: 'inst_test',
-    displayName: 'Profer 稳定版',
+    displayName: 'Mira 稳定版',
     version: '0.0.0-test',
     status: AgentNodeStatus.ONLINE,
     endpoint: { transport: 'local-http', address: '127.0.0.1:0' },

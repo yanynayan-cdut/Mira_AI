@@ -90,6 +90,7 @@ export function ChatInput({ conversationId, streaming, pendingAttachments, onSet
   const setPendingAttachments = onSetPendingAttachments
   const [isDragOver, setIsDragOver] = React.useState(false)
   const [knowledgePickerOpen, setKnowledgePickerOpen] = React.useState(false)
+  const [resizeHandleContainer, setResizeHandleContainer] = React.useState<HTMLDivElement | null>(null)
   const stagedAttachmentDataRef = React.useRef(new Map<string, { base64: string; previewUrl?: string }>())
 
   // 异步准备附件时先暂存资源；只有真正进入 state 的附件才写入全局缓存。
@@ -390,8 +391,9 @@ export function ChatInput({ conversationId, streaming, pendingAttachments, onSet
     <div className="px-2.5 pb-2.5 md:px-[18px] md:pb-[18px]" data-input-mode="chat">
         {/* 卡片式输入容器 — 对标 Cherry Studio: border-radius 17px, 0.5px border */}
         <div
+          ref={setResizeHandleContainer}
           className={cn(
-            'agent-input-surface rounded-[17px] border-[0.5px] border-surface-border bg-input/70 backdrop-blur-sm transition-all duration-200',
+            'agent-input-surface relative rounded-[17px] border-[0.5px] border-surface-border bg-input/70 backdrop-blur-sm transition-all duration-200',
             'focus-within:border-focus/40 focus-within:ring-2 focus-within:ring-focus/10',
             isDragOver && 'border-[2px] border-dashed border-[#2ecc71] bg-[#2ecc71]/[0.03]'
           )}
@@ -424,6 +426,8 @@ export function ChatInput({ conversationId, streaming, pendingAttachments, onSet
             placeholder={placeholder ?? (sendWithCmdEnter ? '输入消息... (⌘/Ctrl+Enter 发送，Enter 换行)' : '输入消息... (Enter 发送，Shift+Enter 换行)')}
             autoFocusTrigger={conversationId}
             sendWithCmdEnter={sendWithCmdEnter}
+            resizable
+            resizeHandleContainer={resizeHandleContainer}
           />
 
           {/* Footer 工具栏 — 容器变窄时尾部按钮自动折叠进「更多」Popover */}

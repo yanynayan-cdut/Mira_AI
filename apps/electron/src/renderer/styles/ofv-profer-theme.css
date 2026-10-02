@@ -1,15 +1,15 @@
 /**
- * OFV → Profer 主题桥接（viewer 独立页与渲染进程内回退路径共用）
+ * OFV → Mira 主题桥接（viewer 独立页与渲染进程内回退路径共用）
  *
  * 两条路径，同一份映射：
  * - **app 内回退路径**（`components/file-browser/ofv-preview/OfvPreview.tsx`）：本文件在 app 文档里加载，
- *   Profer token 来自 `globals.css` 与皮肤 CSS —— `var()` 随 `:root` 变，所以换皮肤即时生效。
+ *   Mira token 来自 `globals.css` 与皮肤 CSS —— `var()` 随 `:root` 变，所以换皮肤即时生效。
  * - **viewer 独立页**（浏览器列主路径）：那一页跑在无 preload 的沙箱 webContents 里，读不到 app 的主题；
  *   主进程把「明暗 + 实际生效的 token 值」烘进 URL（`?theme=` / `?tokens=`），页面再写成
  *   `<html>` 内联变量。内联优先级高于下面的兜底镜像，因此同一套映射原样成立。
  *
  * 分工：
- * - **配色跟随主题**：底色、纸面、文字、次要文字、边框、悬停、强调色全部映射到 Profer 的
+ * - **配色跟随主题**：底色、纸面、文字、次要文字、边框、悬停、强调色全部映射到 Mira 的
  *   token（浅/深由 token 自己翻转），所以皮肤一换，预览页的配色就与 app 一致，
  *   不会露出 OFV 自带的那套偏蓝调色板（浅 `#eef1f6` / 深 `#0b101f`）。
  * - **排版与 app 外壳特效不跟随**：字体、字号、字重、行高、文档自身的版式一律保持 OFV 原样 ——
@@ -20,7 +20,7 @@
  * 变量清单依据 OFV 的 `dist/style.css`：`.ofv-root` 声明整套浅色默认值，
  * 深色在 `.ofv-theme-dark`。这里用同时命中两者的选择器提高特异度，避免与它的默认值打架。
  *
- * 契约：本文件消费的 Profer token 必须都在 `@profer/shared` 的 `OFV_THEME_TOKEN_NAMES` 名单里
+ * 契约：本文件消费的 Mira token 必须都在 `@profer/shared` 的 `OFV_THEME_TOKEN_NAMES` 名单里
  * —— viewer 页只搬运那份名单。名单是否仍覆盖本文件，由 `lib/ofv-theme-tokens.test.ts` 的漂移守卫守住。
  */
 
@@ -58,7 +58,7 @@ html.viewer-page.dark {
 }
 
 /* ─────────────────────────────────────────────────────────────
-   2) 配色：--ofv-* ← Profer token
+   2) 配色：--ofv-* ← Mira token
    只映射**颜色**。font-family / font-size / font-weight / 行高 一概不动。
    强调色用前景色（中性优先），避免 OFV 默认蓝紫跳出来。
    ───────────────────────────────────────────────────────────── */
@@ -77,7 +77,7 @@ html.viewer-page.dark {
 }
 
 /* ─────────────────────────────────────────────────────────────
-   3) 工具栏 = Profer 工具栏语法（只改控件，不动内容）
+   3) 工具栏 = Mira 工具栏语法（只改控件，不动内容）
    参照 BrowserPanel 的按钮：40px 行内 24px 方按钮、6px 圆角、12px 字、ghost 悬停。
    ───────────────────────────────────────────────────────────── */
 .ofv-toolbar {
@@ -151,7 +151,7 @@ html.viewer-page.dark {
 }
 
 /* ─────────────────────────────────────────────────────────────
-   4) 空态（viewer 页 #fallback 的骨架，见 viewer/main.ts）：Profer 空状态，而不是一段裸文字
+   4) 空态（viewer 页 #fallback 的骨架，见 viewer/main.ts）：Mira 空状态，而不是一段裸文字
    ───────────────────────────────────────────────────────────── */
 #fallback {
   /* 回退值必须写在 var() 里：`hsl(var(--x) , 回退)` 会被当成 hsl() 的第二个参数，

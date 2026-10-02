@@ -15,7 +15,7 @@ import { WelcomeView } from '@/components/welcome/WelcomeView'
 import { browserPanelDismissedSessionIdsAtom, browserStateMapAtom } from '@/atoms/browser-atoms'
 import { openBrowserTabFromPush } from '@/lib/browser-tab'
 import { isBrowserTab } from '@/atoms/tab-atoms'
-import { shouldAutoOpenBrowserFromPush } from '@/lib/browser-auto-open'
+import { resolveBrowserTabSyncOptions, shouldAutoOpenBrowserFromPush } from '@/lib/browser-auto-open'
 import type { BrowserViewState } from '@profer/shared'
 import { TabBar } from './TabBar'
 import { TabContent } from './TabContent'
@@ -23,7 +23,6 @@ import { AutomationFormView } from '@/components/automation/AutomationFormView'
 import { PlanningView } from '@/components/planning/PlanningView'
 import { AgentSkillsView } from '@/components/agent-skills/AgentSkillsView'
 import { automationFormAtom } from '@/atoms/automation-atoms'
-import { agentSidePanelOpenAtom } from '@/atoms/agent-atoms'
 import { activeViewAtom } from '@/atoms/active-view'
 import { appModeAtom } from '@/atoms/app-mode'
 import { cn } from '@/lib/utils'
@@ -67,13 +66,12 @@ export function MainArea(): React.ReactElement {
   // 主区域仍长期保留旧会话；昂贵子树应自行优化，不能以旧会话内容作为过渡态。
   const contentTabId = resolveContentTabId(tabs, activeTabId)
 
-  const [agentSidePanelOpen, setAgentSidePanelOpen] = useAtom(agentSidePanelOpenAtom)
-
   // ===== 受管浏览器（Tab 化）=====
   const setBrowserStateMap = useSetAtom(browserStateMapAtom)
   const browserDismissed = useAtomValue(browserPanelDismissedSessionIdsAtom)
   const currentBrowserSessionIdRef = React.useRef<string | null>(null)
   const previousBrowserSessionIdRef = React.useRef<string | null>(null)
+  const browserActivityIdBySessionRef = React.useRef(new Map<string, string | null>())
   // 浏览器仅属于 Agent 会话；必须同时满足「激活 tab 绑定了 agent 会话」（agent / 预览 / 浏览器 Tab）
   // 和「当前处于 agent 模式」。否则 toggle-mode 快捷键（只切 appMode 不切 tab）会造成
   // appMode 与 activeTab 撕裂，让浏览器状态在已切到 Chat 的界面上错误残留。
@@ -82,7 +80,7 @@ export function MainArea(): React.ReactElement {
     : null
   currentBrowserSessionIdRef.current = browserSessionId
 
-  const publishBrowserState = React.useCallback((state: BrowserViewState, options?: { autoOpen?: boolean }) => {
+  const publishBrowserState = React.useCallback((state: BrowserViewState, options?: { autoOpen?: boolean; autoGroup?: boolean }) => {
     // 同步浏览器内容状态（tabs/url/标题/trace 等）。状态可以保留在后台会话，
     // 但后台会话的状态推送不能改变当前会话的浏览器 Tab。
     setBrowserStateMap((previous) => { const next = new Map(previous); next.set(state.sessionId, state); return next })
@@ -96,19 +94,32 @@ export function MainArea(): React.ReactElement {
     const autoOpen = options?.autoOpen !== false && !dismissed
     // 只读动作推送且没有既有页 Tab：不创建（保持安静）
     if (!hasBrowserTabs && !autoOpen) return
-    // Tab 化：按页 reconcile；autoOpen 时自动与对话组合并排（对话左、浏览器右，不打断对话）。
-    openBrowserTabFromPush(state, { autoGroup: autoOpen })
+    // 已有浏览器标签仍按页同步；只有实时展示型推送可以自动改写顶栏为组合。
+    openBrowserTabFromPush(state, { autoGroup: autoOpen && options?.autoGroup !== false })
   }, [browserDismissed, setBrowserStateMap, tabs])
 
   /**
    * 订阅实时状态推送。
    *
    * 不再把「收到任意浏览器状态」当作「用户需要看浏览器」：只有 Agent 真的开始展示页面
-   * （存在工作标签 + 最近动作是 navigate/tab）才自动建组。用户点击浏览器按钮走 TabBar 的
-   * 本地显式打开路径，切回会话走 getAgentBrowserState 恢复路径，两者都不受此处影响。
+   * （存在工作标签 + 最近动作是 navigate/tab）才自动建组。用户点击浏览器入口走本地显式打开路径；
+   * 切回会话恢复已有页面走单独的同步策略，不自动改写布局。
    */
   const handleBrowserStatePush = React.useCallback((state: BrowserViewState) => {
-    publishBrowserState(state, { autoOpen: shouldAutoOpenBrowserFromPush(state) })
+    const activityId = state.activity?.id ?? null
+    const previousActivityId = browserActivityIdBySessionRef.current.get(state.sessionId) ?? null
+    const hasPreviousState = browserActivityIdBySessionRef.current.has(state.sessionId)
+    browserActivityIdBySessionRef.current.set(state.sessionId, activityId)
+    publishBrowserState(
+      state,
+      resolveBrowserTabSyncOptions(
+        'agent-push',
+        shouldAutoOpenBrowserFromPush(state),
+        activityId,
+        previousActivityId,
+        hasPreviousState,
+      ),
+    )
   }, [publishBrowserState])
 
   React.useLayoutEffect(() => {
@@ -146,20 +157,26 @@ export function MainArea(): React.ReactElement {
       .then((state) => {
         if (!cancelled && state) {
           // 切回会话时重新拉起已有浏览器 Tab；用户明确关闭过的会话仍保持关闭。
-          publishBrowserState(state, { autoOpen: !browserDismissed.has(browserSessionId) })
+          const activityId = state.activity?.id ?? null
+          const previousActivityId = browserActivityIdBySessionRef.current.get(state.sessionId) ?? null
+          const hasPreviousState = browserActivityIdBySessionRef.current.has(state.sessionId)
+          if (!hasPreviousState) browserActivityIdBySessionRef.current.set(state.sessionId, activityId)
+          publishBrowserState(
+            state,
+            resolveBrowserTabSyncOptions(
+              'session-restore',
+              !browserDismissed.has(browserSessionId),
+              activityId,
+              previousActivityId,
+              hasPreviousState,
+            ),
+          )
         }
       })
       // 后台会话及已删除会话会被主进程拒绝或返回空状态；无需打断当前界面。
       .catch(() => undefined)
     return () => { cancelled = true }
   }, [browserDismissed, browserSessionId, publishBrowserState])
-
-  // 组合视图已经明确占用主区两栏；右侧文件面板不能以"展开意图"留在后台，
-  // 否则解散组合或切回会话时会把三栏状态再次拉回来。
-  React.useEffect(() => {
-    if (!tabGroup) return
-    if (agentSidePanelOpen) setAgentSidePanelOpen(false)
-  }, [agentSidePanelOpen, setAgentSidePanelOpen, tabGroup])
 
   // ===== 组合 tab（两个标签左右并排）=====
   // 组合是一个叠加态：两个成员标签仍在 tabsAtom 里，只是顶栏渲染时折叠成一个条目。

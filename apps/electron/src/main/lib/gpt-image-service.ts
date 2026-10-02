@@ -324,7 +324,7 @@ export async function generateGptImage(request: GptImageRequest): Promise<GptIma
       : provider === 'xai'
         ? await callXaiByok({ prompt, size, quality, references, apiKey: credentials.apiKey, baseUrl: normalizeXaiBaseUrl(credentials.baseUrl || 'https://api.x.ai'), model: credentials.model.trim() || DEFAULT_XAI_IMAGE_MODEL, signal: request.signal })
         : await callOpenAiByok({ prompt, size, quality, references, apiKey: credentials.apiKey, baseUrl: normalizeBaseUrl(credentials.baseUrl), model: credentials.model.trim() || DEFAULT_GPT_IMAGE_MODEL, signal: request.signal })
-    if (!response) return { ok: false, error: '官方生图需要先登录 Profer 团队账号。' }
+    if (!response) return { ok: false, error: '官方生图需要先登录 Mira 团队账号。' }
     const parsed = await parseResponse(response)
     if (parsed.error || !parsed.data) return { ok: false, error: parsed.error ?? '图片服务未返回有效图片，本次不会扣积分。' }
     const first = parsed.data.data![0]!

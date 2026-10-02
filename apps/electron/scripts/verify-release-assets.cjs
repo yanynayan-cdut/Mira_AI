@@ -15,7 +15,7 @@ const { verifyPackagedWindowsCli } = require('./packaged-cli-contract.cjs')
 const appRoot = path.resolve(__dirname, '..')
 const out = path.join(appRoot, 'out')
 const version = JSON.parse(fs.readFileSync(path.join(appRoot, 'package.json'), 'utf8')).version
-const installerName = `Profer-Setup-${version}.exe`
+const installerName = `Mira-Setup-${version}.exe`
 const blockmapName = `${installerName}.blockmap`
 const unsignedRelease = process.env.PROFER_UNSIGNED_RELEASE === '1'
 const signatureName = 'latest.yml.sig'
@@ -89,11 +89,11 @@ if (!unsignedRelease) {
   }
 
   verifyAuthenticode(installerPath)
-  const unpackedExe = path.join(out, 'win-unpacked', 'Profer.exe')
+  const unpackedExe = path.join(out, 'win-unpacked', 'Mira.exe')
   if (!fs.existsSync(unpackedExe)) throw new Error(`缺少已签名的 unpacked 主程序: ${unpackedExe}`)
   verifyAuthenticode(unpackedExe)
 } else {
-  const unpackedExe = path.join(out, 'win-unpacked', 'Profer.exe')
+  const unpackedExe = path.join(out, 'win-unpacked', 'Mira.exe')
   if (!fs.existsSync(unpackedExe)) throw new Error(`缺少 unpacked 主程序: ${unpackedExe}`)
   console.log('[verify:release-assets] 未签名 Windows 资产校验完成')
 }

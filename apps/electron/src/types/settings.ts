@@ -311,7 +311,7 @@ export interface AppSettings {
   voiceDictation?: VoiceDictationPersistedSettings
   /** 是否启用快速任务窗口（使用当前平台全局快捷键，默认 false，启用后预创建隐藏窗口） */
   quickTaskEnabled?: boolean
-  /** 飞书 Session 镜像设置：每个 Profer Session 可创建一个仅包含用户与指定 Bot 的飞书群 */
+  /** 飞书 Session 镜像设置：每个 Mira Session 可创建一个仅包含用户与指定 Bot 的飞书群 */
   feishuSessionMirror?: FeishuSessionMirrorSettings
   /** 启动时自动清理临时文件（profer-preview、profer-installers），默认 true */
   autoCleanupTempOnStart?: boolean

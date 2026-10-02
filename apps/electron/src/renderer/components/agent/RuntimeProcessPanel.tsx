@@ -6,7 +6,7 @@
  *  - Claude SDK 活跃后台任务（补充来源）
  *  - 一键 kill（IPC killProcess，{pid,startTime} 双因子防转世；二次确认）
  *
- * 不按 Profer 会话临时目录扫描：外部项目 dev server 的真实 cwd 并不在那里。
+ * 不按 Mira 会话临时目录扫描：外部项目 dev server 的真实 cwd 并不在那里。
  */
 
 import * as React from 'react'

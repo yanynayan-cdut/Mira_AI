@@ -10,7 +10,7 @@
 ~/.profer/agent-sessions/<id>.jsonl   单会话消息，JSONL（一行一条 JSON）
 ```
 
-开发模式（`PROFER_DEV=1` 或 Profer 未打包）数据在 `~/.profer-dev/`。CLI 用 `--dev` 或 `--config-dir` 切换。
+开发模式（`PROFER_DEV=1` 或 Mira 未打包）数据在 `~/.profer-dev/`。CLI 用 `--dev` 或 `--config-dir` 切换。
 
 ## 两种会话格式（CLI 自动识别，无需关心）
 

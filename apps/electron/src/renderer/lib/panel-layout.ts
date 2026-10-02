@@ -11,6 +11,8 @@
  * 左侧栏保持纯手动行为，不参与自适应；其宽度（展开 300）仍计入布局判定。
  */
 
+import type { AppMode } from '@/atoms/app-mode'
+
 /** 布局输入：sidebar 为实际展开（手动、固定）；filePanel 为展开意图 A */
 export interface PanelLayoutState {
   /** 左侧栏是否展开（手动控制，不参与自动收起） */
@@ -23,6 +25,29 @@ export interface PanelLayoutState {
    * 实际结果是面板保住自己的最小宽、两个会话被压到 CONVERSATION_MIN_WIDTH 以下。
    */
   mainPaneCount: number
+}
+
+/** 应用当前作用域、用户展开意图与组合状态，推导面板布局输入。 */
+export interface PanelLayoutContext {
+  scopeActive: boolean
+  appMode: AppMode
+  sessionId: string | null
+  sidebarExpanded: boolean
+  filePanelOpenIntent: boolean
+  groupActive: boolean
+}
+
+/** 组合只影响主区栏数；它不能覆盖用户的文件面板展开意图。 */
+export function resolvePanelLayoutState(context: PanelLayoutContext): PanelLayoutState {
+  const agentSessionActive = context.scopeActive
+    && context.appMode === 'agent'
+    && !!context.sessionId
+
+  return {
+    sidebar: context.sidebarExpanded,
+    filePanel: agentSessionActive && context.filePanelOpenIntent,
+    mainPaneCount: context.groupActive ? 2 : 1,
+  }
 }
 
 /** 面板实际可见性 B */

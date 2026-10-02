@@ -24,7 +24,7 @@ export interface OfvToolbarHandlers {
    * 不传时会回落到哨兵 URL —— 仅适用于无 preload 的独立 viewer 页。
    */
   onOpenInDefaultApp?: () => void
-  /** 是否在 OFV 工具栏中显示“默认应用”。Profer 外层已有文件头时关闭，避免重复。 */
+  /** 是否在 OFV 工具栏中显示“默认应用”。Mira 外层已有文件头时关闭，避免重复。 */
   showDefaultAppAction?: boolean
 }
 

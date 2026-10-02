@@ -4,8 +4,8 @@
  * 管理团队账户的登录、注销和 JWT 令牌。
  * 令牌使用 Electron safeStorage 加密存储。
  *
- * 路由结构（nginx 反代 /proma/ → :3456/）：
- *   baseUrl = http://47.109.108.57/proma
+ * 路由结构：
+ *   baseUrl = MIRA_GATEWAY_URL，未配置时使用本机 Gateway
  *   login → POST {baseUrl}/v1/auth/login
  */
 
@@ -17,10 +17,18 @@ import { getDeviceAuthInfo } from './identity-service'
 import { encryptToken, decryptToken } from './token-crypto'
 import type { TeamServerConfig } from '@profer/shared'
 
-/** 默认团队服务地址（商业版内置，认证页不向用户暴露服务器配置）。 */
-export const DEFAULT_TEAM_SERVER_URL = 'https://profer.cn/proma'
+/** 统一网关地址格式，避免 `${baseUrl}/v1` 在尾斜杠配置下变成双斜杠路径。 */
+function normalizeServerUrl(value: string): string {
+  return value.trim().replace(/\/+$/, '')
+}
 
-/** 默认 API 路径（服务器端已去除 /api 前缀，通过 /proma → :3456 反代） */
+/**
+ * 团队服务地址。部署时通过 MIRA_GATEWAY_URL 指向自建 Gateway；
+ * 未配置时仅连接本机 Gateway，避免隐式依赖外部服务。
+ */
+export const DEFAULT_TEAM_SERVER_URL = normalizeServerUrl(process.env.MIRA_GATEWAY_URL || '') || 'http://127.0.0.1:8787'
+
+/** Mira Gateway 对外提供的认证 API 前缀。 */
 const API_PREFIX = '/v1'
 
 // ===== 团队服务器配置管理 =====
@@ -33,7 +41,10 @@ function readTeamServers(): TeamServerConfig[] {
   const path = getTeamServersConfigPath()
   if (existsSync(path)) {
     try {
-      _servers = JSON.parse(readFileSync(path, 'utf-8'))
+      const parsed = JSON.parse(readFileSync(path, 'utf-8')) as TeamServerConfig[]
+      _servers = Array.isArray(parsed)
+        ? parsed.map((server) => ({ ...server, baseUrl: normalizeServerUrl(server.baseUrl) }))
+        : []
       return _servers!
     } catch {
       // 损坏，返回空
@@ -59,7 +70,7 @@ export function listTeamServers(): TeamServerConfig[] {
 export function addTeamServer(config: Omit<TeamServerConfig, 'id'>): TeamServerConfig {
   const { randomUUID } = require('node:crypto')
   const servers = readTeamServers()
-  const server: TeamServerConfig = { ...config, id: randomUUID() }
+  const server: TeamServerConfig = { ...config, baseUrl: normalizeServerUrl(config.baseUrl), id: randomUUID() }
   servers.push(server)
   writeTeamServers(servers)
   return server
@@ -342,6 +353,8 @@ export async function login(
 
 export interface RegistrationOptions {
   openRegistration: boolean
+  /** Gateway 可直接注册时为 false；旧团队服务未提供该字段时按需邮箱验证处理。 */
+  emailVerificationRequired: boolean
 }
 
 export interface RegistrationOtpResult {
@@ -371,9 +384,14 @@ async function requestPublicAuth<T>(path: string, body?: unknown): Promise<{ ok:
 export async function getRegistrationOptions(): Promise<RegistrationOptions> {
   try {
     const result = await requestPublicAuth<RegistrationOptions>('/registration-options')
-    return result.ok ? { openRegistration: !!result.data.openRegistration } : { openRegistration: false }
+    return result.ok
+      ? {
+          openRegistration: !!result.data.openRegistration,
+          emailVerificationRequired: result.data.emailVerificationRequired ?? !!result.data.openRegistration,
+        }
+      : { openRegistration: false, emailVerificationRequired: false }
   } catch {
-    return { openRegistration: false }
+    return { openRegistration: false, emailVerificationRequired: false }
   }
 }
 

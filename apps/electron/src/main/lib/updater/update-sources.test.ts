@@ -1,42 +1,39 @@
 import { describe, expect, test } from 'bun:test'
-import { DOMESTIC_UPDATE_FEED_URL, getUpdateSources, isSecureUpdateFeedUrl, UPDATE_REQUEST_TIMEOUT_MS } from './update-sources'
+import { getUpdateSources, isSecureUpdateFeedUrl, UPDATE_REQUEST_TIMEOUT_MS } from './update-sources'
 
-describe('更新源优先级', () => {
-  test('默认先走新域名国内源，旧域名第二源，最后回退到 GitHub', () => {
-    expect(getUpdateSources(undefined).map((source) => source.id)).toEqual(['domestic', 'domestic-legacy', 'github'])
-    expect(getUpdateSources(undefined)[0]?.configuration).toEqual({
-      provider: 'generic',
-      url: DOMESTIC_UPDATE_FEED_URL,
-      timeout: UPDATE_REQUEST_TIMEOUT_MS,
-    })
+describe('Mira update source order', () => {
+  test('defaults to the Mira GitHub Releases repository', () => {
+    expect(getUpdateSources(undefined)).toEqual([{
+      id: 'github',
+      label: 'GitHub Releases',
+      configuration: {
+        provider: 'github',
+        owner: 'yanynayan-cdut',
+        repo: 'Mira_AI',
+        releaseType: 'release',
+        timeout: UPDATE_REQUEST_TIMEOUT_MS,
+      },
+    }])
   })
 
-  test('环境变量源只作为额外优先源，仍保留国内与 GitHub 回退', () => {
-    expect(getUpdateSources('https://updates.example.com/profer/').map((source) => source.id))
-      .toEqual(['override', 'domestic', 'domestic-legacy', 'github'])
-    expect(getUpdateSources('https://updates.example.com/profer/')[0]?.configuration)
-      .toMatchObject({ provider: 'generic', url: 'https://updates.example.com/profer' })
+  test('a secure environment feed is tried before GitHub', () => {
+    expect(getUpdateSources('https://updates.example.com/mira/').map((source) => source.id))
+      .toEqual(['override', 'github'])
+    expect(getUpdateSources('https://updates.example.com/mira/')[0]?.configuration)
+      .toMatchObject({ provider: 'generic', url: 'https://updates.example.com/mira' })
   })
 
-  test('拒绝明文 HTTP、裸 IP、凭据和无效 URL 覆盖', () => {
+  test('rejects plain HTTP, literal IPs, credentials, and invalid URLs', () => {
     for (const value of [
-      'http://updates.example.com/profer/',
-      'https://47.109.108.57/profer/',
-      'https://[::1]/profer/',
-      'https://user:pass@updates.example.com/profer/',
+      'http://updates.example.com/mira/',
+      'https://192.0.2.10/mira/',
+      'https://[::1]/mira/',
+      'https://user:pass@updates.example.com/mira/',
       'not-a-url',
     ]) {
       expect(isSecureUpdateFeedUrl(value)).toBe(false)
-      expect(getUpdateSources(value).map((source) => source.id)).toEqual(['domestic', 'domestic-legacy', 'github'])
+      expect(getUpdateSources(value).map((source) => source.id)).toEqual(['github'])
     }
-    expect(isSecureUpdateFeedUrl(DOMESTIC_UPDATE_FEED_URL)).toBe(true)
-    expect(isSecureUpdateFeedUrl('https://updates.example.com/profer?channel=stable')).toBe(true)
-  })
-
-  test('generic 更新源由 electron-updater 按平台请求 latest.yml 或 latest-mac.yml', () => {
-    const source = getUpdateSources(undefined)[0]
-    expect(source?.configuration).toMatchObject({ provider: 'generic', url: DOMESTIC_UPDATE_FEED_URL })
-    // electron-updater 的平台文件名逻辑在其 Provider 内部：darwin 为 latest-mac.yml。
-    expect(DOMESTIC_UPDATE_FEED_URL.endsWith('/')).toBe(true)
+    expect(isSecureUpdateFeedUrl('https://updates.example.com/mira?channel=stable')).toBe(true)
   })
 })

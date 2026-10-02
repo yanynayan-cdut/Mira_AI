@@ -4,7 +4,7 @@
  * 提供 `clipboard_read_text` / `clipboard_write_text` 两个 Agent 工具的正规主进程实现，
  * 底层用 Electron `clipboard`（UTF-8，天然无 Windows 代码页乱码问题）。
  *
- * 背景：Profer 此前没有暴露剪贴板工具给 Agent，导致 Agent 读到系统剪贴板时只能退化为
+ * 背景：Mira 此前没有暴露剪贴板工具给 Agent，导致 Agent 读到系统剪贴板时只能退化为
  * `PowerShell Get-Clipboard`，而 Windows 控制台默认代码页（GBK/936）会让中文乱码。
  * 本服务给 Agent 一条优雅的正路：走主进程 Electron clipboard，不依赖 PowerShell。
  *

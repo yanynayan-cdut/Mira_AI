@@ -309,7 +309,7 @@ describe('git 引擎特性', () => {
     expect(sh('git status --porcelain', cwd)).toBe(statusBefore)
     expect(sh('git count-objects -v', cwd)).toBe(objectsBefore)
     expect(sh('git stash list', cwd)).toBe('')
-    // .gitignore 不得成为隐形豁免：是否纳入基线只由 Profer 的排除规则决定
+    // .gitignore 不得成为隐形豁免：是否纳入基线只由 Mira 的排除规则决定
     expect(checkpoint.files).toEqual(expect.arrayContaining(['ignored.txt', 'pages/index.md', 'src/app.ts']))
 
     writeFileSync(join(cwd, 'ignored.txt'), 'changed during turn\n')

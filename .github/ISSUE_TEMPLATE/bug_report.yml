@@ -1,0 +1,42 @@
+name: Bug report
+
+description: Report a reproducible problem
+
+title: "bug: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Please search existing issues first. Do not include credentials, personal data, or private session content.
+  - type: input
+    id: version
+    attributes:
+      label: Mira version
+      description: Include the version and operating system.
+      placeholder: 1.1.1, Windows 11
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: "1. Open ...\n2. Click ...\n3. Observe ..."
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs or screenshots
+      description: Redact API keys, tokens, user data, and local paths before posting.

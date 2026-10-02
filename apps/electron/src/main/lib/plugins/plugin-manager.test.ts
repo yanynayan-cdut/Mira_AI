@@ -122,7 +122,7 @@ describe('插件 manifest 校验', () => {
     })).toThrow('必须位于插件目录内')
   })
 
-  test('拒绝不兼容的 Profer 版本范围', () => {
+  test('拒绝不兼容的 Mira 版本范围', () => {
     expect(() => parsePluginManifest({
       schemaVersion: 1,
       id: 'com.example.future',
@@ -130,7 +130,7 @@ describe('插件 manifest 校验', () => {
       version: '1.0.0',
       engines: { profer: '>=99.0.0' },
       contributes: { pages: [{ id: 'main', title: 'Main', entry: 'dist/index.html' }] },
-    })).toThrow('插件不支持当前 Profer 版本')
+    })).toThrow('插件不支持当前 Mira 版本')
   })
 
   test('悬浮窗口配置解析并被宿主钳制到安全范围', () => {

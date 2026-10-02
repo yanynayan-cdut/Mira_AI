@@ -29,6 +29,6 @@ describe('敏感 Agent IPC 主窗口 sender guard', () => {
     expect(isMainWindowSender({ sender: fake(true) }, () => mainWindow)).toBe(false)
     expect(isMainWindowSender({ sender }, () => windowWith(sender, true))).toBe(false)
     expect(() => assertMainWindowSender({ sender: otherSender }, () => mainWindow))
-      .toThrow('仅允许 Profer 主窗口')
+      .toThrow('仅允许 Mira 主窗口')
   })
 })

@@ -9,7 +9,7 @@ function result(payload: Awaited<ReturnType<typeof sendAgentLocalImage>>): ToolR
       text: `图片已安全复制到当前会话，并会自动显示在回复中。文件相对路径：${payload.image.relativePath}。如需将图片用于皮肤壁纸等后续文件工作流，请使用该相对路径；不要输出任何内部图片协议标记。`,
       type: 'text',
     }],
-    // 结构化 details 由 Profer UI 直接消费；不再要求模型回显 marker。
+    // 结构化 details 由 Mira UI 直接消费；不再要求模型回显 marker。
     details: payload,
   }
 }
@@ -30,7 +30,7 @@ export async function injectAgentImageOutputMcpServer(
     tools: filterDisabledTools([
       sdk.tool(
         'send_local_image',
-        'Send an existing local PNG/JPEG/GIF/WebP as an image in the final Agent response. The path must be inside the current session workspace or an explicitly authorized attached directory. Profer automatically attaches the verified image to the conversation; do not output internal image protocol markers. This tool does not generate or edit images.',
+        'Send an existing local PNG/JPEG/GIF/WebP as an image in the final Agent response. The path must be inside the current session workspace or an explicitly authorized attached directory. Mira automatically attaches the verified image to the conversation; do not output internal image protocol markers. This tool does not generate or edit images.',
         {
           path: z.string().min(1).max(4096),
           caption: z.string().max(500).optional(),

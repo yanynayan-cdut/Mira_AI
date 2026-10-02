@@ -31,7 +31,7 @@ export function collectAttachedDirectories(params: {
   for (const file of sessionMeta?.attachedFiles ?? []) push(dirname(file))
 
   if (workspaceSlug) {
-    // cwd 是会话子目录；显式加入 Profer 工作区根目录，使 workspace-profile.md 等
+    // cwd 是会话子目录；显式加入 Mira 工作区根目录，使 workspace-profile.md 等
     // 工作区级资料可被 Agent 用其绝对路径读取，也与提示词中的路径声明保持一致。
     push(getAgentWorkspacePath(workspaceSlug))
     for (const d of getWorkspaceAttachedDirectories(workspaceSlug)) push(d)
@@ -43,9 +43,9 @@ export function collectAttachedDirectories(params: {
 }
 
 /**
- * Profer 产品自有产物目录：皮肤库、插件、Skill 源、附件暂存（仅返回真实存在的目录）。
+ * Mira 产品自有产物目录：皮肤库、插件、Skill 源、附件暂存（仅返回真实存在的目录）。
  *
- * 这些目录由 Profer 自己创建、在设置页里可见，Agent 生成的皮肤壁纸/缩略图等产物就落在这里，
+ * 这些目录由 Mira 自己创建、在设置页里可见，Agent 生成的皮肤壁纸/缩略图等产物就落在这里，
  * 所以 Agent 预览、图片输出与内置浏览器预览都应把它们当作可读根；
  * 不含配置与凭据文件（channels.json、auth-tokens.enc、sdk-config 等不在列表内）。
  *

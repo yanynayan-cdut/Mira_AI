@@ -68,10 +68,10 @@ export function isAuthorizedPreviewProtocol(url: string): boolean {
 const PACKAGED_RENDERER_DIR = join(__dirname, 'renderer')
 
 /**
- * 烘进 viewer URL 的 Profer 主题参数。
+ * 烘进 viewer URL 的 Mira 主题参数。
  *
  * - `theme`：只决定 OFV 自己的 `ofv-theme-*` 类与页面 `color-scheme`；
- * - `tokens`：app 文档上真实生效的 Profer token 值（渲染进程算好、IPC 边界已校验）。
+ * - `tokens`：app 文档上真实生效的 Mira token 值（渲染进程算好、IPC 边界已校验）。
  *   viewer 页把它们写成 `<html>` 内联变量，`ofv-profer-theme.css` 再映射到 `--ofv-*`，
  *   于是皮肤（含用户自定义皮肤）的配色也能到达那一页。
  *

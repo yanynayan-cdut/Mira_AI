@@ -1515,7 +1515,7 @@ export function prepareRuntimeSkills(workspaceSlug: string): RuntimeSkillsProjec
       throw error
     }
   }
-  // Profer 的 Skill 读取工具和部分旧会话仍会按扁平路径访问
+  // Mira 的 Skill 读取工具和部分旧会话仍会按扁平路径访问
   // `.runtime/skills/<slug>/SKILL.md`。运行时投影本身必须保留 fingerprint 隔离，
   // 因此在同一受控根下维护兼容链接，既不复制内容，也不会让旧路径失效。
   ensureRuntimeSkillCompatibilityLinks(workspaceSlug, projection, resolved)

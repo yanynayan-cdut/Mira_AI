@@ -27,7 +27,7 @@ function firstPiEdit(input: Record<string, unknown>): Record<string, unknown> | 
 }
 
 /**
- * 将 Claude/Profer canonical 输入和 Pi 原生输入统一到权限校验形状。
+ * 将 Claude/Mira canonical 输入和 Pi 原生输入统一到权限校验形状。
  *
  * Pi 的内置 Edit 使用 path + edits[].oldText/newText；权限服务则统一使用
  * file_path + old_string/new_string。这里必须在必需参数校验前完成归一化，
@@ -50,7 +50,7 @@ export function normalizeToolInputForValidation(
   }
 
   // 只有出现 `edits` 字段时才按 Pi 原生 Edit 处理；没有该字段的输入是
-  // Claude/Profer canonical 的单编辑格式，不应被误判为缺少 Pi edits。
+  // Claude/Mira canonical 的单编辑格式，不应被误判为缺少 Pi edits。
   if (!Object.prototype.hasOwnProperty.call(input, 'edits')) {
     return {
       toolName: canonicalName,

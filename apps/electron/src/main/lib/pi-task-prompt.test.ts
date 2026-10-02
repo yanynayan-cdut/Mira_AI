@@ -21,7 +21,7 @@ TEAM_MEMORY_RULES
 ## 不确定性处理
 UNCERTAINTY
 
-## Profer 知识维护架构
+## Mira 知识维护架构
 KNOWLEDGE_GOVERNANCE_RULES
 
 ## 任务完成标准
@@ -40,7 +40,7 @@ IMAGE_GENERATION_RULES
 10. **PPT 视觉交付门禁**
 PPT_VISUAL_GATE
 
-## Profer 受管浏览器
+## Mira 受管浏览器
 BROWSER_RULES`
 
 const ALL_TOOLS = [
@@ -114,7 +114,7 @@ ALWAYS_PRESENT_RULES`
       const prompt = buildPiTaskPrompt({ basePrompt, userMessage, toolNames })
       expect(prompt).toContain('DISABLED_CAPABILITY_RULES')
       expect(prompt).toContain('ALWAYS_PRESENT_RULES')
-      expect(prompt.includes('## Profer 受管浏览器')).toBe(hasBrowserRules)
+      expect(prompt.includes('## Mira 受管浏览器')).toBe(hasBrowserRules)
       expect(prompt.includes('NESTED_BROWSER_RULES')).toBe(hasBrowserRules)
     }
   })
@@ -155,14 +155,14 @@ ALWAYS_PRESENT_RULES`
 
     const wallpaper = buildPiTaskPrompt({
       basePrompt: BASE_PROMPT,
-      userMessage: '请生成一张壁纸并制作成 Profer 皮肤。',
+      userMessage: '请生成一张壁纸并制作成 Mira 皮肤。',
       toolNames: ['generate_image'],
     })
     expect(wallpaper).toContain('IMAGE_GENERATION_RULES')
 
     const skinOnly = buildPiTaskPrompt({
       basePrompt: BASE_PROMPT,
-      userMessage: '请创建一个 Profer 皮肤。',
+      userMessage: '请创建一个 Mira 皮肤。',
       toolNames: ['create_skin'],
     })
     expect(skinOnly).toContain('IMAGE_GENERATION_RULES')

@@ -442,7 +442,7 @@ function persistGoalStates(): void {
 }
 
 /**
- * Goal 进入受阻/完成时与规划中心联动（Profer 原生集成）：
+ * Goal 进入受阻/完成时与规划中心联动（Mira 原生集成）：
  * - blocked：创建（或更新）一条规划中心 Todo，让用户在规划中心看到待处理项；
  * - completed：自动完成之前创建的受阻 Todo。
  * 只在状态跃迁时触发，blocked 状态下重复 emit 不会重复建 Todo。
@@ -502,7 +502,7 @@ const goalController = new GoalController({
     let structuredResult: AgentGoalIterationResult | undefined
     const messagesBeforeTurn = getAgentSessionSDKMessages(sessionId).length
     const mainWindow = getMainWindow()
-    if (!mainWindow || mainWindow.isDestroyed()) throw new Error('Profer 主窗口不可用，Goal 已停止')
+    if (!mainWindow || mainWindow.isDestroyed()) throw new Error('Mira 主窗口不可用，Goal 已停止')
     await runAgent({
       sessionId,
       userMessage: state.goal,
@@ -2349,8 +2349,8 @@ export function registerIpcHandlers(): void {
   ipcMain.handle(
     SETTINGS_IPC_CHANNELS.GET_APK_QR,
     async (): Promise<{ url: string; dataUrl: string; fileName: string }> => {
-      const url = 'https://profer.cn/profer-mobile/Profer-移动版-android.apk'
-      const fileName = 'Profer-移动版-android.apk'
+      const url = 'https://profer.cn/profer-mobile/Mira-移动版-android.apk'
+      const fileName = 'Mira-移动版-android.apk'
       try {
         const QRCode = (await import('qrcode')).default
         const dataUrl = await QRCode.toDataURL(url, { width: 320, margin: 2, errorCorrectionLevel: 'M' })
@@ -2912,11 +2912,11 @@ export function registerIpcHandlers(): void {
         : available
       if (selected.length === 0) throw new Error('没有可导出的预设')
 
-      const defaultFileName = `profer-agent-presets-${new Date().toISOString().slice(0, 10)}.json`
+      const defaultFileName = `Mira-agent-presets-${new Date().toISOString().slice(0, 10)}.json`
       const result = await dialog.showSaveDialog({
         title: '导出 Agent 预设',
         defaultPath: defaultFileName,
-        filters: [{ name: 'Profer 预设文件', extensions: ['json'] }],
+        filters: [{ name: 'Mira 预设文件', extensions: ['json'] }],
       })
       if (result.canceled || !result.filePath) return null
 
@@ -2933,7 +2933,7 @@ export function registerIpcHandlers(): void {
       const result = await dialog.showOpenDialog({
         title: '导入 Agent 预设',
         properties: ['openFile'],
-        filters: [{ name: 'Profer 预设文件', extensions: ['json'] }],
+        filters: [{ name: 'Mira 预设文件', extensions: ['json'] }],
       })
       if (result.canceled || result.filePaths.length === 0) return null
 
@@ -4328,7 +4328,7 @@ export function registerIpcHandlers(): void {
           return { success: false, message: `连接失败: ${msg}` }
         }
       }
-      // AI 图片生成工具测试：官方模式走 Profer 登录态，自带 Key 模式按所选 provider 测试。
+      // AI 图片生成工具测试：官方模式走 Mira 登录态，自带 Key 模式按所选 provider 测试。
       if (toolId === 'gpt-image') {
         const { testGptImageConnection } = await import('./lib/gpt-image-connection')
         return testGptImageConnection()
@@ -5683,9 +5683,11 @@ export function registerIpcHandlers(): void {
 
   // ===== GitHub Release =====
 
-  /** 商业版 releases.json 地址，可通过 PROFER_UPDATE_FEED_URL 环境变量覆盖；默认指向新机 HTTPS 域名，不再使用裸 IP 明文地址。 */
-  const RELEASES_JSON_URL =
-    (process.env.PROFER_UPDATE_FEED_URL || 'https://updates.profer.cn/') + 'releases.json'
+  /** Commercial builds may point release history to a configured HTTPS feed. */
+  const releaseHistoryFeed = process.env.PROFER_UPDATE_FEED_URL
+  const RELEASES_JSON_URL = releaseHistoryFeed
+    ? `${releaseHistoryFeed.replace(/\/+$/, '')}/releases.json`
+    : 'https://api.github.com/repos/yanynayan-cdut/Mira_AI/releases'
 
   /** 从服务器获取 releases 列表（商业版数据源） */
   async function fetchServerReleases(): Promise<GitHubRelease[]> {
@@ -6534,7 +6536,7 @@ export function registerIpcHandlers(): void {
     const result = await dialog.showOpenDialog({
       title: '选择迁移文件',
       filters: [
-        { name: 'Profer 迁移文件', extensions: ['profer-backup', 'profer-share'] },
+        { name: 'Mira 迁移文件', extensions: ['profer-backup', 'profer-share'] },
         { name: '所有文件', extensions: ['*'] },
       ],
       properties: ['openFile'],
@@ -6545,12 +6547,12 @@ export function registerIpcHandlers(): void {
   ipcMain.handle('migration:saveFileDialog', async (_, mode: string) => {
     const { dialog } = await import('electron')
     const ext = mode === 'personal' ? 'profer-backup' : 'profer-share'
-    const defaultName = `profer-migration-${new Date().toISOString().slice(0, 10)}.${ext}`
+    const defaultName = `Mira-migration-${new Date().toISOString().slice(0, 10)}.${ext}`
     const result = await dialog.showSaveDialog({
       title: '保存迁移文件',
       defaultPath: defaultName,
       filters: [
-        { name: mode === 'personal' ? 'Profer 个人备份' : 'Profer 分享包', extensions: [ext] },
+        { name: mode === 'personal' ? 'Mira 个人备份' : 'Mira 分享包', extensions: [ext] },
       ],
     })
     return result.canceled ? null : result.filePath

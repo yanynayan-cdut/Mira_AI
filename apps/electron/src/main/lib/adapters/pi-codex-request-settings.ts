@@ -1,7 +1,7 @@
 /**
  * Pi Codex 请求设置扩展（#1268 GPT-5.x 推理档位跨会话记忆）
  *
- * 将 Profer 的推理档位 + Fast Mode 映射为 OpenAI provider 请求参数。
+ * 将 Mira 的推理档位 + Fast Mode 映射为 OpenAI provider 请求参数。
  * 扩展在 Pi 的 before_provider_request 钩子中注入，覆盖首轮、续轮和
  * tool continuation 的全部 provider request。
  */
@@ -46,7 +46,7 @@ function isProviderPayload(payload: unknown): payload is ProviderPayload {
  * 剥离 reasoning.mode（ChatGPT Codex OAuth 不支持该字段），
  * 显式写入 reasoning.effort（GPT-5.x 默认 medium，off 必须显式 none），
  * 并请求 detailed summary。OpenAI 不会返回原始 CoT，但 detailed summary 比 auto
- * 更适合在 Profer 的过程视图中审计模型的公开推理摘要。
+ * 更适合在 Mira 的过程视图中审计模型的公开推理摘要。
  */
 export function injectOpenAIThinkingLevel(
   payload: unknown,

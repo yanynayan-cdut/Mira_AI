@@ -63,9 +63,9 @@ export function DeveloperSettings(): React.ReactElement {
         </SettingsCard>
       </SettingsSection>
 
-      <SettingsSection title="运行时边界" description="本开关改变 Profer 注入的 Agent 姿态，不代表移除所有上游约束；已开启的会话会从下一轮消息起使用新的姿态段。">
+      <SettingsSection title="运行时边界" description="本开关改变 Mira 注入的 Agent 姿态，不代表移除所有上游约束；已开启的会话会从下一轮消息起使用新的姿态段。">
         <SettingsCard divided={false} className="p-4 text-sm leading-6 text-muted-foreground">
-          Claude Runtime 在开放认识论开启时不再叠加本地 Claude Code 默认 preset，改用 Profer 自管 system prompt；模型服务端更高优先级的 system、developer、安全与法律规则仍然存在。Pi Runtime 始终使用 Profer 自管 system prompt。
+          Claude Runtime 在开放认识论开启时不再叠加本地 Claude Code 默认 preset，改用 Mira 自管 system prompt；模型服务端更高优先级的 system、developer、安全与法律规则仍然存在。Pi Runtime 始终使用 Mira 自管 system prompt。
         </SettingsCard>
       </SettingsSection>
 

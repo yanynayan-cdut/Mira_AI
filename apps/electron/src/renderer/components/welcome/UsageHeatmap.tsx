@@ -1,7 +1,7 @@
 /**
  * UsageHeatmap — 工作区编码活跃热力图
  *
- * 纯 CSS Grid + shadcn/ui Tooltip 实现，使用 Profer 自身设计 token：
+ * 纯 CSS Grid + shadcn/ui Tooltip 实现，使用 Mira 自身设计 token：
  * - 色阶用 --primary CSS 变量，自动适配所有主题（森林绿 / 海洋蓝 / 石板灰...）
  * - Tooltip 用 shadcn/ui 原生组件，与全局 UI 一致
  * - 深色模式通过 CSS 变量自动切换，无需单独配置
@@ -22,7 +22,7 @@ const WEEKS = 26                        // 约半年
 const DAY_LABELS = ['一', '', '三', '', '五', '', '日']
 const MONTH_NAMES = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月']
 
-// ── 色阶：用 Profer 的 --primary token，opacity 控制深浅 ──
+// ── 色阶：用 Mira 的 --primary token，opacity 控制深浅 ──
 // 这样自动适配所有主题（forest-light=绿, ocean=蓝, slate=灰...）
 const LEVEL_CLASSES = [
   'bg-muted',         // 0 — 无活动，用 muted 底色清晰可见

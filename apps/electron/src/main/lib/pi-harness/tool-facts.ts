@@ -102,7 +102,7 @@ export function createToolFact(context: {
   if (name === 'bash' || name === 'powershell') {
     const command = typeof input.input.command === 'string' ? input.input.command : ''
     const execution = input.executionResult
-    // Legacy tool results and non-Profer runtimes may still expose only human-readable
+    // Legacy tool results and non-Mira runtimes may still expose only human-readable
     // text. New execution paths must provide executionResult, which takes precedence.
     const exitCode = execution ? execution.exitCode : legacyExitCodeFromResult(resultText)
     const category = commandCategory(command)

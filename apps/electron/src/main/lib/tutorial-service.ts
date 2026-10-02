@@ -15,14 +15,16 @@ import type { ConversationMeta, FileAttachment, ChatMessage } from '@profer/shar
 /**
  * 获取教程文件路径
  *
- * 开发模式：从 monorepo 根目录读取
+ * 开发模式：优先读取源资源，缺失时回退到构建资源
  * 生产模式：从 extraResources 读取
  */
 function getTutorialFilePath(): string {
   if (app.isPackaged) {
     return join(process.resourcesPath, 'tutorial.md')
   }
-  // 开发模式：resources/ 经 build:resources 复制到 dist/resources/
+  // 直接读取源文件，避免开发时教程改名或更新后仍显示旧的构建副本。
+  const sourcePath = join(__dirname, '../resources/tutorial.md')
+  if (existsSync(sourcePath)) return sourcePath
   return join(__dirname, 'resources/tutorial.md')
 }
 
@@ -67,11 +69,11 @@ export function createWelcomeConversation(): ConversationMeta | null {
 
   try {
     // 1. 创建对话
-    const meta = createConversation('了解 Profer')
+    const meta = createConversation('了解 Mira')
 
     // 2. 保存教程文件为附件
     const attachmentId = randomUUID()
-    const attachmentFilename = 'Profer 使用教程.md'
+    const attachmentFilename = 'Mira 使用教程.md'
     const localPath = `${meta.id}/${attachmentId}.md`
     const dir = getConversationAttachmentsDir(meta.id)
     const fullPath = join(dir, `${attachmentId}.md`)
@@ -94,7 +96,7 @@ export function createWelcomeConversation(): ConversationMeta | null {
       id: randomUUID(),
       parentId: null,
       role: 'user',
-      content: '你好，我是 Profer 的新用户，希望快速上手。这是完整的使用教程，作为你的参考。',
+      content: '你好，我是 Mira 的新用户，希望快速上手。这是完整的使用教程，作为你的参考。',
       createdAt: now,
       attachments: [attachment],
     }
@@ -105,7 +107,7 @@ export function createWelcomeConversation(): ConversationMeta | null {
       id: randomUUID(),
       parentId: userMessage.id,
       role: 'assistant',
-      content: `你好，欢迎来到 Profer！Profer 是一个通用的 Agent，其实它可以完成任何事，说实话这也挺难的，因为你要构建完整的工作环境才能做到，这会涉及到一些新的概念或者思考方式，不过别担心，我们做了很多设计可以帮助你靠谱稳定的越用越好用。
+      content: `你好，欢迎来到 Mira！Mira 是一个通用的 Agent，其实它可以完成任何事，说实话这也挺难的，因为你要构建完整的工作环境才能做到，这会涉及到一些新的概念或者思考方式，不过别担心，我们做了很多设计可以帮助你靠谱稳定的越用越好用。
 
 在介绍功能之前，想先认识一下你：
 
@@ -113,11 +115,11 @@ export function createWelcomeConversation(): ConversationMeta | null {
 2. 你的职业或主要角色是什么？（比如独立开发者、产品经理、数据分析师、运营、学生……）
 3. 你最近在做什么工作或项目？有哪些场景或痛点想交给 AI 帮忙？
 
-了解你的背景之后，我会为你单独整理一份专属的 Profer 使用最佳实践——告诉你哪些功能最值得用、推荐的 Skills / MCP 配置，以及贴合你场景的工作流模板。
+了解你的背景之后，我会为你单独整理一份专属的 Mira 使用最佳实践——告诉你哪些功能最值得用、推荐的 Skills / MCP 配置，以及贴合你场景的工作流模板。
 
 直接在下面回复就好，可以一次说完，也可以分几条慢慢聊。`,
       createdAt: now + 1,
-      model: 'Profer',
+      model: 'Mira',
     }
     appendMessage(meta.id, assistantMessage)
 

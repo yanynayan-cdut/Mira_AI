@@ -4,9 +4,9 @@ import { existsSync } from 'node:fs'
 import { join } from 'node:path'
 
 export const DEV_APP_USER_MODEL_ID = 'com.profer.app.dev'
-export const DEV_SHORTCUT_NAME = 'Profer Dev.lnk'
+export const DEV_SHORTCUT_NAME = 'Mira Dev.lnk'
 
-/** Windows 开发态的裸 electron.exe 需要独立 AUMID，绝不能复用生产 Profer 身份。 */
+/** Windows 开发态的裸 electron.exe 需要独立 AUMID，绝不能复用生产 Mira 身份。 */
 export function shouldMaintainDevShellShortcut(
   platform: NodeJS.Platform = process.platform,
   isPackaged = app.isPackaged,
@@ -49,19 +49,19 @@ export function maintainDevShellShortcut(): void {
 
   const iconPath = join(__dirname, 'resources', 'icon.ico')
   if (!existsSync(iconPath)) {
-    console.warn(`[开发 Shell] 未找到 Profer 开发图标，跳过快捷方式维护: ${iconPath}`)
+    console.warn(`[开发 Shell] 未找到 Mira 开发图标，跳过快捷方式维护: ${iconPath}`)
     return
   }
 
   const shortcutPath = join(getProgramsPath(), DEV_SHORTCUT_NAME)
   const exists = existsSync(shortcutPath)
   const args = process.argv.slice(1).map(quoteWindowsArgument).join(' ')
-  // icon 暂时指向 electron.exe：满足 Electron 的 EXE/DLL 限制；随后 COM 覆盖为 Profer ICO。
+  // icon 暂时指向 electron.exe：满足 Electron 的 EXE/DLL 限制；随后 COM 覆盖为 Mira ICO。
   const ok = shell.writeShortcutLink(shortcutPath, exists ? 'update' : 'create', {
     target: process.execPath,
     cwd: app.getAppPath(),
     args,
-    description: 'Profer 开发版（仅供本机开发）',
+    description: 'Mira 开发版（仅供本机开发）',
     icon: process.execPath,
     iconIndex: 0,
     appUserModelId: DEV_APP_USER_MODEL_ID,

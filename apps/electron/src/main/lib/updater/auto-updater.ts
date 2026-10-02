@@ -14,7 +14,7 @@ import { getUpdateSources, type UpdateSource } from './update-sources'
 import { canReplaceUpdateStatus } from './update-state'
 import { getLatestRelease } from '../github-release-service'
 
-const GITHUB_RELEASES_URL = 'https://github.com/Yuan-lai-ru-ci/ProferAI/releases'
+const GITHUB_RELEASES_URL = 'https://github.com/yanynayan-cdut/Mira_AI/releases'
 
 /** 当前更新状态 */
 // 开发版也支持检查最新 Release；只有“自动下载安装”能力在开发版不可用。

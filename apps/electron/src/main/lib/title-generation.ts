@@ -138,7 +138,7 @@ const WINDOW_TITLE_PROMPT = '根据用户在会话最初几轮的消息，生成
 /**
  * 注入到用户消息里的上下文块。
  *
- * 这些块是 Profer 自己拼上去的（附件清单、引用片段、探索分支增量说明等），
+ * 这些块是 Mira 自己拼上去的（附件清单、引用片段、探索分支增量说明等），
  * 不属于用户意图；命名前必须剥离，否则会把注入内容当主题。
  */
 const INJECTED_BLOCK = /<(attached_files|quoted_file|exploration_delta|mentioned_tools|session_recovery|knowledge_context|user_browser_context|attached_directories|workspace_state|working_directory)[^>]*>[\s\S]*?<\/\1>/gi
@@ -217,7 +217,7 @@ export interface TitleSourceEvaluation {
 /**
  * 判定一条用户消息是否值得作为命名依据。
  *
- * 过滤三类历史脏数据来源：Profer 自己注入的上下文块、纯斜杠命令（`/compact`）、
+ * 过滤三类历史脏数据来源：Mira 自己注入的上下文块、纯斜杠命令（`/compact`）、
  * 以及没有任何主题的寒暄/确认/催促（`hi`、`提交吧`、`帮我看一下`）。
  */
 export function evaluateTitleSource(raw: string): TitleSourceEvaluation {

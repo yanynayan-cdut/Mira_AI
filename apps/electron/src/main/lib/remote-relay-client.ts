@@ -1,5 +1,5 @@
 /**
- * Profer 桌面端 → 中心 Remote Relay outbound client。
+ * Mira 桌面端 → 中心 Remote Relay outbound client。
  *
  * 该模块只负责传输层：ticket 获取、WSS 重连和帧收发；命令执行和事件生产
  * 由 remote-service 通过回调提供，避免把 Agent/模型/文件权限移到服务器。

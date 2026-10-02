@@ -868,7 +868,7 @@ describe('预设导出 / 导入文件', () => {
 
   test('非法文件整体拒绝：坏 JSON / 坏 format / 坏版本 / 坏条目 / 空列表', () => {
     expect(() => importAgentPresets(WS_A, 'not json')).toThrow('不是合法的 JSON')
-    expect(() => importAgentPresets(WS_A, JSON.stringify({ format: 'other', version: 1, presets: [] }))).toThrow('不是 Profer 预设导出文件')
+    expect(() => importAgentPresets(WS_A, JSON.stringify({ format: 'other', version: 1, presets: [] }))).toThrow('不是 Mira 预设导出文件')
     expect(() => importAgentPresets(WS_A, JSON.stringify({ format: 'profer-agent-presets', version: 99, presets: [] }))).toThrow('版本不受支持')
     expect(() => importAgentPresets(WS_A, JSON.stringify({ format: 'profer-agent-presets', version: 1, presets: 'x' }))).toThrow('缺少 presets 数组')
     expect(() => importAgentPresets(WS_A, JSON.stringify({ format: 'profer-agent-presets', version: 1, presets: [] }))).toThrow('不包含任何预设')

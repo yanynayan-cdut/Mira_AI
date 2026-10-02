@@ -181,7 +181,7 @@ function supportsEngineRange(range: string, currentVersion: string): boolean {
   if (comparators.length === 0 || comparators.length > 8) throw new Error('engines.profer 范围不能为空或过长')
   return comparators.every((item) => {
     const match = COMPARATOR_PATTERN.exec(item)
-    if (!match) throw new Error(`不支持的 Profer 版本范围：${item}`)
+    if (!match) throw new Error(`不支持的 Mira 版本范围：${item}`)
     const comparison = compareVersions(currentVersion, `${match[2]}.${match[3]}.${match[4]}`)
     switch (match[1] ?? '=') {
       case '>': return comparison > 0
@@ -330,7 +330,7 @@ export function parsePluginManifest(raw: unknown): ProferPluginManifest {
     if (!Array.isArray(raw.permissions)) throw new Error('permissions 必须是数组')
     const known = new Set<string>(PROFER_PLUGIN_PERMISSIONS)
     const parsed = raw.permissions.filter((item): item is ProferPluginPermission => typeof item === 'string' && known.has(item))
-    if (parsed.length !== raw.permissions.length) throw new Error('permissions 包含当前 Profer 不支持的权限')
+    if (parsed.length !== raw.permissions.length) throw new Error('permissions 包含当前 Mira 不支持的权限')
     permissions = [...new Set(parsed)]
   }
 
@@ -368,7 +368,7 @@ export function parsePluginManifest(raw: unknown): ProferPluginManifest {
     }
     const range = raw.engines.profer.trim()
     if (!supportsEngineRange(range, app.getVersion())) {
-      throw new Error(`插件不支持当前 Profer 版本 ${app.getVersion()}（要求 ${range}）`)
+      throw new Error(`插件不支持当前 Mira 版本 ${app.getVersion()}（要求 ${range}）`)
     }
     engines = { profer: range }
   }
@@ -736,8 +736,8 @@ export function removePlugin(pluginId: string): ProferPluginOperationResult {
 export async function selectPluginPackage(kind: 'zip' | 'folder'): Promise<string | null> {
   const owner = BrowserWindow.getFocusedWindow()
   const options: Electron.OpenDialogOptions = kind === 'folder'
-    ? { title: '选择 Profer 插件目录', properties: ['openDirectory'] }
-    : { title: '选择 Profer 插件 ZIP', properties: ['openFile'], filters: [{ name: 'Profer 插件包', extensions: ['zip'] }] }
+    ? { title: '选择 Mira 插件目录', properties: ['openDirectory'] }
+    : { title: '选择 Mira 插件 ZIP', properties: ['openFile'], filters: [{ name: 'Mira 插件包', extensions: ['zip'] }] }
   const result = owner
     ? await dialog.showOpenDialog(owner, options)
     : await dialog.showOpenDialog(options)

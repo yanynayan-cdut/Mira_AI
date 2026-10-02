@@ -1006,14 +1006,14 @@ export function writeWorkspaceSkillContent(workspaceSlug: string, skillSlug: str
   console.log(`[Agent 工作区] 已更新 SKILL.md: ${workspaceSlug}/${skillSlug}`)
 }
 
-// ===== Profer 工作区资料与记忆管理 =====
+// ===== Mira 工作区资料与记忆管理 =====
 
-/** Profer 自己管理的工作区资料；不要与用户项目的 CLAUDE.md / AGENTS.md 混用。 */
+/** Mira 自己管理的工作区资料；不要与用户项目的 CLAUDE.md / AGENTS.md 混用。 */
 const WORKSPACE_PROFILE_FILE = 'workspace-profile.md'
-/** 历史版本曾把 Profer 工作区资料写成 CLAUDE.md，仅用于兼容读取。 */
+/** 历史版本曾把 Mira 工作区资料写成 CLAUDE.md，仅用于兼容读取。 */
 const LEGACY_WORKSPACE_PROFILE_FILE = 'CLAUDE.md'
 const PROFER_MEMORY_DIR = '.profer/memory'
-/** 旧版本使用 Claude 命名空间保存 Profer 工作区记忆，仅用于兼容迁移。 */
+/** 旧版本使用 Claude 命名空间保存 Mira 工作区记忆，仅用于兼容迁移。 */
 const LEGACY_PROFER_MEMORY_DIR = '.claude/memory'
 const AUTO_MEMORY_INDEX = 'MEMORY.md'
 
@@ -1234,7 +1234,7 @@ export function getWorkspaceMemorySummary(workspaceSlug: string): WorkspaceMemor
   return {
     workspaceProfile: {
       ...profileSummary,
-      // 旧 CLAUDE.md 只作为读取来源；写入 API 始终落到新的 Profer profile。
+      // 旧 CLAUDE.md 只作为读取来源；写入 API 始终落到新的 Mira profile。
       path: profilePath,
     },
     autoMemory: {
@@ -1269,7 +1269,7 @@ export function writeWorkspaceProfile(workspaceSlug: string, content: string): v
     throw new Error(`内容过大（${(byteLen / 1024 / 1024).toFixed(2)} MB），超过 10 MB 限制`)
   }
   writeFileSync(getWorkspaceProfilePath(workspaceSlug), content, 'utf-8')
-  console.log(`[Agent 工作区] 已更新 Profer workspace-profile.md: ${workspaceSlug}`)
+  console.log(`[Agent 工作区] 已更新 Mira workspace-profile.md: ${workspaceSlug}`)
 }
 
 export function listWorkspaceAutoMemoryFiles(workspaceSlug: string): SkillFileNode[] {

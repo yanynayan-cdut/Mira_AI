@@ -1,7 +1,7 @@
 /**
  * memory-archive 全文检索服务（FTS5）。
  *
- * Profer 的记忆正文沉淀在 `workspace-files/.context/memory-archive/` 下的主题 .md 文件里，
+ * Mira 的记忆正文沉淀在 `workspace-files/.context/memory-archive/` 下的主题 .md 文件里，
  * 由 Agent 按统一知识维护规则写入。过去 Agent 只能靠 MEMORY.md 索引 + 文件名定位，
  * 正文内容无法全文检索，导致"记忆写进去了但日后找不到"。
  *

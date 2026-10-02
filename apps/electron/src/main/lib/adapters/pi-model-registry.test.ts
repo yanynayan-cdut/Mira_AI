@@ -583,7 +583,7 @@ describe('Pi runtime GLM-5.3 fallback and reasoning metadata', () => {
     })
 
     // 火山 coding plan 在 Pi catalog 里没有专属 provider 条目，走全局兜底命中第三方条目：
-    // 0.86 起该模型被记为 1MiB（1048576）而非 1M（1000000）。两者都满足 Profer 的 1M 下界，
+    // 0.86 起该模型被记为 1MiB（1048576）而非 1M（1000000）。两者都满足 Mira 的 1M 下界，
     // 差异只影响展示与压缩阈值的尾数，因此跟随 catalog 声明值。
     expect(result.model.contextWindow).toBe(1_048_576)
     expect(result.model.maxTokens).toBe(128_000)
@@ -730,7 +730,7 @@ describe('ChatGPT Codex 模型目录补丁', () => {
     const models = await getCodexCatalogModels()
     const byId = new Map(models.map((model) => [model.id, model.contextWindow]))
 
-    // 0.86 起上游 catalog 已移除 gpt-5.4 / gpt-5.4-mini：Profer 的窗口补丁只覆盖目录里仍存在的
+    // 0.86 起上游 catalog 已移除 gpt-5.4 / gpt-5.4-mini：Mira 的窗口补丁只覆盖目录里仍存在的
     // 条目，不会凭空补回上游删掉的模型。
     expect(byId.has('gpt-5.4')).toBe(false)
     expect(byId.has('gpt-5.4-mini')).toBe(false)

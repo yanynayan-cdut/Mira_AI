@@ -2,8 +2,8 @@
 # 文档: https://www.electron.build/configuration/configuration
 
 appId: com.profer.app
-productName: Profer
-copyright: Copyright © 2024-2026 Profer
+productName: Mira
+copyright: Copyright © 2024-2026 Mira
 
 # Electron 版本（CI 环境 bun workspace 下无法自动检测，需显式指定）
 electronVersion: 43.2.0
@@ -72,7 +72,7 @@ extraResources:
     filter:
       - "**/*"
   # 教程文件（教程查看器 + 欢迎对话使用）
-  - from: ../../tutorial/tutorial-v2.md
+  - from: resources/tutorial.md
     to: tutorial.md
   # Proma 品牌 Logo 素材（品牌素材下载功能使用）
   - from: resources/profer-logos
@@ -119,11 +119,11 @@ mac:
   gatekeeperAssess: false
   entitlements: resources/entitlements.mac.plist
   entitlementsInherit: resources/entitlements.mac.plist
-  # Profer CLI 由当前 macOS runner 构建，并在将来启用签名时纳入签名范围。
+  # Mira CLI 由当前 macOS runner 构建，并在将来启用签名时纳入签名范围。
   binaries:
     - resources/bin/profer
   extendInfo:
-    NSMicrophoneUsageDescription: "Profer 需要访问麦克风，用于将你的语音实时转写为文本。"
+    NSMicrophoneUsageDescription: "Mira 需要访问麦克风，用于将你的语音实时转写为文本。"
   target:
     - target: dmg
       arch:
@@ -163,10 +163,10 @@ win:
       to: bin/profer.exe
   fileAssociations:
     - ext: profer-backup
-      name: Profer Personal Backup
+      name: Mira Personal Backup
       icon: resources/icon.ico
     - ext: profer-share
-      name: Profer Share Package
+      name: Mira Share Package
       icon: resources/icon.ico
   target:
     - target: nsis
@@ -175,7 +175,7 @@ win:
 
 # NSIS 安装程序配置
 nsis:
-  artifactName: Profer-Setup-${version}.${ext}
+  artifactName: Mira-Setup-${version}.${ext}
   oneClick: false
   allowToChangeInstallationDirectory: true
   createDesktopShortcut: true
@@ -191,6 +191,6 @@ nsis:
 # ============================================
 publish:
   provider: github
-  owner: Yuan-lai-ru-ci
-  repo: ProferAI
+  owner: yanynayan-cdut
+  repo: Mira_AI
   releaseType: release

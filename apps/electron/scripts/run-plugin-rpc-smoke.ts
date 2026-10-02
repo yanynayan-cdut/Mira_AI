@@ -1,4 +1,4 @@
-/** 独立真实 Electron RPC smoke：不启动或重启用户的 Profer。 */
+/** 独立真实 Electron RPC smoke：不启动或重启用户的 Mira。 */
 import { build } from 'esbuild'
 import { resolve } from 'node:path'
 

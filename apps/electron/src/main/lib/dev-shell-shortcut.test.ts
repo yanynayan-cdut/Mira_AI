@@ -19,6 +19,6 @@ describe('开发版 Windows Shell 快捷方式', () => {
   test('使用与生产身份隔离的专属名称和 AUMID', async () => {
     const { DEV_APP_USER_MODEL_ID, DEV_SHORTCUT_NAME } = await import('./dev-shell-shortcut')
     expect(DEV_APP_USER_MODEL_ID).toBe('com.profer.app.dev')
-    expect(DEV_SHORTCUT_NAME).toBe('Profer Dev.lnk')
+    expect(DEV_SHORTCUT_NAME).toBe('Mira Dev.lnk')
   })
 })

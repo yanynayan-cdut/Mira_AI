@@ -29,7 +29,7 @@ export function buildLegacyProjectMigrationPrompt(options: LegacyMigrationPrompt
 
   return `${heading} Legacy 项目指令迁移建议
 
-Profer 已从受信任项目根加载以下 legacy \`CLAUDE.md\` 兼容来源；如果用户主动选择迁移，可将其提炼到**同目录**的 \`AGENTS.md\`：\n${legacySources.map(formatSourceEntry).join('\n')}${activeAgentsSection}
+Mira 已从受信任项目根加载以下 legacy \`CLAUDE.md\` 兼容来源；如果用户主动选择迁移，可将其提炼到**同目录**的 \`AGENTS.md\`：\n${legacySources.map(formatSourceEntry).join('\n')}${activeAgentsSection}
 
 仅在用户明确发起迁移时，逐个完成以下证据驱动的迁移：
 

@@ -1,7 +1,7 @@
 /**
  * 配置路径工具
  *
- * 管理 Profer 应用的本地配置文件路径。
+ * 管理 Mira 应用的本地配置文件路径。
  * 所有用户配置存储在 ~/.profer/ 目录下。
  */
 
@@ -49,7 +49,7 @@ export function getConfigDirName(): string {
 }
 
 /**
- * 从旧 Proma 目录迁移到新 Profer 目录（一次性）
+ * 从旧 Proma 目录迁移到新 Mira 目录（一次性）
  * 如果 ~/.profer/ 或 ~/.profer-dev/ 不存在但对应的旧目录存在，则重命名迁移
  */
 export function migrateFromProferIfNeeded(): void {
@@ -349,7 +349,7 @@ export function getAgentSessionMessagesPath(id: string): string {
 /**
  * 获取指定 Pi Host Harness 会话级事件账本路径。
  *
- * 与 Profer 展示消息、Project Graph JSONL 并列，但仅保存内部执行控制事实；
+ * 与 Mira 展示消息、Project Graph JSONL 并列，但仅保存内部执行控制事实；
  * 缺失文件代表该历史会话尚未启用 Harness，读取方必须安全降级为空 snapshot。
  */
 export function getPiHarnessEventsPath(id: string): string {
@@ -817,7 +817,7 @@ function hashDefaultSkillDir(dir: string): string {
 }
 
 /**
- * 引入 .seed-state.json 之前随 Proma/早期 Profer 发出的整个 Skill 目录指纹。
+ * 引入 .seed-state.json 之前随 Proma/早期 Mira 发出的整个 Skill 目录指纹。
  *
  * 只有目录内容完整命中某个历史出厂版本（忽略 BOM/换行）才会被接管为受管种子；
  * 用户修改正文、增删脚本或参考资料都会改变指纹，继续遵循“绝不覆盖”的保守策略。
@@ -1108,7 +1108,7 @@ export function getAgentSessionWorkspacePath(workspaceSlug: string, sessionId: s
  * 获取 SDK 隔离配置目录路径
  *
  * 用于设置 CLAUDE_CONFIG_DIR 环境变量，让 SDK 读取独立的配置文件，
- * 而不是用户的 ~/.claude.json，实现 Profer 与 Claude Code CLI 的配置隔离。
+ * 而不是用户的 ~/.claude.json，实现 Mira 与 Claude Code CLI 的配置隔离。
  *
  * 如果目录不存在则自动创建。
  *

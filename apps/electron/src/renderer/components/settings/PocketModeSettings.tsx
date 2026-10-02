@@ -179,7 +179,7 @@ export function PocketModeSettings(): React.ReactElement {
         <SettingsCard divided>
           <SettingsToggle
             label="启用移动端连接"
-            description="开启后立即启动本机服务，并在下次启动 Profer 时自动恢复。"
+            description="开启后立即启动本机服务，并在下次启动 Mira 时自动恢复。"
             checked={status.enabled}
             onCheckedChange={(enabled) => void toggle(enabled)}
             disabled={saving}
@@ -281,7 +281,7 @@ export function PocketModeSettings(): React.ReactElement {
       {/* 安卓版 App 扫码下载：指向官网 profer.cn 域名直链，任何场景都可用，不依赖移动模式是否开启。 */}
       <SettingsSection
         title="下载安卓版 App"
-        description="用手机扫码，或点按钮/复制链接到手机浏览器打开，即可下载安装 Profer 移动版（安卓）。"
+        description="用手机扫码，或点按钮/复制链接到手机浏览器打开，即可下载安装 Mira 移动版（安卓）。"
       >
         <SettingsCard divided={false}>
           <div className="flex items-center gap-5 px-4 py-4">
@@ -298,7 +298,7 @@ export function PocketModeSettings(): React.ReactElement {
               {apkQr && <span className="px-0.5 text-center text-[11px] leading-4 text-muted-foreground">{apkQr.fileName}</span>}
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-sm text-foreground">Profer 移动版（安卓）</p>
+              <p className="text-sm text-foreground">Mira 移动版（安卓）</p>
               <p className="mt-0.5 text-xs leading-5 text-muted-foreground">
                 在手机上安装后，即可通过远程连接接入电脑上的 Agent。
               </p>

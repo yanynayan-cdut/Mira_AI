@@ -20,9 +20,9 @@ function escapePromptText(value: string): string {
 
 function projectRootsBlock(candidates: AgentPlatformProjectCandidate[]): string {
   if (candidates.length === 0) {
-    return '- 当前没有由 Profer 探测到的项目候选；先检查实际目录树，再决定要操作的 root。'
+    return '- 当前没有由 Mira 探测到的项目候选；先检查实际目录树，再决定要操作的 root。'
   }
-  return `- Profer 已探测到以下项目候选。使用项目名、目录名、package name、Git remote 或类型消歧；只有唯一匹配时才直接使用对应的绝对 root：\n${candidates.map((candidate) => `  - ${candidate.name}（${candidate.type}）：${escapePromptText(candidate.rootPath)}${candidate.packageName ? `，package=${escapePromptText(candidate.packageName)}` : ''}${candidate.gitRemote ? `，remote=${escapePromptText(candidate.gitRemote)}` : ''}`).join('\n')}`
+  return `- Mira 已探测到以下项目候选。使用项目名、目录名、package name、Git remote 或类型消歧；只有唯一匹配时才直接使用对应的绝对 root：\n${candidates.map((candidate) => `  - ${candidate.name}（${candidate.type}）：${escapePromptText(candidate.rootPath)}${candidate.packageName ? `，package=${escapePromptText(candidate.packageName)}` : ''}${candidate.gitRemote ? `，remote=${escapePromptText(candidate.gitRemote)}` : ''}`).join('\n')}`
 }
 
 function commonToolingRules(isPiRuntime: boolean | undefined): string {
@@ -68,7 +68,7 @@ ${commonToolingRules(options.isPiRuntime)}`
 - 当前执行环境是 POSIX shell；只使用该 shell 实际支持的命令和路径格式，不要把其他操作系统的命令、路径或环境变量当作当前事实。
 - 当前 Agent cwd：${escapePromptText(options.agentCwd ?? '未提供')}。cwd 不是项目 root；不要默认仓库根目录存在 \`src\`，先检查实际目录树。
 ${candidateBlock}
-- macOS GUI 进程的 PATH 可能比终端短；优先使用 Profer 提供的绝对路径、\`git -C <root> ...\`，以及从当前 shell 实际探测到的 bun/node/git，不要凭环境猜测。
+- macOS GUI 进程的 PATH 可能比终端短；优先使用 Mira 提供的绝对路径、\`git -C <root> ...\`，以及从当前 shell 实际探测到的 bun/node/git，不要凭环境猜测。
 ${commonToolingRules(options.isPiRuntime)}`
   }
 

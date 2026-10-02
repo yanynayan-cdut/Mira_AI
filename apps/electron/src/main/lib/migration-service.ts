@@ -101,7 +101,7 @@ export interface ConfirmImportOptions {
 interface RuntimeArtifactRef {
   /** SDK 原生会话 ID。 */
   sessionId: string
-  /** Profer 会话 ID，用于导入时重新绑定工作区。 */
+  /** Mira 会话 ID，用于导入时重新绑定工作区。 */
   proferSessionId?: string
   path: string
   workspaceId?: string
@@ -568,7 +568,7 @@ function _importRuntimeArtifacts(
       mkdirSync(dirname(destination), { recursive: true })
       if (!existsSync(destination)) {
         cpSync(sourcePath, destination)
-        // SDK 的历史文件可能记录旧 cwd；新 Profer 会话的 cwd 由工作区映射决定。
+        // SDK 的历史文件可能记录旧 cwd；新 Mira 会话的 cwd 由工作区映射决定。
         // 仅替换 JSONL 中的 cwd 字段，避免恢复后继续读写源机器路径。
         _rewriteRuntimeCwd(destination, sessionCwd)
       }

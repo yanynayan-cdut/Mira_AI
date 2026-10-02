@@ -58,7 +58,7 @@ const adapterRegistry = new Map<ProviderType, () => ProviderAdapter>([
 export function getAdapter(provider: ProviderType): ProviderAdapter {
   const createAdapter = adapterRegistry.get(provider)
   if (!createAdapter) {
-    throw new Error(`不支持的供应商: ${provider}。你可能过去使用的是 Profer 商业版，请重新下载商业版覆盖安装，当前版本为开源版本。`)
+    throw new Error(`不支持的供应商: ${provider}。你可能过去使用的是 Mira 商业版，请重新下载商业版覆盖安装，当前版本为开源版本。`)
   }
   return createAdapter()
 }

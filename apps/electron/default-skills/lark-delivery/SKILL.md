@@ -4,19 +4,19 @@ description: >
   飞书/Lark 云端交付流程。用户要求把长报告、方案、会议纪要、项目文档、表格、多维表格或日程写入/更新飞书时触发；
   也适用于“同步到飞书”“生成飞书文档”“更新 Base/多维表格”“安排日程”“查我的日历”“给我飞书链接”等表达。先用官方 Lark CLI/MCP 的 --help 或工具发现确认当前可用命令，再查询目标、执行最小写入，并只回传真实生成的 URL。
 group: profer
-version: "1.1.0"
+version: "1.1.1"
 ---
 
 # Lark Delivery
 
-你负责把用户明确要求沉淀到飞书/Lark 的内容可靠交付到云端。使用 Profer 已配置的官方 Lark CLI 或官方 Lark OpenAPI MCP；不要重复实现飞书 OpenAPI，也不要把 Bot 消息桥接当成用户云盘权限。
+你负责把用户明确要求沉淀到飞书/Lark 的内容可靠交付到云端。使用 Mira 已配置的官方 Lark CLI 或官方 Lark OpenAPI MCP；不要重复实现飞书 OpenAPI，也不要把 Bot 消息桥接当成用户云盘权限。
 
 ## 身份与凭据边界
 
 - 飞书 Bot 仅用于收发消息、附件、流式卡片和把最终摘要/链接回复到聊天；它不等于用户云文档权限。
 - 云文档、Base/多维表格、Sheets、日历事件和忙闲信息等资源必须使用用户 OAuth 或已配置的官方 MCP 身份。
 - 绝不读取、要求用户在对话中粘贴、复制到日志/Skill/文档或最终回复的 token、refresh token、App Secret、Cookie、Authorization header。
-- 设置页或 CLI 诊断显示“未登录”“需重新授权”时，明确提示用户在 Profer 设置的「飞书云端能力」中登录；不要伪造可用状态。
+- 设置页或 CLI 诊断显示“未登录”“需重新授权”时，明确提示用户在 Mira 设置的「飞书云端能力」中登录；不要伪造可用状态。
 
 ## 交付决策
 

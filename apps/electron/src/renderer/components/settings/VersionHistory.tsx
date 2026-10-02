@@ -2,7 +2,7 @@
  * VersionHistory - 版本历史组件
  *
  * 显示应用内置 CHANGELOG 记录的每次发布更新内容（不依赖 GitHub）。
- * 遵循 Profer 设置页统一样式：SettingsSection + SettingsCard + SettingsRow。
+ * 遵循 Mira 设置页统一样式：SettingsSection + SettingsCard + SettingsRow。
  */
 
 import * as React from 'react'

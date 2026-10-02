@@ -151,8 +151,8 @@ export function isMalformedResponseError(message?: string, stderr?: string): boo
 /**
  * 中转/上游的中文瞬时文案。
  *
- * 与 pi-ai 侧 Profer patch 已识别的可重试文案保持一致（服务繁忙 / 请求量较大 /
- * 暂时无法及时响应），否则同一类错误在 Pi 原生重试层算可重试、在 Profer 外层却算
+ * 与 pi-ai 侧 Mira patch 已识别的可重试文案保持一致（服务繁忙 / 请求量较大 /
+ * 暂时无法及时响应），否则同一类错误在 Pi 原生重试层算可重试、在 Mira 外层却算
  * 不可重试，重试预算白白浪费。
  */
 export const TRANSIENT_UPSTREAM_TEXT_PATTERN = /服务繁忙|请求量较大|暂时无法及时响应|请稍后重试|请稍后再试/i

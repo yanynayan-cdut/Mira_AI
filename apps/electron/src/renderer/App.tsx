@@ -68,7 +68,7 @@ export default function App(): React.ReactElement {
 
     if (openTutorial) {
       const tabs = store.get(tabsAtom)
-      const result = openTab(tabs, { type: 'tutorial', sessionId: TUTORIAL_TAB_ID, title: 'Profer 使用教程' })
+      const result = openTab(tabs, { type: 'tutorial', sessionId: TUTORIAL_TAB_ID, title: 'Mira 使用教程' })
       store.set(tabsAtom, result.tabs)
       store.set(activeTabIdAtom, result.activeTabId)
       return
@@ -177,7 +177,7 @@ function IntroReplayOverlay(): React.ReactElement | null {
       className="fixed inset-0 z-[9999]"
       role="dialog"
       aria-modal="true"
-      aria-label="Profer 开屏动画"
+      aria-label="Mira 开屏动画"
       data-profer-intro-overlay
     >
       <IntroWaterRipple

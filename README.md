@@ -1,156 +1,64 @@
-<div align="center">
+# Mira AI
 
-<img src="./docs/assets/profer-banner.svg" alt="Profer" width="100%" />
+**本地优先的 AI 工作空间，覆盖对话、Agent、文件与自动化。**
 
-# Profer
+Mira 是一款基于 Electron 的桌面应用，提供多模型对话、Claude 与 Pi Agent 运行时、工作区级 Skills/MCP、浏览器和文件预览、协作 Agent 会话与定时自动化。应用数据默认保存在本地；远程协作集成由用户自行启用。
 
-**基于 Claude Agent SDK + Pi Agent 双运行时的通用 AI Agent 桌面应用**
+[English](README.en.md) | [简体中文](README.md) | [GitHub Releases](https://github.com/yanynayan-cdut/Mira_AI/releases) | [源码版本记录](docs/RELEASES.md)
 
-多模型接入 · 协作子 Agent · 定时任务自动化 · 移动端远程接入 · 团队工作区
+## 下载
 
-[![GitHub Release](https://img.shields.io/github/v/release/Yuan-lai-ru-ci/ProferAI?style=flat-square&label=Release)](https://github.com/Yuan-lai-ru-ci/ProferAI/releases)
-[![License](https://img.shields.io/github/license/Yuan-lai-ru-ci/ProferAI?style=flat-square&label=License)](./LICENSE)
-[![Electron](https://img.shields.io/badge/Electron-43-47848F?style=flat-square&logo=electron)](https://www.electronjs.org/)
-[![Claude Agent SDK](https://img.shields.io/badge/Claude%20Agent%20SDK-0.3.201-8B5CF6?style=flat-square)](https://github.com/anthropics/claude-agent-sdk)
-[![Pi Agent SDK](https://img.shields.io/badge/Pi%20Agent%20SDK-0.82.1-6D28D9?style=flat-square)](https://www.npmjs.com/package/@earendil-works/pi-agent-core)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
-[![Stars](https://img.shields.io/github/stars/Yuan-lai-ru-ci/ProferAI?style=flat-square&label=Stars)](https://github.com/Yuan-lai-ru-ci/ProferAI)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat-square)](https://github.com/Yuan-lai-ru-ci/ProferAI/pulls)
+Windows x64 安装包从 [v1.1.2 GitHub Release](https://github.com/yanynayan-cdut/Mira_AI/releases/tag/v1.1.2) 下载。更早的本地安装包没有对应的仓库版本标签，因此不作为公开 Release 分发。安装前请阅读版本说明并核验校验和。
 
-</div>
+## 主要能力
 
----
+- 多供应商 Chat、附件处理及文档预览。
+- Claude Agent SDK 与 Pi Agent 双运行时，支持工具调用工作流。
+- 按工作区配置 Skills、MCP Server 与项目指令。
+- Agent 协作、持久化定时任务和本地规划工具。
+- 浏览器/文件预览 Tab，以及可选的团队和消息平台集成。
+- 本地优先的设置与会话存储。
 
-Profer 是本地优先（local-first）的 AI 桌面应用：**简单问题用 Chat，复杂任务交给 Agent**。在强大本地 AI Agent 的基础上，叠加了团队协作层——个人工作区 + 团队工作区双模式、Skills 共享市场、文件云端同步、邀请制成员管理。团队知识沉淀在工作区，而不是随对话流失。
+## 本地开发
 
----
-
-## ✨ 核心特性
-
-| 特性 | 说明 |
-| --- | --- |
-| 🤖 **通用 Agent** | 基于 `@anthropic-ai/claude-agent-sdk`，任务图拆解、子任务依赖编排、流式输出、计划确认，支持 **Claude / Pi 双运行时**切换 |
-| 🧩 **协作子 Agent** | 复杂任务并行拆分给多个真实子会话独立推进，完成后汇总结果，全程可见可追踪 |
-| ⏰ **定时任务自动化** | 持久化调度（interval / daily / weekly / monthly），运行历史、失败保护、结果复盘，适合日报周报、自动检查等无人值守场景 |
-| 📱 **移动端远程接入** | 移动端客户端（独立仓库 Profer-pocket，Capacitor Android）通过本地 HTTP/WS 远程接入电脑端，移动端 Chat、设置同步、断线重连 |
-| 👥 **团队工作区** | 邀请制团队（Owner / Admin / Member / Viewer 角色权限），Skills 共享市场、文件云端同步、品牌定制 |
-| 💬 **多模型 Chat** | 多供应商对话、附件解析（PDF / Office / 图片）、Markdown / Mermaid / KaTeX / 代码高亮、并排对比、上下文管理 |
-| 🧠 **Skills & MCP** | 每工作区独立配置 Skills 与 MCP Server，全屏技能视图支持搜索、启用、更新、导入、卸载与团队发布 |
-| 🔌 **远程机器人** | 飞书 / Lark / 钉钉 / 微信桥接，手机或群聊即可触发本机 Agent 工作流 |
-| 🎨 **桌面体验** | 自动更新、全局快捷键、快速任务窗口、流式语音输入（豆包）、亮色 / 暗色 / 多款精修主题 |
-
----
-
-## 📸 界面预览
-
-<img src="./docs/assets/screenshots/profer-main-demo.png" alt="Profer 主界面" width="100%" />
-
----
-
-## 🚀 快速开始
-
-### 下载安装
-
-从 [GitHub Releases](https://github.com/Yuan-lai-ru-ci/ProferAI/releases) 下载最新版本，提供 **macOS Apple Silicon / Intel** 与 **Windows** 安装包。
-
-### 首次配置
-
-1. 打开 Profer，完成环境检查（Agent 依赖 Git、Node.js / Bun 及可用 Shell）
-2. **设置 → 模型配置**：添加 AI 渠道（Anthropic、DeepSeek、Kimi、智谱、豆包、通义千问等）
-3. **设置 → Agent 配置**：选择默认渠道、模型和工作区，即可开始使用
-
-### 配置团队服务器（可选）
-
-团队协作功能需要后端服务（轻量级 Hono + SQLite，可一键部署到任意 Linux 服务器）：
+环境要求：Windows、macOS 或 Linux；[Bun](https://bun.sh/) 1.3.14；Git。Agent 功能还需要可用的 Node.js/Bun Shell，以及已配置的模型渠道凭据。
 
 ```bash
-git clone https://github.com/Yuan-lai-ru-ci/ProferAI.git
-cd ProferAI/server
-npm install
-nohup node index.js > server.log 2>&1 &
+bun install --frozen-lockfile
+bun run dev
 ```
 
-然后在 Profer 设置 → **品牌定制** 中配置团队服务器地址，即可邀请成员、共享 Skills、云端同步文件。
-
----
-
-## 🤖 支持的模型渠道
-
-| 供应商 | Chat | Agent | 协议 |
-| --- | --- | --- | --- |
-| Anthropic | ✅ | ✅ | Messages API |
-| DeepSeek | ✅ | ✅ | Anthropic 兼容 |
-| Kimi API | ✅ | ✅ | Anthropic 兼容 |
-| Kimi Coding Plan | ✅ | ✅ | Anthropic 兼容（官方白名单） |
-| OpenAI | ✅ | ❌ | Chat Completions |
-| Google | ✅ | ❌ | Gemini API |
-| 智谱 AI | ✅ | ✅ | Anthropic 兼容 |
-| MiniMax | ✅ | ✅ | Anthropic 兼容 |
-| 豆包 | ✅ | ✅ | Anthropic 兼容 |
-| 通义千问 | ✅ | ✅ | Anthropic 兼容 |
-| 自定义端点 | ✅ | ❌ | OpenAI 兼容 |
-
----
-
-## 🛠️ 技术栈
-
-| 层级 | 技术 |
-| --- | --- |
-| 运行时 | Bun |
-| 桌面框架 | Electron 43 |
-| 前端 | React 18 + TypeScript + Jotai |
-| 样式 | Tailwind CSS + Radix UI |
-| 富文本 / 图表 | TipTap · Beautiful Mermaid · KaTeX · Shiki |
-| 构建 | Vite + esbuild + electron-builder |
-| Agent SDK | `@anthropic-ai/claude-agent-sdk@0.3.201`（Claude）+ `@earendil-works/pi-agent@0.82.1`（Pi）双运行时 |
-| 移动端 | Capacitor（Android，客户端在 Profer-pocket 仓库） |
-| 团队后端 | Hono + better-sqlite3 + JWT |
-
----
-
-## 👷 本地开发
-
-Bun workspace monorepo：
-
-```text
-profer/
-├── packages/
-│   ├── shared/         # 共享类型、IPC 常量、配置
-│   ├── core/           # Provider Adapter、SSE、代码高亮
-│   ├── project-core/   # 项目 / 工作区领域模型
-│   ├── session-core/   # 会话领域模型
-│   └── ui/             # 共享 React UI 组件
-├── apps/
-│   ├── electron/       # Electron 桌面应用
-│   └── cli/            # 命令行工具
-├── server/             # 团队同步后端（Hono + SQLite）
-```
+常用检查：
 
 ```bash
-bun install        # 安装依赖
-bun run dev        # 开发模式（Vite + Electron + 热重载）
-bun run typecheck  # 类型检查
-bun test           # 测试
+bun run typecheck
+bun test --isolate
 ```
 
----
+公开 Windows 工作流只构建未签名的 x64 验证包，不会发布安装文件，也不会写入更新服务器。未签名安装包会显示 Windows 安全警告，直到配置受信任的代码签名证书。
 
-## 🤝 贡献
+## Windows 更新源
 
-欢迎提交 PR！提交前请确认：
+OSS 桌面版默认从 Mira GitHub Releases 检查更新。`PROFER_UPDATE_FEED_URL` 可在 GitHub 前增加一个安全的 HTTPS 更新源；不接受 HTTP、URL 内凭据和裸 IP 地址。公开 Mira 构建不再使用旧 Profer 更新服务器。
 
-- 使用 Bun，不混用 npm / pnpm lockfile
-- 状态管理使用 Jotai
-- TypeScript 禁用 `any`，对象结构优先使用 `interface`
-- 新增 IPC 时同步修改 shared 类型、main handler、preload bridge、renderer 调用
-- 影响包行为时递增对应 package 的 patch 版本
+## 仓库结构
 
----
+- `apps/electron/`：Mira 桌面应用与发布工具。
+- `apps/cli/`：命令行应用。
+- `packages/`：共享类型、Agent、Provider、会话、项目与 UI 包。
+- `docs/`：持续维护的产品与工程文档。
+- `release-notes/`：部分版本说明。
 
-## 📄 许可证
+## 项目身份与历史
 
-Profer 基于 [Proma](https://github.com/ErlichLiu/Proma) 开发，社区版采用 [AGPL-3.0](./LICENSE) 协议。
+Mira 是独立的公开桌面产品仓库。本仓库保留了本地 Profer 代码库中可用的源码历史和版本标签；历史代码与包名中仍可能出现 `Profer` 或 `Proma`。首次公开 Mira 版本为 `v1.1.2`。版本覆盖范围与来源见[版本记录与溯源](docs/RELEASES.md)。
 
-## 🙏 致谢
+## 贡献与支持
 
-感谢 [Proma](https://github.com/ErlichLiu/Proma) by Erlich Liu，以及 Shiki、Beautiful Mermaid、Cherry Studio、Lobe Icons、Craft Agents OSS
+提交 Pull Request 前请阅读[贡献指南](CONTRIBUTING.md)。安全漏洞请通过[安全政策](SECURITY.md)私下报告。使用问题和可复现的 Bug 请提交到 [GitHub Issues](https://github.com/yanynayan-cdut/Mira_AI/issues)。
+
+## 许可证
+
+社区版采用 GNU Affero General Public License v3.0，详情见 [LICENSE](LICENSE)。
+
+Mira 基于 Profer/Proma 代码库及其上游历史开发。仓库保留的归属说明和第三方许可证请一并参阅。

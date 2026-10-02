@@ -5,7 +5,7 @@ export type ProcessHandleLauncher = 'bash' | 'powershell' | 'wsl' | 'claude'
 export type ProcessHandleStatus = 'starting' | 'running' | 'exited' | 'killed' | 'failed'
 
 /**
- * 统一的进程归属句柄。shellPid 是 Profer 直接启动的 launcher；pid 只有在
+ * 统一的进程归属句柄。shellPid 是 Mira 直接启动的 launcher；pid 只有在
  * process-monitor 用命令、cwd、端口和 startTime 确认后才表示实际服务进程。
  */
 export interface ProcessHandle {

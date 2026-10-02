@@ -29,7 +29,7 @@ export function GlobalPresetSettings(): React.ReactElement {
   </SettingsSection>
 }
 
-function BuiltinTag(): React.ReactElement { return <span className="inline-flex items-center gap-1 rounded-md bg-blue-500/15 px-1.5 py-0.5 text-[10px] font-medium text-blue-700 dark:text-blue-300"><ShieldCheck size={11} />Profer 内置 · 只读</span> }
+function BuiltinTag(): React.ReactElement { return <span className="inline-flex items-center gap-1 rounded-md bg-blue-500/15 px-1.5 py-0.5 text-[10px] font-medium text-blue-700 dark:text-blue-300"><ShieldCheck size={11} />Mira 内置 · 只读</span> }
 
 function GlobalPresetDetail({ preset, onOpenChange, onChanged }: { preset: AgentPreset | null; onOpenChange: (open: boolean) => void; onChanged: () => void }): React.ReactElement {
   const [report, setReport] = React.useState<PresetReferenceReport | null>(null)

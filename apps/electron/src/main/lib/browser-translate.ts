@@ -1,7 +1,7 @@
 /**
  * 受管浏览器「整页翻译」：用户阅读用途。
  *
- * 背景：Profer 内置浏览器是 Electron WebContentsView，无法加载 Chrome/Edge 扩展，
+ * 背景：Mira 内置浏览器是 Electron WebContentsView，无法加载 Chrome/Edge 扩展，
  * 所以翻译不走插件，而是用「主进程注入式翻译」：
  *   1. 主进程通过已 attach 的 CDP 在页面内遍历 DOM 文本节点、给节点打 tid 标记并备份原文。
  *   2. 主进程用全局 fetch 调微软免鉴权接口批量翻译（主进程无 CORS 限制）。
@@ -33,7 +33,7 @@ export const TRANSLATED_ORIGINAL = 'data-profer-original'
 /** 译文/标记的 CSS 选择器，用于恢复原文与清理。 */
 export const TRANSLATED_SELECTOR = `[${TRANSLATED_FLAG}]`
 
-/** 与 Profer 其余受管脚本一致的命名空间，避免与页面全局冲突。 */
+/** 与 Mira 其余受管脚本一致的命名空间，避免与页面全局冲突。 */
 const TID_PREFIX = '__profer_translate__'
 
 /**

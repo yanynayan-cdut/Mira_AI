@@ -76,7 +76,7 @@ function createPiSdkStub(): {
   return { sdk, tools }
 }
 
-describe('Pi Profer in-process tool bridges', () => {
+describe('Pi Mira in-process tool bridges', () => {
   test('Given no explicit preset mutation intent When building Pi preset tools Then only preset_list is exposed', () => {
     const { sdk, tools } = createPiSdkStub()
     buildPiAgentPresetTools(sdk, {
@@ -245,7 +245,7 @@ describe('Pi Profer in-process tool bridges', () => {
     ])
   })
 
-  test('Given Pi runtime When building task graph tools Then it exposes Profer structured task tools', () => {
+  test('Given Pi runtime When building task graph tools Then it exposes Mira structured task tools', () => {
     const { sdk, tools } = createPiSdkStub()
 
     buildPiTaskGraphTools(sdk, { sessionId: 'pi-task-graph-test' })

@@ -2,7 +2,7 @@
 /**
  * 打包宿主门禁。
  *
- * Profer CLI 与原生运行时均由当前宿主编译/安装，不能在 macOS 或 Linux 上
+ * Mira CLI 与原生运行时均由当前宿主编译/安装，不能在 macOS 或 Linux 上
  * 伪造 Windows 产物。所有 Windows 打包入口都应在实际构建开始前调用本模块。
  */
 

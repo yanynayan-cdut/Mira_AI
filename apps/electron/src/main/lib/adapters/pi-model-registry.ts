@@ -358,7 +358,7 @@ export async function resolvePiReasoningCapability(provider: ProviderType, model
  * 「SSE 正常收尾但一帧都没带 finish_reason」判为整轮失败，报
  * `Stream ended without finish_reason`。而这类网关的 `/v1/chat/completions` 与
  * `/v1/responses` 往往不是同一套实现：同一渠道配在 Codex（Responses 协议）里可能完全
- * 正常，Profer 走 Chat Completions 就会撞上这条判定。
+ * 正常，Mira 走 Chat Completions 就会撞上这条判定。
  *
  * 只对用户自配的 OpenAI 兼容渠道（provider === 'custom'）关掉该校验：
  * - 服务端给了 finish_reason 时行为完全不变（hasFinishReason 分支先行生效）；
@@ -724,7 +724,7 @@ function createCodexRuntimeCredentialStore(initial: CodexOAuthCredentials, onRef
  * 为 ChatGPT (Codex) OAuth 渠道构建模型（OAuth credential store 版）。
  *
  * 与上方 buildModel 的 setRuntimeApiKey 路径不同，此入口接收完整 OAuth 凭据并放入
- * 一次性内存 credential store，按真实 expires 刷新并回写 Profer，避免读写全局 ~/.pi。
+ * 一次性内存 credential store，按真实 expires 刷新并回写 Mira，避免读写全局 ~/.pi。
  * 标题生成等轻量请求使用此入口；前台 Agent query 仍走 buildModel。
  */
 export async function buildCodexModel(sdk: PiSdk, input: CodexModelInput) {

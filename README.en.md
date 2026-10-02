@@ -1,156 +1,64 @@
-<div align="center">
+# Mira AI
 
-<img src="./docs/assets/profer-banner-en.svg" alt="Profer" width="100%" />
+**A local-first AI workspace for chat, agents, files, and repeatable work.**
 
-# Profer
+Mira is an Electron desktop app with multi-provider chat, Claude and Pi agent runtimes, workspace-scoped skills and MCP servers, browser and file previews, collaborative agent sessions, and scheduled automations. Application data stays local by default; remote collaboration integrations are opt-in.
 
-**General-purpose AI Agent Desktop App with Claude Agent SDK + Pi Agent dual runtimes**
+[简体中文](README.md) | [English](README.en.md) | [Releases](https://github.com/yanynayan-cdut/Mira_AI/releases) | [Source history](docs/RELEASES.md)
 
-Multi-model · Collaboration Sub-Agents · Scheduled Automations · Mobile Remote Access · Team Workspaces
+## Download
 
-[![GitHub Release](https://img.shields.io/github/v/release/Yuan-lai-ru-ci/ProferAI?style=flat-square&label=Release)](https://github.com/Yuan-lai-ru-ci/ProferAI/releases)
-[![License](https://img.shields.io/github/license/Yuan-lai-ru-ci/ProferAI?style=flat-square&label=License)](./LICENSE)
-[![Electron](https://img.shields.io/badge/Electron-43-47848F?style=flat-square&logo=electron)](https://www.electronjs.org/)
-[![Claude Agent SDK](https://img.shields.io/badge/Claude%20Agent%20SDK-0.3.201-8B5CF6?style=flat-square)](https://github.com/anthropics/claude-agent-sdk)
-[![Pi Agent SDK](https://img.shields.io/badge/Pi%20Agent%20SDK-0.82.1-6D28D9?style=flat-square)](https://www.npmjs.com/package/@earendil-works/pi-agent-core)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
-[![Stars](https://img.shields.io/github/stars/Yuan-lai-ru-ci/ProferAI?style=flat-square&label=Stars)](https://github.com/Yuan-lai-ru-ci/ProferAI)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat-square)](https://github.com/Yuan-lai-ru-ci/ProferAI/pulls)
+Download the Windows x64 installer from the [v1.1.2 GitHub Release](https://github.com/yanynayan-cdut/Mira_AI/releases/tag/v1.1.2). Earlier local installers do not correspond to source tags in this repository, so they are not distributed as public Releases. Review the release notes and verify the checksum before installation.
 
-</div>
+## Features
 
----
+- Multi-provider chat with attachments and rich document previews.
+- Claude Agent SDK and Pi agent runtimes for tool-using workflows.
+- Workspace-scoped skills, MCP servers, and project instructions.
+- Agent collaboration, persistent scheduled automations, and local planning tools.
+- Browser and file-preview tabs, with optional team and messaging integrations.
+- Local-first settings and session storage.
 
-Profer is a local-first AI desktop app: **use Chat for simple questions, hand complex tasks to Agent**. On top of a powerful local AI agent, it adds a team collaboration layer — personal + team workspaces, a Skills marketplace, cloud file sync, and invite-only member management. Team knowledge lives in workspaces instead of being lost in conversations.
+## Development
 
----
-
-## ✨ Key Features
-
-| Feature | Description |
-| --- | --- |
-| 🤖 **General-purpose Agent** | Built on `@anthropic-ai/claude-agent-sdk` — task graphs, dependency-ordered subtasks, streaming output, plan confirmation, with **Claude / Pi dual runtimes** |
-| 🧩 **Collaboration Sub-Agents** | Split complex tasks across real parallel sub-sessions, each advancing independently, then aggregate results — fully visible and trackable |
-| ⏰ **Scheduled Automations** | Durable scheduling (interval / daily / weekly / monthly) with run history, failure protection, and retrospection — ideal for reports, periodic checks, unattended workflows |
-| 📱 **Mobile Remote Access** | Mobile client (separate `Profer-pocket` repo, Capacitor Android) connects to the desktop via local HTTP/WS — mobile chat, synced settings, auto-reconnect |
-| 👥 **Team Workspaces** | Invite-only teams (Owner / Admin / Member / Viewer roles), Skills marketplace, cloud file sync, brand customization |
-| 💬 **Multi-model Chat** | Multi-provider conversations, attachments (PDF / Office / images), Markdown / Mermaid / KaTeX / syntax highlighting, side-by-side compare, context management |
-| 🧠 **Skills & MCP** | Per-workspace Skills and MCP servers, fullscreen skill view with search, enable, update, import, uninstall, and team publishing |
-| 🔌 **Remote Bots** | Feishu / Lark / DingTalk / WeChat bridges — trigger local agent workflows from your phone or group chat |
-| 🎨 **Desktop Experience** | Auto-update, global shortcuts, quick task window, streaming voice input (Doubao), light / dark / multiple curated themes |
-
----
-
-## 📸 Screenshot
-
-<img src="./docs/assets/screenshots/profer-main-demo.png" alt="Profer main UI" width="100%" />
-
----
-
-## 🚀 Quick Start
-
-### Download
-
-Get the latest release from [GitHub Releases](https://github.com/Yuan-lai-ru-ci/ProferAI/releases). Builds are provided for **macOS Apple Silicon / Intel** and **Windows**.
-
-### First-run Setup
-
-1. Launch Profer and complete the environment check (Agent mode depends on Git, Node.js / Bun, and a usable shell)
-2. **Settings → Model Config**: add AI providers (Anthropic, DeepSeek, Kimi, Zhipu, Doubao, Qwen, etc.)
-3. **Settings → Agent Config**: pick your default provider, model, and workspace — you're ready to go
-
-### Optional: Team Server
-
-Team features need the backend service (lightweight Hono + SQLite, deployable to any Linux server):
+Requirements: Windows, macOS, or Linux; [Bun](https://bun.sh/) 1.3.14; and Git. Agent features may also require a supported Node.js/Bun shell and credentials for the model provider you configure.
 
 ```bash
-git clone https://github.com/Yuan-lai-ru-ci/ProferAI.git
-cd ProferAI/server
-npm install
-nohup node index.js > server.log 2>&1 &
+bun install --frozen-lockfile
+bun run dev
 ```
 
-Then configure the team server address in **Settings → Branding** to invite members, share Skills, and sync files.
-
----
-
-## 🤖 Supported Providers
-
-| Provider | Chat | Agent | Protocol |
-| --- | --- | --- | --- |
-| Anthropic | ✅ | ✅ | Messages API |
-| DeepSeek | ✅ | ✅ | Anthropic-compatible |
-| Kimi API | ✅ | ✅ | Anthropic-compatible |
-| Kimi Coding Plan | ✅ | ✅ | Anthropic-compatible (officially whitelisted) |
-| OpenAI | ✅ | ❌ | Chat Completions |
-| Google | ✅ | ❌ | Gemini API |
-| Zhipu AI | ✅ | ✅ | Anthropic-compatible |
-| MiniMax | ✅ | ✅ | Anthropic-compatible |
-| Doubao | ✅ | ✅ | Anthropic-compatible |
-| Qwen | ✅ | ✅ | Anthropic-compatible |
-| Custom Endpoint | ✅ | ❌ | OpenAI-compatible |
-
----
-
-## 🛠️ Tech Stack
-
-| Layer | Technology |
-| --- | --- |
-| Runtime | Bun |
-| Desktop | Electron 43 |
-| Frontend | React 18 + TypeScript + Jotai |
-| Styling | Tailwind CSS + Radix UI |
-| Rich text / charts | TipTap · Beautiful Mermaid · KaTeX · Shiki |
-| Build | Vite + esbuild + electron-builder |
-| Agent SDK | `@anthropic-ai/claude-agent-sdk@0.3.201` (Claude) + `@earendil-works/pi-agent@0.82.1` (Pi) dual runtimes |
-| Mobile | Capacitor (Android, client lives in the `Profer-pocket` repo) |
-| Team backend | Hono + better-sqlite3 + JWT |
-
----
-
-## 👷 Development
-
-Bun workspace monorepo:
-
-```text
-profer/
-├── packages/
-│   ├── shared/         # shared types, IPC constants, config
-│   ├── core/           # Provider Adapters, SSE, code highlighting
-│   ├── project-core/   # project / workspace domain models
-│   ├── session-core/   # session domain models
-│   └── ui/             # shared React UI components
-├── apps/
-│   ├── electron/       # Electron desktop app
-│   └── cli/            # command-line tools
-├── server/             # team sync backend (Hono + SQLite)
-```
+Useful checks:
 
 ```bash
-bun install        # install dependencies
-bun run dev        # dev mode (Vite + Electron + HMR)
-bun run typecheck  # type checking
-bun test           # tests
+bun run typecheck
+bun test --isolate
 ```
 
----
+The public Windows workflow builds an unsigned x64 verification package; it does not publish artifacts or update metadata servers. Unsigned Mira packages clearly show a Windows security warning until a trusted signing certificate is configured.
 
-## 🤝 Contributing
+## Windows update source
 
-PRs welcome! Before submitting:
+The OSS desktop build checks the Mira GitHub Releases repository by default. `PROFER_UPDATE_FEED_URL` may add a secure HTTPS feed ahead of GitHub Releases; plain HTTP, credentials in the URL, and literal IP addresses are rejected. Older Profer-hosted feeds are not used by this public Mira build.
 
-- Use Bun — do not mix npm / pnpm lockfiles
-- State management uses Jotai
-- TypeScript: no `any`, prefer `interface` for object shapes
-- When adding IPC, update shared types, main handler, preload bridge, and renderer call sites together
-- Bump the corresponding package patch version when package behavior changes
+## Repository layout
 
----
+- `apps/electron/`: Mira desktop application and release tooling.
+- `apps/cli/`: command-line application.
+- `packages/`: shared types, agent, provider, session, project, and UI packages.
+- `docs/`: maintained product and engineering documentation.
+- `release-notes/`: selected version notes.
 
-## 📄 License
+## Project identity and history
 
-Profer is developed based on [Proma](https://github.com/ErlichLiu/Proma); the community edition is licensed under [AGPL-3.0](./LICENSE).
+Mira is a standalone public repository for the Mira desktop product. It preserves the available source history and version tags from the local Profer codebase; package names and historical code may still use `Profer` or `Proma`. The first public Mira release is `v1.1.2`. See [version history and provenance](docs/RELEASES.md).
 
-## 🙏 Acknowledgements
+## Contributing and support
 
-Thanks to [Proma](https://github.com/ErlichLiu/Proma) by Erlich Liu, and the open-source projects Shiki, Beautiful Mermaid, Cherry Studio, Lobe Icons, Craft Agents OSS, and MemOS.
+Read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request. Report vulnerabilities privately using [SECURITY.md](SECURITY.md). For usage questions and reproducible bugs, use [GitHub Issues](https://github.com/yanynayan-cdut/Mira_AI/issues).
+
+## License
+
+The community edition is distributed under the GNU Affero General Public License v3.0. See [LICENSE](LICENSE).
+
+Mira builds on the Profer/Proma codebase and its upstream history. See the attribution notices and third-party licenses included in the repository.

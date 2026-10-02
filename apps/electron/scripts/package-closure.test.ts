@@ -10,7 +10,7 @@ async function read(path: string): Promise<string> {
 }
 
 describe('Pi packaged runtime 闭包', () => {
-  test('electron-builder 解包 Pi 所需的 native/WASM scope，并保留 Profer 打包契约', async () => {
+  test('electron-builder 解包 Pi 所需的 native/WASM scope，并保留 Mira 打包契约', async () => {
     const builder = await read(join(appDir, 'electron-builder.yml'))
 
     for (const pattern of [

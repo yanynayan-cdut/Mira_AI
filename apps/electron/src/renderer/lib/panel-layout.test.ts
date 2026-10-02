@@ -9,6 +9,7 @@ import {
   computeVisibility,
   layoutNeed,
   mainAreaNeed,
+  resolvePanelLayoutState,
   type PanelLayoutState,
   type PanelVisibility,
 } from './panel-layout'
@@ -121,6 +122,22 @@ describe('组合状态下的宽度预算', () => {
     // 组合时 1400 不够；解散回单栏后 1400 ≥ 1036 → 可见（隐藏态需 +50）
     expect(computeVisibility(1400, groupWithSidebar, hidden).filePanel).toBe(false)
     expect(computeVisibility(1400, full, hidden).filePanel).toBe(true)
+  })
+
+  test('given 用户在组合视图打开文件面板 then 保留展开意图并按两栏计算可见性', () => {
+    const layout = resolvePanelLayoutState({
+      scopeActive: true,
+      appMode: 'agent',
+      sessionId: 'session-1',
+      sidebarExpanded: false,
+      filePanelOpenIntent: true,
+      groupActive: true,
+    })
+
+    expect(layout).toEqual({ sidebar: false, filePanel: true, mainPaneCount: 2 })
+    expect(computeVisibility(1214, layout, hidden).filePanel).toBe(true)
+    expect(computeVisibility(1164, layout, shown).filePanel).toBe(true)
+    expect(computeVisibility(1163, layout, shown).filePanel).toBe(false)
   })
 })
 

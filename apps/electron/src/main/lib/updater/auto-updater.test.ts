@@ -19,13 +19,13 @@ function makeRelease(tagName: string, overrides: Partial<GitHubRelease> = {}): G
   return {
     id: 1,
     tag_name: tagName,
-    name: `Profer ${tagName}`,
+    name: `Mira ${tagName}`,
     body: '测试更新说明',
     draft: false,
     prerelease: false,
     created_at: '',
     published_at: '',
-    html_url: `https://github.com/Yuan-lai-ru-ci/ProferAI/releases/tag/${tagName}`,
+    html_url: `https://github.com/yanynayan-cdut/Mira_AI/releases/tag/${tagName}`,
     ...overrides,
   }
 }
@@ -65,7 +65,7 @@ describe('开发版更新状态', () => {
       status: 'available',
       version: '99.0.0',
       releaseNotes: '测试更新说明',
-      manualUrl: 'https://github.com/Yuan-lai-ru-ci/ProferAI/releases/tag/v99.0.0',
+      manualUrl: 'https://github.com/yanynayan-cdut/Mira_AI/releases/tag/v99.0.0',
     })
     expect(check).not.toHaveBeenCalled()
     expect(download).not.toHaveBeenCalled()

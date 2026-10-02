@@ -312,17 +312,17 @@ function PermissionsStep(): React.ReactElement {
 
 // ===== 飞书 CLI 预置 Prompt =====
 
-const FEISHU_CLI_WORKSPACE_PROMPT = `请在当前 Profer 工作区完成飞书 CLI 配置，并在完成后验证结果。
+const FEISHU_CLI_WORKSPACE_PROMPT = `请在当前 Mira 工作区完成飞书 CLI 配置，并在完成后验证结果。
 
 要求：
 1. 先用官方 CLI 的 --help 确认当前版本支持的命令，不要猜参数。
 2. 只把 @larksuite/cli 可执行工具安装到全局：npm install -g @larksuite/cli。
-3. 把官方 Lark Agent Skills 安装到当前 Profer 工作区实际加载的 skills/ 目录；不要使用 -g，也不要只安装到 .agents/skills/，因为 Profer 不会从那里加载。
-4. 初始化独立的 Lark CLI 应用：lark-cli config init --new。不要复用 Profer 飞书 Bot 应用。
+3. 把官方 Lark Agent Skills 安装到当前 Mira 工作区实际加载的 skills/ 目录；不要使用 -g，也不要只安装到 .agents/skills/，因为 Mira 不会从那里加载。
+4. 初始化独立的 Lark CLI 应用：lark-cli config init --new。不要复用 Mira 飞书 Bot 应用。
 5. 完成用户授权：lark-cli auth login --domain all。需要浏览器授权时提示我操作。
 6. 最后运行 lark-cli auth status，报告 CLI、授权和工作区 Skill 是否就绪；不要在聊天、文件或日志中输出 token、App Secret 或 Cookie。
 
-如果当前 CLI 版本的 Skill 安装命令无法直接写入 Profer skills/，请先查看帮助，再采用安全的复制方式完成，不要留下只存在于 .agents/skills/ 的无效安装。`
+如果当前 CLI 版本的 Skill 安装命令无法直接写入 Mira skills/，请先查看帮助，再采用安全的复制方式完成，不要留下只存在于 .agents/skills/ 的无效安装。`
 
 /** 可选的工作区级 Lark CLI 配置入口 */
 function FeishuCliSection(): React.ReactElement {
@@ -366,7 +366,7 @@ function FeishuCliSection(): React.ReactElement {
   return (
     <SettingsSection
       title="给当前工作区增加飞书能力"
-      description="可选。Profer 会在当前工作区创建配置会话，自动安装 CLI、放置官方 Skills 并引导授权。普通 Bot 收发消息不需要这一步。"
+      description="可选。Mira 会在当前工作区创建配置会话，自动安装 CLI、放置官方 Skills 并引导授权。普通 Bot 收发消息不需要这一步。"
     >
       <SettingsCard divided={false}>
         <div className="flex flex-wrap items-center gap-2 px-4 py-4">
@@ -460,7 +460,7 @@ function LarkCloudCapabilitiesSection(): React.ReactElement {
   const nodeDownloadUrl = 'https://nodejs.org/dist/v22.13.1/node-v22.13.1.pkg'
 
   return (
-    <SettingsSection title="飞书云端能力（Lark 用户授权）" description="通过官方 Lark CLI 使用你的用户身份访问云文档、表格和其他云端资源。凭据只保留在 CLI 的安全存储中，Profer 不读取或展示 token。">
+    <SettingsSection title="飞书云端能力（Lark 用户授权）" description="通过官方 Lark CLI 使用你的用户身份访问云文档、表格和其他云端资源。凭据只保留在 CLI 的安全存储中，Mira 不读取或展示 token。">
       <SettingsCard divided={false}>
         <div className="px-4 py-4 space-y-4 text-sm">
           <div className="flex items-center justify-between gap-3">
@@ -810,7 +810,7 @@ function FeishuBindingsTab(): React.ReactElement {
     <div className="space-y-8">
       <SettingsSection
         title="绑定管理"
-        description="查看和管理飞书聊天与 Profer 工作区/会话的绑定关系"
+        description="查看和管理飞书聊天与 Mira 工作区/会话的绑定关系"
         action={
           <Button
             size="sm"
@@ -954,7 +954,7 @@ function RegisterFeishuDialog({ open, onOpenChange, onSuccess }: RegisterFeishuD
             扫码创建飞书 Bot
           </DialogTitle>
           <DialogDescription>
-            飞书后端将自动创建一个 PersonalAgent 应用，扫码完成后 Profer 会自动保存凭证并启动 Bot，整个过程无需手动复制 App ID / Secret。
+            飞书后端将自动创建一个 PersonalAgent 应用，扫码完成后 Mira 会自动保存凭证并启动 Bot，整个过程无需手动复制 App ID / Secret。
           </DialogDescription>
         </DialogHeader>
 
@@ -1109,7 +1109,7 @@ function SessionMirrorSection({ bots }: { bots: FeishuBotConfig[] }): React.Reac
   return (
     <SettingsSection
       title="同步到飞书"
-      description="开启后，每个新的 Profer Agent Session 会创建一个仅包含你和指定 Bot 的飞书群，并把输出同步到群内卡片，同时默认阻止电脑自动休眠，方便你脱离电脑在飞书上继续完成工作。"
+      description="开启后，每个新的 Mira Agent Session 会创建一个仅包含你和指定 Bot 的飞书群，并把输出同步到群内卡片，同时默认阻止电脑自动休眠，方便你脱离电脑在飞书上继续完成工作。"
     >
       <SettingsCard divided={false}>
         <div className="px-4 py-4 space-y-4">
@@ -1147,7 +1147,7 @@ function SessionMirrorSection({ bots }: { bots: FeishuBotConfig[] }): React.Reac
           <div className="flex items-start gap-2 rounded-lg bg-blue-500/10 px-3 py-3 text-xs text-blue-700 dark:text-blue-300">
             <MessageSquare size={15} className="mt-0.5 flex-shrink-0" />
             <div className="leading-relaxed">
-              实时同步模式下，一个 Profer Session 对应一个飞书群。即使配置了多个 Bot，也只会使用这里选中的 Bot，避免同一 Session 被多个 Bot 重复建群或拆散上下文。
+              实时同步模式下，一个 Mira Session 对应一个飞书群。即使配置了多个 Bot，也只会使用这里选中的 Bot，避免同一 Session 被多个 Bot 重复建群或拆散上下文。
             </div>
           </div>
 
@@ -1161,7 +1161,7 @@ function SessionMirrorSection({ bots }: { bots: FeishuBotConfig[] }): React.Reac
               <div className="flex flex-col gap-1 pl-1">
                 <div>
                   <code className="rounded bg-amber-500/15 px-1 py-0.5 text-[11px] text-amber-900 dark:text-amber-100">im:message.group_msg</code>
-                  {' '}— 接收群聊中所有用户消息（否则飞书不会把非 @ 的群消息推送给 Profer）
+                  {' '}— 接收群聊中所有用户消息（否则飞书不会把非 @ 的群消息推送给 Mira）
                 </div>
                 <div>
                   <code className="rounded bg-amber-500/15 px-1 py-0.5 text-[11px] text-amber-900 dark:text-amber-100">im:chat</code>
@@ -1178,7 +1178,7 @@ function SessionMirrorSection({ bots }: { bots: FeishuBotConfig[] }): React.Reac
             <div className="flex items-start gap-2 rounded-lg bg-amber-500/10 px-3 py-3 text-xs text-amber-800 dark:text-amber-300">
               <AlertTriangle size={15} className="mt-0.5 flex-shrink-0" />
               <div className="leading-relaxed">
-                当前同步 Bot 还没有绑定记录。请先在飞书里向「{selectedBot?.name ?? '该 Bot'}」发送一条消息，Profer 记录你的 open_id 后才能自动为新 Session 建群。
+                当前同步 Bot 还没有绑定记录。请先在飞书里向「{selectedBot?.name ?? '该 Bot'}」发送一条消息，Mira 记录你的 open_id 后才能自动为新 Session 建群。
               </div>
             </div>
           )}
@@ -1454,7 +1454,7 @@ function FeishuQuickStart({ bots, botStates, onRegister, onManualAdd, onRefresh,
   return (
     <SettingsSection
       title="连接飞书"
-      description="扫码创建一个 Bot，Profer 会自动保存并启动。完成后直接在飞书里发消息即可。"
+      description="扫码创建一个 Bot，Mira 会自动保存并启动。完成后直接在飞书里发消息即可。"
     >
       <SettingsCard divided={false} className="overflow-hidden">
         <div className="px-4 py-4 space-y-4">
@@ -1486,7 +1486,7 @@ function FeishuQuickStart({ bots, botStates, onRegister, onManualAdd, onRefresh,
           <div className="grid gap-2 sm:grid-cols-3" aria-label="飞书接入步骤">
             {[
               ['1', '扫码创建', '用飞书扫一扫完成授权'],
-              ['2', '自动启动', 'Profer 自动保存并连接'],
+              ['2', '自动启动', 'Mira 自动保存并连接'],
               ['3', '开始使用', '在飞书搜索 Bot 并发消息'],
             ].map(([number, title, description]) => (
               <div key={number} className="rounded-lg bg-muted/45 px-3 py-2.5">
@@ -1777,7 +1777,7 @@ function FeishuConfigTab(): React.ReactElement {
                     <li>
                       添加回调{' '}
                       <code className="bg-muted/50 px-1.5 py-0.5 rounded text-xs text-foreground/80">card.action.trigger</code>
-                      {' '}（卡片按钮回调，Profer 的流式卡片交互依赖此项）
+                      {' '}（卡片按钮回调，Mira 的流式卡片交互依赖此项）
                     </li>
                   </ol>
                 </div>
@@ -1801,7 +1801,7 @@ function FeishuConfigTab(): React.ReactElement {
             {/* 提示 */}
             <div className="pl-7 p-3 rounded-lg bg-amber-500/10 text-amber-700 dark:text-amber-400 text-xs">
               版本审核通过并发布后，在飞书中搜索机器人名称添加到聊天，
-              即可通过飞书向 Profer Agent 发送指令。
+              即可通过飞书向 Mira Agent 发送指令。
             </div>
           </div>
         </SettingsCard>

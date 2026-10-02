@@ -1,6 +1,6 @@
 # WebGL-Fluid-Simulation attribution
 
-`IntroFluidBackground.tsx` is a Profer-specific, reduced WebGL implementation inspired by the GPU fluid rendering approach in [PavelDoGreat/WebGL-Fluid-Simulation](https://github.com/PavelDoGreat/WebGL-Fluid-Simulation). It does not include the upstream demo page, GUI, analytics, pointer input, screenshot logic, or upstream source verbatim.
+`IntroFluidBackground.tsx` is a Mira-specific, reduced WebGL implementation inspired by the GPU fluid rendering approach in [PavelDoGreat/WebGL-Fluid-Simulation](https://github.com/PavelDoGreat/WebGL-Fluid-Simulation). It does not include the upstream demo page, GUI, analytics, pointer input, screenshot logic, or upstream source verbatim.
 
 Upstream project license:
 

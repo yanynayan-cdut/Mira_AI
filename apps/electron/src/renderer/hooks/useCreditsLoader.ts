@@ -6,10 +6,12 @@
  *   - 额度不足（402）后的即时刷新
  *   - 设置页额度概览
  *
- * 仅在代管模式（commercialMode）下有效；非代管模式直接清空余额。
+ * 只要已登录 Gateway 即可读取余额。Gateway 的认证/余额模式不等同于
+ * 商业代理模式，避免尚未启用 `/v1/proxy/*` 时误判为不可读取。
  */
 import * as React from 'react'
-import { useSetAtom, useStore } from 'jotai'
+import { useAtomValue, useSetAtom, useStore } from 'jotai'
+import { authStatusAtom } from '@/atoms/identity-atoms'
 import {
   creditsBalanceAtom,
   creditsLifetimeConsumedAtom,
@@ -23,6 +25,8 @@ import {
   multiplierAtom,
   inviteCodeAtom,
   subscriptionAtom,
+  subscriptionsAtom,
+  accountUserAtom,
 } from '@/atoms/credits-atoms'
 
 /** jotai store（useStore() / createStore() 的返回类型） */
@@ -41,15 +45,12 @@ function clearCreditsState(store: JotaiStore): void {
   store.set(multiplierAtom, 1.0)
   store.set(inviteCodeAtom, null)
   store.set(subscriptionAtom, null)
+  store.set(subscriptionsAtom, [])
+  store.set(accountUserAtom, null)
 }
 
 export async function refreshCreditsInto(store: JotaiStore): Promise<void> {
   try {
-    const commercial = await window.electronAPI.getCommercialMode().catch(() => false)
-    if (!commercial) {
-      clearCreditsState(store)
-      return
-    }
     const auth = await window.electronAPI.auth.getTeamAuth()
     if (!auth) {
       clearCreditsState(store)
@@ -79,6 +80,9 @@ export async function refreshCreditsInto(store: JotaiStore): Promise<void> {
     store.set(inviteCodeAtom, d.inviteCode ?? null)
     // 订阅状态：服务端明确返回 null 时必须清除旧账号/已过期订阅的陈旧卡片。
     store.set(subscriptionAtom, d.subscription ?? null)
+    // new-api 账户可能同时存在多条订阅；保留完整明细供额度页展示。
+    store.set(subscriptionsAtom, Array.isArray(d.subscriptions) ? d.subscriptions : [])
+    store.set(accountUserAtom, d.user ?? null)
   } catch {
     /* 静默：余额拉取失败不打扰用户 */
   }
@@ -91,6 +95,11 @@ export async function refreshCreditsInto(store: JotaiStore): Promise<void> {
 export function useCreditsLoader(pollMs = 60_000): { reload: () => Promise<void> } {
   const store = useStore()
   const setLoading = useSetAtom(creditsLoadingAtom)
+  const authStatus = useAtomValue(authStatusAtom)
+  // 应用启动时余额组件通常早于登录界面挂载；用账号标识触发登录后的首次加载。
+  const authKey = authStatus.isLoggedIn
+    ? `${authStatus.teamAccountId ?? ''}:${authStatus.teamEmail ?? ''}`
+    : 'logged-out'
 
   const reload = React.useCallback(async () => {
     setLoading(true)
@@ -106,7 +115,7 @@ export function useCreditsLoader(pollMs = 60_000): { reload: () => Promise<void>
     if (pollMs <= 0) return
     const timer = setInterval(() => { void reload() }, pollMs)
     return () => clearInterval(timer)
-  }, [reload, pollMs])
+  }, [reload, pollMs, authKey])
 
   return { reload }
 }

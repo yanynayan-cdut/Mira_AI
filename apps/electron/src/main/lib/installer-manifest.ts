@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Installer Manifest 客户端
  *
  * 从 profer-api 的 /api/v1/installers/manifest 接口拉取第三方安装包清单，
@@ -109,7 +109,7 @@ export async function fetchInstallerManifest(force = false): Promise<InstallerMa
     const response = await fetch(MANIFEST_URL, {
       headers: {
         'Accept': 'application/json',
-        'User-Agent': 'Profer-Desktop-App',
+        'User-Agent': 'Mira-Desktop-App',
       },
     })
 

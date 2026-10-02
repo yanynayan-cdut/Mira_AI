@@ -38,13 +38,13 @@ export const GPT_IMAGE_TOOL_META: ChatToolMeta = {
 - size：可选 "1024x1024" / "1536x1024" / "1024x1536" / "auto"。
 - quality：可选 "auto" / "low" / "medium" / "high"。
 - useReferenceImages：用户上传参考图或要求修改之前生成的图片时设为 "true"。
-每次调用仅生成或编辑 1 张图片；Profer 官方模式仅在成功后扣 5 积分，失败不扣费。
+每次调用仅生成或编辑 1 张图片；Mira 官方模式仅在成功后扣 5 积分，失败不扣费。
 </gpt_image_instructions>`,
 }
 
 export const GPT_IMAGE_TOOL_DEFINITIONS: ToolDefinition[] = [{
   name: 'generate_image',
-  description: 'Generate one image or edit uploaded reference images. Official mode charges 5 Profer credits only after successful delivery.',
+  description: 'Generate one image or edit uploaded reference images. Official mode charges 5 Mira credits only after successful delivery.',
   parameters: {
     type: 'object',
     properties: {

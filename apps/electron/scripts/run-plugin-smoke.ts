@@ -1,4 +1,4 @@
-/** 在独立 Electron 进程验证插件桥接，不启动或重启用户的 Profer。 */
+/** 在独立 Electron 进程验证插件桥接，不启动或重启用户的 Mira。 */
 import { build } from 'esbuild'
 import { resolve } from 'node:path'
 const root = resolve(import.meta.dir, '..')

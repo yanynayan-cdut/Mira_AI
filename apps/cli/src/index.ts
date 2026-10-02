@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * profer — Profer 命令行工具入口。
+ * profer — Mira 命令行工具入口。
  *
  * 用法：
  *   profer <command> [subcommand] [args] [--flags]
@@ -8,7 +8,7 @@
  *
  * 全局 flag：
  *   --json            输出机器可读 JSON
- *   --config-dir DIR  指定 Profer 配置目录（默认 ~/.profer，PROFER_DEV=1 → ~/.profer-dev）
+ *   --config-dir DIR  指定 Mira 配置目录（默认 ~/.profer，PROFER_DEV=1 → ~/.profer-dev）
  *   --dev             使用 ~/.profer-dev
  *
  * 设计：命令注册表驱动（registry.ts）。`session` 是一个命名空间，
@@ -27,7 +27,7 @@ import './commands/search'
 import './commands/export'
 
 function printHelp(): void {
-  info('profer — Profer 会话渐进式读取 CLI\n')
+  info('profer — Mira 会话渐进式读取 CLI\n')
   info('用法: profer session <command> [args] [--flags]\n')
   info('命令:')
   for (const c of allCommands()) {

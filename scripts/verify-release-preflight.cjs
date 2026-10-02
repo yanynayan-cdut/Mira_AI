@@ -17,7 +17,7 @@ if (!version) throw new Error('用法: node scripts/verify-release-preflight.cjs
 const root = path.resolve(__dirname, '..')
 const electron = path.join(root, 'apps/electron')
 const tag = `v${version}`
-const repo = 'Yuan-lai-ru-ci/ProferAI'
+const repo = 'yanynayan-cdut/Mira_AI'
 
 function run(command, cwd = root) {
   return execSync(command, { cwd, encoding: 'utf8', stdio: 'pipe' }).trim()

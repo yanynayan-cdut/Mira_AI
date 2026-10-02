@@ -18,7 +18,7 @@ describe('渲染层渠道订阅额度能力', () => {
     expect(supportsChannelPlanQuota({ provider: 'zhipu-coding', baseUrl: 'https://open.bigmodel.cn/api/coding/paas/v4/' })).toBe(true)
   })
 
-  test('Given Profer 代管的支持类型渠道 When 判断 Then 不查询第三方订阅额度', () => {
+  test('Given Mira 代管的支持类型渠道 When 判断 Then 不查询第三方订阅额度', () => {
     expect(supportsChannelPlanQuota({
       provider: 'kimi-coding',
       baseUrl: 'https://api.kimi.com/coding/v1',

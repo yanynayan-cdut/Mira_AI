@@ -31,7 +31,7 @@ afterEach(() => {
   rmSync(configRoot, { recursive: true, force: true })
 })
 
-describe('Profer workspace profile', () => {
+describe('Mira workspace profile', () => {
   test('旧工作区 CLAUDE.md 仅兼容读取，新写入不会回写旧文件', () => {
     const workspace = createAgentWorkspace('Profile Compatibility')
     const workspaceRoot = join(configRoot, 'agent-workspaces', workspace.slug)

@@ -31,7 +31,7 @@ export function McpDetailSheet({ open, server, workspaceSlug, onOpenChange, onSa
               官方 Lark MCP
             </div>
             <div className="rounded-lg border border-blue-500/20 bg-blue-500/10 p-4 text-sm leading-6 text-foreground/80">
-              此服务器由 Profer 的飞书集成托管。它的 <code>--tools</code> 参数内部使用逗号列表，不能通过通用 MCP 编辑器修改，否则会被拆成多个命令行参数并导致服务断开。
+              此服务器由 Mira 的飞书集成托管。它的 <code>--tools</code> 参数内部使用逗号列表，不能通过通用 MCP 编辑器修改，否则会被拆成多个命令行参数并导致服务断开。
             </div>
             <div className="rounded-lg border border-border/60 bg-muted/35 p-4 text-sm leading-6 text-muted-foreground">
               请到 <strong className="text-foreground">设置 → 远程连接 → 飞书</strong> 中使用“官方 Lark MCP”区域完成凭据保存、用户授权、连接测试、启用或停用。

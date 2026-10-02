@@ -946,9 +946,9 @@ export interface ElectronAPI {
   getWorkspaceMemorySummary: (workspaceSlug: string) => Promise<WorkspaceMemorySummary>
   /** 获取工作区每日 Token 消耗，用于热力图展示。团队工作区返回空数组 */
   getWorkspaceHeatmapDaily: (workspaceId: string) => Promise<Array<{ date: string; tokens: number }>>
-  /** 读取 Profer 工作区资料 */
+  /** 读取 Mira 工作区资料 */
   readWorkspaceProfile: (workspaceSlug: string) => Promise<SkillFileContent>
-  /** 写入 Profer 工作区资料 */
+  /** 写入 Mira 工作区资料 */
   writeWorkspaceProfile: (workspaceSlug: string, content: string) => Promise<void>
   /** 列出工作区 auto memory 文件树 */
   listWorkspaceAutoMemoryFiles: (workspaceSlug: string) => Promise<SkillFileNode[]>
@@ -1523,7 +1523,7 @@ export interface ElectronAPI {
     updateProfile: (updates: Record<string, unknown>) => Promise<import('../types/identity').UserIdentity>
     login: (credentials: Record<string, unknown>) => Promise<unknown>
     register: (credentials: { email: string; password: string; displayName: string; inviteCode?: string; otpToken?: string; emailOtp?: string }) => Promise<unknown>
-    getRegistrationOptions: () => Promise<{ openRegistration: boolean }>
+    getRegistrationOptions: () => Promise<{ openRegistration: boolean; emailVerificationRequired: boolean }>
     sendRegistrationOtp: (email: string) => Promise<{ success: boolean; otpToken?: string; resendAfterSec?: number; error?: string }>
     verifyRegistrationOtp: (email: string, otpToken: string, code: string) => Promise<{ success: boolean; error?: string }>
     logout: () => Promise<{ channelsCleared?: boolean; channelsBackedUp?: boolean; warning?: string }>

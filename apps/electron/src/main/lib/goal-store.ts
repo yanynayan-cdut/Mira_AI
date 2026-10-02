@@ -5,7 +5,7 @@ import { GOAL_HISTORY_LIMIT } from './goal-loop'
 
 /**
  * Goal 状态持久化（userData/goals.json）。
- * Codex 的 goal 是「跨 turn 的持久目标」；Profer 按其语义把 Goal 做成可跨重启恢复的状态，
+ * Codex 的 goal 是「跨 turn 的持久目标」；Mira 按其语义把 Goal 做成可跨重启恢复的状态，
  * 进程退出时标记 paused 而非丢弃。
  */
 

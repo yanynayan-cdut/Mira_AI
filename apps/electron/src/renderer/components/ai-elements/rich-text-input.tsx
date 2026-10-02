@@ -14,6 +14,7 @@
  */
 
 import { useState, useEffect, useRef, useMemo, useImperativeHandle, forwardRef, useCallback } from 'react'
+import { createPortal } from 'react-dom'
 import { useAtomValue } from 'jotai'
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
@@ -28,12 +29,23 @@ import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip
 import { cn } from '@/lib/utils'
 import { lowlight } from '@/lib/lowlight'
 import { htmlToMarkdown, markdownToHtml, normalizeClipboardHtml } from '@/lib/markdown-rich-text'
-import { composerCompactModeAtom, richTextRenderingEnabledAtom } from '@/atoms/ui-preferences'
+import {
+  composerCompactModeAtom,
+  composerResizeHeightAtom,
+  composerResizePreviewHeightAtom,
+  richTextRenderingEnabledAtom,
+} from '@/atoms/ui-preferences'
 import {
   resolveCompactViewport,
   resolveComposerMaxHeight,
   resolveComposerMinHeight,
 } from '@/lib/composer-compact-height'
+import {
+  COMPOSER_RESIZE_MAX_HEIGHT,
+  COMPOSER_RESIZE_MIN_HEIGHT,
+  clampComposerResizeHeight,
+} from '@/lib/composer-resize'
+import { ComposerResizeControl } from '@/components/ai-elements/ComposerResizeControl'
 import { useWindowInnerHeight } from '@/hooks/use-window-inner-height'
 import { createFileMentionSuggestion } from '@/components/file-browser/file-mention-suggestion'
 import { createSkillMentionSuggestion, createMcpMentionSuggestion, createSessionMentionSuggestion } from '@/components/agent/mention-suggestions'
@@ -195,6 +207,10 @@ interface RichTextInputProps {
   onHtmlChange?: (html: string) => void
   /** 是否使用 Cmd/Ctrl+Enter 发送（而非 Enter） */
   sendWithCmdEnter?: boolean
+  /** 是否允许使用共享的上边界拖动高度。 */
+  resizable?: boolean
+  /** 高度拖动手柄应锚定的输入卡片；缺省时锚定编辑器自身。 */
+  resizeHandleContainer?: HTMLElement | null
   className?: string
 }
 
@@ -235,6 +251,8 @@ export const RichTextInput = forwardRef<RichTextInputHandle, RichTextInputProps>
   htmlValue,
   onHtmlChange,
   sendWithCmdEnter = false,
+  resizable = false,
+  resizeHandleContainer,
 }: RichTextInputProps, ref: React.Ref<RichTextInputHandle>): React.ReactElement {
   const [isExpanded, setIsExpanded] = useState(false)
   const inputIdRef = useRef(`rich-text-input-${Math.random().toString(36).slice(2)}`)
@@ -309,6 +327,8 @@ export const RichTextInput = forwardRef<RichTextInputHandle, RichTextInputProps>
 
   // 矮窗口压缩：阈值/高度来自设置（0 = 关闭），默认 < 700px 时输入框 101px → 60px、上限 200px → 140px
   const composerCompactMode = useAtomValue(composerCompactModeAtom)
+  const manualResizeHeightSetting = useAtomValue(composerResizeHeightAtom)
+  const resizePreviewHeight = useAtomValue(composerResizePreviewHeightAtom)
   const viewportHeight = useWindowInnerHeight()
   const isCompactViewport = useCompactViewport(composerCompactMode.viewportHeight, viewportHeight)
 
@@ -862,6 +882,19 @@ export const RichTextInput = forwardRef<RichTextInputHandle, RichTextInputProps>
     compact: isCompactViewport,
     compactMinHeight: composerCompactMode.minHeight,
   })
+  const requestedResizeHeight = resizable
+    ? (resizePreviewHeight ?? manualResizeHeightSetting)
+    : null
+  const manualResizeMaxHeight = isCompactViewport
+    ? Math.min(COMPOSER_RESIZE_MAX_HEIGHT, composerMaxHeight)
+    : COMPOSER_RESIZE_MAX_HEIGHT
+  const manualResizeHeight = requestedResizeHeight === null
+    ? null
+    : clampComposerResizeHeight(requestedResizeHeight, {
+      minHeight: COMPOSER_RESIZE_MIN_HEIGHT,
+      maxHeight: manualResizeMaxHeight,
+    })
+  const manualHeightActive = manualResizeHeight !== null && !isManuallyCollapsed
 
   useImperativeHandle(ref, () => ({
     getMarkdown: () => htmlToMarkdown(editor?.getHTML() ?? ''),
@@ -884,20 +917,30 @@ export const RichTextInput = forwardRef<RichTextInputHandle, RichTextInputProps>
     <div
       className={cn(
         // 保留 class 供 CSS 选择器（.rich-text-input .tiptap）和调用方 className 覆盖尺寸
-        'rich-text-input relative w-full overflow-y-auto scrollbar-thin',
+        'rich-text-input relative w-full scrollbar-thin',
+        manualHeightActive ? 'overflow-hidden' : 'overflow-y-auto',
         disabled && 'opacity-50 cursor-not-allowed',
         className
       )}
-      // 高度用内联 style：紧凑档由视口高度驱动，档位随时可变，不适合穷举成 class。
-      // 不给 max-height 加过渡：档位切换发生在窗口 resize 收敛点，叠加动画会把一次离散
-      // 重排拉长成连续 reflow，反过来推动滚动容器的 ResizeObserver。
+      data-manual-height={manualHeightActive ? 'true' : undefined}
+      data-profer-rich-text-input={resizable ? 'true' : undefined}
+      // 高度用内联 style：紧凑档由视口高度驱动；手动档由共享上边界手柄决定。
       style={{
-        maxHeight: `${composerMaxHeight}px`,
-        // 供 <style> 里的 .rich-text-input .ProseMirror 规则读取（每个实例各自生效）
-        '--composer-editor-min-height': `${composerMinHeight}px`,
+        height: manualHeightActive ? `${manualResizeHeight}px` : undefined,
+        maxHeight: manualHeightActive ? `${manualResizeHeight}px` : `${composerMaxHeight}px`,
+        // 手动模式固定至少三行；自动模式继续沿用现有紧凑档高度。
+        '--composer-editor-min-height': `${manualHeightActive ? COMPOSER_RESIZE_MIN_HEIGHT : composerMinHeight}px`,
       } as React.CSSProperties}
     >
-      <EditorContent editor={editor} className="w-full" />
+      {resizable && !isManuallyCollapsed && (
+        resizeHandleContainer
+          ? createPortal(<ComposerResizeControl maxHeight={manualResizeMaxHeight} />, resizeHandleContainer)
+          : <ComposerResizeControl maxHeight={manualResizeMaxHeight} />
+      )}
+      <EditorContent
+        editor={editor}
+        className={cn('rich-text-editor-content w-full', manualHeightActive && 'h-full min-h-0')}
+      />
       {/* 折叠/展开切换按钮 — sticky 悬浮在滚动区域内 */}
       {showCollapseToggle && (
         <Tooltip>
@@ -923,6 +966,17 @@ export const RichTextInput = forwardRef<RichTextInputHandle, RichTextInputProps>
         /* 编辑器最小高度由 CSS 变量驱动：紧凑档下矮窗口把输入框压矮（默认 101 → 60）。 */
         .rich-text-input .ProseMirror {
           min-height: var(--composer-editor-min-height, 101px);
+        }
+        .rich-text-input[data-manual-height="true"] .ProseMirror {
+          box-sizing: border-box;
+          min-height: 100%;
+          height: 100%;
+          overflow-y: auto;
+        }
+        .rich-text-input[data-manual-height="true"] .rich-text-editor-content {
+          min-height: 0;
+          height: 100%;
+          overflow: hidden;
         }
         .ProseMirror {
           outline: none;

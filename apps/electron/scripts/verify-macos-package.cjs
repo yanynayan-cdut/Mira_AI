@@ -23,19 +23,19 @@ function assertExists(filePath, description) {
 }
 
 function findAppBundle() {
-  const direct = path.join(outputDir, 'Profer.app')
+  const direct = path.join(outputDir, 'Mira.app')
   if (fs.existsSync(direct)) return direct
   if (!fs.existsSync(outputDir)) return null
   for (const entry of fs.readdirSync(outputDir, { withFileTypes: true })) {
     if (!entry.isDirectory()) continue
-    const candidate = path.join(outputDir, entry.name, 'Profer.app')
+    const candidate = path.join(outputDir, entry.name, 'Mira.app')
     if (fs.existsSync(candidate)) return candidate
   }
   return null
 }
 
 const appBundle = findAppBundle()
-if (!appBundle) throw new Error(`未找到 macOS Profer.app 解包产物: ${outputDir}`)
+if (!appBundle) throw new Error(`未找到 macOS Mira.app 解包产物: ${outputDir}`)
 const contents = path.join(appBundle, 'Contents')
 const resources = path.join(contents, 'Resources')
 const macOsDir = path.join(contents, 'MacOS')
@@ -44,13 +44,13 @@ const unpackedNodeModules = path.join(resources, 'app.asar.unpacked', 'node_modu
 const cliPath = path.join(resources, 'bin', 'profer')
 const claudePath = path.join(unpackedNodeModules, '@anthropic-ai', 'claude-agent-sdk-darwin-arm64', 'claude')
 
-assertExists(path.join(macOsDir, 'Profer'), '应用可执行文件')
+assertExists(path.join(macOsDir, 'Mira'), '应用可执行文件')
 assertExists(appArchive, 'app.asar')
 assertExists(unpackedNodeModules, 'app.asar.unpacked/node_modules')
-assertExists(cliPath, 'Profer CLI')
+assertExists(cliPath, 'Mira CLI')
 assertExists(claudePath, 'Claude Agent SDK darwin-arm64 CLI')
 
-for (const [binary, description] of [[cliPath, 'Profer CLI'], [claudePath, 'Claude CLI']]) {
+for (const [binary, description] of [[cliPath, 'Mira CLI'], [claudePath, 'Claude CLI']]) {
   try {
     fs.accessSync(binary, fs.constants.X_OK)
   } catch {
@@ -60,8 +60,8 @@ for (const [binary, description] of [[cliPath, 'Profer CLI'], [claudePath, 'Clau
 
 const nativeFiles = findUnpackedNativeFiles(unpackedNodeModules)
 if (nativeFiles.length === 0) throw new Error('app.asar.unpacked 中未找到 Pi native/WASM 文件')
-const appBinaryInfo = execFileSync('file', ['-b', path.join(macOsDir, 'Profer')], { encoding: 'utf8' }).trim()
-if (!/arm64|arm64e/i.test(appBinaryInfo)) throw new Error(`Profer.app 主二进制不是 arm64: ${appBinaryInfo}`)
+const appBinaryInfo = execFileSync('file', ['-b', path.join(macOsDir, 'Mira')], { encoding: 'utf8' }).trim()
+if (!/arm64|arm64e/i.test(appBinaryInfo)) throw new Error(`Mira.app 主二进制不是 arm64: ${appBinaryInfo}`)
 
 console.log(JSON.stringify({
   ok: true,

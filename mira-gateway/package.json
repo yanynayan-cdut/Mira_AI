@@ -1,0 +1,12 @@
+{
+  "name": "mira-gateway",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun run src/index.ts",
+    "start": "bun run src/index.ts",
+    "test": "bun test src/gateway.test.ts",
+    "typecheck": "bunx tsc --noEmit -p tsconfig.json"
+  }
+}

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * AboutSettings - 关于页面
  *
  * 显示应用版本号等基本信息，以及版本检测状态。
@@ -47,7 +47,7 @@ import {
 declare const __APP_VERSION__: string
 const APP_VERSION = __APP_VERSION__
 
-const GITHUB_RELEASES_URL = 'https://github.com/Yuan-lai-ru-ci/ProferAI/releases'
+const GITHUB_RELEASES_URL = 'https://github.com/yanynayan-cdut/Mira_AI/releases'
 
 /** 更新状态卡片 */
 function UpdateCard(): React.ReactElement | null {
@@ -508,8 +508,8 @@ export function AboutSettings(): React.ReactElement {
   return (
     <div className="space-y-8">
       <SettingsSection
-        title="关于 Profer"
-        description="集成通用 AI Agent 的下一代人工智能软件 — Profer"
+        title="关于 Mira"
+        description="集成通用 AI Agent 的下一代人工智能软件 — Mira"
       >
         <SettingsCard>
           <SettingsRow label="版本">
@@ -519,7 +519,7 @@ export function AboutSettings(): React.ReactElement {
               <button
                 type="button"
                 onClick={handleVersionClick}
-                aria-label={`Profer 版本 ${APP_VERSION}`}
+                aria-label={`Mira 版本 ${APP_VERSION}`}
                 className="select-none rounded-sm font-mono text-sm text-muted-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               >
                 {APP_VERSION}
@@ -577,7 +577,7 @@ function FeedbackSection(): React.ReactElement {
     try {
       const auth = await getAuth()
       if (!auth?.baseUrl) {
-        setErrorMsg('未连接到 Profer 服务端，请先在通用设置中登录团队账号。')
+        setErrorMsg('未连接到 Mira 服务端，请先在通用设置中登录团队账号。')
         setSubmitState('error')
         return
       }
@@ -700,7 +700,7 @@ function FeedbackSection(): React.ReactElement {
       <div className="flex items-start gap-2.5 text-xs text-muted-foreground bg-muted/30 rounded-lg p-3 mt-3">
         <MessageSquareText size={14} className="flex-shrink-0 mt-0.5" />
         <span>
-          你的意见将发送到 Profer 服务端。提交内容请勿包含敏感信息（如密码、密钥等）。
+          你的意见将发送到 Mira 服务端。提交内容请勿包含敏感信息（如密码、密钥等）。
         </span>
       </div>
     </SettingsSection>

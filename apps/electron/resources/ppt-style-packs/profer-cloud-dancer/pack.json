@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "profer-cloud-dancer",
-  "name": "Profer Cloud Dancer",
+  "name": "Mira Cloud Dancer",
   "description": "暖纸、云朵、月牙和轻盈动势组成的柔和编辑风格，适合需要亲和力与叙事换气的学生汇报。",
   "tokens": {
     "canvas": { "width": 13.333, "height": 7.5, "background": "#F0EFEC" },
@@ -88,6 +88,6 @@
   },
   "preview": {
     "asset": "preview.webp",
-    "alt": "Profer Cloud Dancer 风格缩略图"
+    "alt": "Mira Cloud Dancer 风格缩略图"
   }
 }

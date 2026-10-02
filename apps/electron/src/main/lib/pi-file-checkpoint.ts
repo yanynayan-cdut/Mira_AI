@@ -39,14 +39,14 @@ import {
 /**
  * Pi 文件检查点。
  *
- * Pi 运行时没有 Claude SDK 的 file-history-snapshot，Profer 只能在每轮开始前做一次基线快照，
+ * Pi 运行时没有 Claude SDK 的 file-history-snapshot，Mira 只能在每轮开始前做一次基线快照，
  * 用于 rewind/fork 时恢复文件。这里融合了两套成熟做法：
  *
  * 1. **引擎**：社区共识的 git 对象快照 —— 每个会话一个私有 bare 影子仓库（`--work-tree` 指向
  *    会话 cwd，因此工作区不必是 git 仓库、也绝不碰用户仓库），快照 = 显式路径 `add -f` →
  *    `write-tree` → `commit-tree` → 一个检查点 ref。只存增量对象，tree diff 直接给出
  *    「新增/修改/删除」清单，tree SHA 直接用于 dedup。删 ref 即可让 git 回收对象。
- * 2. **策略**：Profer 自己的确定性排除规则、占用/权限容错、`skipped`/`partial` 保护语义、
+ * 2. **策略**：Mira 自己的确定性排除规则、占用/权限容错、`skipped`/`partial` 保护语义、
  *    回收与磁盘预算。这些是 git 本身不提供的，也正是「回退不会误删」的保证来源。
  *
  * git 不可用（未安装/初始化失败/工作区含会改写内容的 .gitattributes）时**自动降级为全量复制**，

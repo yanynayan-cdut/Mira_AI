@@ -3,7 +3,7 @@
  * 替代 pkill（Windows 不支持）。
  *
  * Windows 上 electronmon 实际由 node.exe 承载；稳定开发模式下 Electron 由 bunx 直接启动。
- * 清理时必须先结束当前仓库的 supervisor / Electron 进程树，且不能按所有 node.exe / Profer.exe 做宽泛匹配。
+ * 清理时必须先结束当前仓库的 supervisor / Electron 进程树，且不能按所有 node.exe / Mira.exe 做宽泛匹配。
  *
  * 传入 --vite 时，额外清理占用 Vite 端口（5174）的残留进程。
  * 该清理仅应在 concurrently 拉起 dev:vite 之前跑一次（顶层 dev 脚本），
@@ -114,7 +114,7 @@ function killStaleVite(port: number): void {
 /**
  * 清理稳定开发模式直接启动的 Electron。
  * macOS/Linux 的 Electron 命令行包含仓库内的 Electron.app 路径；Windows 由 electron.exe 承载，
- * 但必须限定在当前仓库的命令行范围内，避免杀掉正式版 Profer。
+ * 但必须限定在当前仓库的命令行范围内，避免杀掉正式版 Mira。
  */
 function killStaleElectron(): void {
   if (isWin) {

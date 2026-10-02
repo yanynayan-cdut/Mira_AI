@@ -40,6 +40,7 @@ export function LoginDialog({ open, onOpenChange }: LoginDialogProps): React.Rea
   const [displayName, setDisplayName] = React.useState('')
   const [inviteCode, setInviteCode] = React.useState('')
   const [openRegistration, setOpenRegistration] = React.useState(false)
+  const [emailVerificationRequired, setEmailVerificationRequired] = React.useState(false)
   const [otpToken, setOtpToken] = React.useState('')
   const [otpCode, setOtpCode] = React.useState('')
   const [otpVerified, setOtpVerified] = React.useState(false)
@@ -51,7 +52,13 @@ export function LoginDialog({ open, onOpenChange }: LoginDialogProps): React.Rea
 
   React.useEffect(() => {
     if (mode !== 'register') return
-    void window.electronAPI.auth.getRegistrationOptions().then((options) => setOpenRegistration(options.openRegistration)).catch(() => setOpenRegistration(false))
+    void window.electronAPI.auth.getRegistrationOptions().then((options) => {
+      setOpenRegistration(options.openRegistration)
+      setEmailVerificationRequired(options.emailVerificationRequired)
+    }).catch(() => {
+      setOpenRegistration(false)
+      setEmailVerificationRequired(false)
+    })
   }, [mode])
 
   React.useEffect(() => {
@@ -95,8 +102,8 @@ export function LoginDialog({ open, onOpenChange }: LoginDialogProps): React.Rea
     e.preventDefault()
     if (!email || !password) return
     if (mode === 'register' && !displayName.trim()) return
-    if (mode === 'register' && !inviteCode.trim() && (!openRegistration || !otpVerified)) {
-      toast.error(openRegistration ? '请填写邀请码或完成邮箱验证' : '请输入邀请码')
+    if (mode === 'register' && !inviteCode.trim() && (!openRegistration || (emailVerificationRequired && !otpVerified))) {
+      toast.error(openRegistration && emailVerificationRequired ? '请填写邀请码或完成邮箱验证' : '请输入邀请码')
       return
     }
 
@@ -114,7 +121,7 @@ export function LoginDialog({ open, onOpenChange }: LoginDialogProps): React.Rea
         })
         const msg = result.joinedWorkspace
           ? `注册成功，已加入「${result.joinedWorkspace}」`
-          : mode === 'login' ? `已登录: ${result.teamEmail}` : `注册成功：${result.teamEmail}，可前往「立即订阅」兑换套餐码`
+          : mode === 'login' ? `已登录: ${result.teamEmail}` : `注册成功：${result.teamEmail}，可前往「额度与用量」管理额度与订阅`
         toast.success(msg)
         const restoreWarn = result.channelRestore?.warning
         if (mode === 'login' && restoreWarn) {
@@ -174,7 +181,7 @@ export function LoginDialog({ open, onOpenChange }: LoginDialogProps): React.Rea
             <DialogDescription className="text-sm leading-relaxed">
               {mode === 'login'
                 ? '登录账户，使用服务端渠道和协作功能'
-                : openRegistration ? '验证邮箱后即可创建账户；购买套餐码后可在「立即订阅」兑换' : '创建账户，开始使用 Profer AI 助手'}
+                : openRegistration && emailVerificationRequired ? '验证邮箱后即可创建账户；可在「额度与用量」中管理额度与订阅' : '创建账户，开始使用 Mira AI 助手'}
             </DialogDescription>
           </DialogHeader>
 
@@ -246,19 +253,19 @@ export function LoginDialog({ open, onOpenChange }: LoginDialogProps): React.Rea
           {/* 邮箱 */}
           <div className="space-y-1.5">
             <Label htmlFor="email" className="text-xs font-medium flex items-center gap-1">
-              <Mail size={12} />邮箱
+              <Mail size={12} />邮箱或用户名
             </Label>
             <div className="flex gap-2">
-              <Input id="email" type="email" value={email} onChange={(e) => { setEmail(e.target.value); if (otpToken) resetOtp() }}
-                placeholder="you@example.com" className="h-9" required disabled={mode === 'register' && !!otpToken} />
-              {mode === 'register' && openRegistration && (
+              <Input id="email" type="text" value={email} onChange={(e) => { setEmail(e.target.value); if (otpToken) resetOtp() }}
+                placeholder={mode === 'login' ? 'you@example.com 或用户名' : 'you@example.com'} className="h-9" required disabled={mode === 'register' && !!otpToken} />
+              {mode === 'register' && openRegistration && emailVerificationRequired && (
                 otpToken ? <Button type="button" variant="outline" size="sm" className="h-9 shrink-0" onClick={resetOtp}>修改邮箱</Button>
                   : <Button type="button" variant="outline" size="sm" className="h-9 shrink-0" onClick={handleSendOtp} disabled={otpBusy}><Send size={14} className="mr-1" />发送验证码</Button>
               )}
             </div>
           </div>
 
-          {mode === 'register' && openRegistration && otpToken && (
+          {mode === 'register' && openRegistration && emailVerificationRequired && otpToken && (
             <div className="space-y-1.5 rounded-lg border border-border bg-muted/20 p-3">
               <div className="flex items-center justify-between gap-2">
                 <Label htmlFor="email-otp" className="text-xs font-medium">邮箱验证码</Label>
@@ -282,7 +289,7 @@ export function LoginDialog({ open, onOpenChange }: LoginDialogProps): React.Rea
               </Label>
               <Input id="invite-code" value={inviteCode}
                 onChange={(e) => setInviteCode(e.target.value)}
-                placeholder={openRegistration ? '可选：填写邀请码可获得邀请归因；否则完成邮箱验证' : '输入邀请码（如 UA1B2C3）'}
+                placeholder={openRegistration && emailVerificationRequired ? '可选：填写邀请码可获得邀请归因；否则完成邮箱验证' : '输入邀请码（如 UA1B2C3）'}
                 className="h-9 font-mono text-xs" required={!openRegistration} />
             </div>
           )}

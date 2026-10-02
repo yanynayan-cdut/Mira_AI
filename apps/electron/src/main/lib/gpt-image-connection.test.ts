@@ -48,7 +48,7 @@ describe('GPT Image 连接测试', () => {
 
     await expect(testGptImageConnection()).resolves.toEqual({
       success: true,
-      message: '连接成功，Profer 官方生图服务可用',
+      message: '连接成功，Mira 官方生图服务可用',
     })
     expect(calls).toHaveLength(1)
     expect(calls[0]!.url).toBe('https://team.example/v1/account/channels/health')
@@ -63,7 +63,7 @@ describe('GPT Image 连接测试', () => {
 
     await expect(testGptImageConnection()).resolves.toEqual({
       success: false,
-      message: '请先登录 Profer 团队账号',
+      message: '请先登录 Mira 团队账号',
     })
   })
 
@@ -72,7 +72,7 @@ describe('GPT Image 连接测试', () => {
 
     await expect(testGptImageConnection()).resolves.toEqual({
       success: false,
-      message: 'Profer 团队账号登录已失效，请重新登录',
+      message: 'Mira 团队账号登录已失效，请重新登录',
     })
   })
 

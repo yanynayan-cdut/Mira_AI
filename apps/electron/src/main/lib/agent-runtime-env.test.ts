@@ -5,14 +5,14 @@ import { buildAgentRuntimeEnv, mergeRuntimeEnv, resolvePosixShellPath } from './
 describe('Agent runtime CLI PATH', () => {
   test('Given packaged CLI on Windows When building Agent env Then only CLI directory is prepended', () => {
     const result = buildAgentRuntimeEnv({
-      bundledCliPath: 'C:\\Program Files\\Profer\\resources\\bin\\profer.exe',
+      bundledCliPath: 'C:\\Program Files\\Mira\\resources\\bin\\profer.exe',
       platform: 'win32',
       pathDelimiter: ';',
       processEnv: { Path: 'C:\\Windows\\System32;C:\\Program Files\\Git\\bin' },
     })
 
     expect(result.env.Path).toBe([
-      'C:\\Program Files\\Profer\\resources\\bin',
+      'C:\\Program Files\\Mira\\resources\\bin',
       'C:\\Windows\\System32',
       'C:\\Program Files\\Git\\bin',
     ].join(';'))
@@ -20,7 +20,7 @@ describe('Agent runtime CLI PATH', () => {
 
   test('Given detected Bun outside the inherited PATH When building Pi env Then Bun directory is prepended and Bash stays explicit', () => {
     const result = buildAgentRuntimeEnv({
-      bundledCliPath: '/Applications/Profer.app/Contents/Resources/bin/profer',
+      bundledCliPath: '/Applications/Mira.app/Contents/Resources/bin/profer',
       platform: 'darwin',
       pathDelimiter: ':',
       processEnv: { PATH: '/usr/bin:/bin', SHELL: '/bin/zsh' },
@@ -35,7 +35,7 @@ describe('Agent runtime CLI PATH', () => {
 
     expect(result.env.PATH).toBe([
       '/Users/mac/.bun/bin',
-      '/Applications/Profer.app/Contents/Resources/bin',
+      '/Applications/Mira.app/Contents/Resources/bin',
       '/usr/bin',
       '/bin',
     ].join(':'))

@@ -38,7 +38,7 @@ export function adjustWindowZoom(win: BrowserWindow, delta: number): void {
   setWindowZoomLevel(win, Math.max(-9, Math.min(9, win.webContents.getZoomLevel() + delta)))
 }
 
-/** 将主界面恢复到 Profer 设定的默认缩放，并同步 macOS 原生红绿灯。 */
+/** 将主界面恢复到 Mira 设定的默认缩放，并同步 macOS 原生红绿灯。 */
 export function resetWindowZoom(win: BrowserWindow): void {
   if (win.isDestroyed()) return
   win.webContents.setZoomFactor(DEFAULT_MAIN_WINDOW_ZOOM_FACTOR)

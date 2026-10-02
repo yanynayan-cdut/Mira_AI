@@ -5,6 +5,7 @@
  */
 
 import { atom } from 'jotai'
+import { atomWithStorage } from 'jotai/utils'
 import {
   DEFAULT_COMPACT_MAX_HEIGHT,
   DEFAULT_COMPACT_MIN_HEIGHT,
@@ -41,6 +42,15 @@ export const composerCompactModeAtom = atom<ComposerCompactModeSettings>({
   minHeight: DEFAULT_COMPACT_MIN_HEIGHT,
   maxHeight: DEFAULT_COMPACT_MAX_HEIGHT,
 })
+
+/** 用户通过对话栏上边界手动调整的编辑器高度；null 表示继续使用自动高度。 */
+export const composerResizeHeightAtom = atomWithStorage<number | null>(
+  'profer-composer-resize-height',
+  null,
+)
+
+/** 拖动过程中的共享预览高度，避免分栏中的多个输入栏不同步。 */
+export const composerResizePreviewHeightAtom = atom<number | null>(null)
 
 // ===== 初始化 =====
 

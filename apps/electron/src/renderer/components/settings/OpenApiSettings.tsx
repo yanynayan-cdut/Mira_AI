@@ -1,7 +1,7 @@
 /**
  * OpenApiSettings — 开放 API 页
  *
- * 用户自建 pk_ API Key，通过 HTTP 以 OpenAI/Anthropic 兼容格式访问 Profer API。
+ * 用户自建 pk_ API Key，通过 HTTP 以 OpenAI/Anthropic 兼容格式访问 Mira API。
  *
  * 铁律：明文 key 只在创建时展示一次；列表只显示脱敏前缀。
  * curl 示例域名从 auth.baseUrl 动态取，不写死。
@@ -149,14 +149,14 @@ export function OpenApiSettings(): React.ReactElement {
   const displayBase = baseUrl || 'https://<你的服务端地址>'
   const curlExample = `curl ${displayBase}/v1/proxy/v1/chat/completions \\
   -H "Content-Type: application/json" \\
-  -H "Authorization: $MIRA_AUTHORIZATION" \\
+  -H "$MIRA_AUTHORIZATION" \\
   -d '{ "model": "claude-sonnet-5", ... }'`
 
   const fmtTime = (t: number | null): string => t ? new Date(t).toLocaleString('zh-CN') : '-'
   return (
     <div className="space-y-8">
       {/* API 使用说明 */}
-      <SettingsSection title="API" description="管理您的 API 密钥，用于访问 Profer API">
+      <SettingsSection title="API" description="管理您的 API 密钥，用于访问 Mira API">
         <div className="rounded-xl border border-border bg-muted/20 overflow-hidden">
           <button
             onClick={() => setDocOpen((v) => !v)}
@@ -164,7 +164,7 @@ export function OpenApiSettings(): React.ReactElement {
           >
             <div className="text-left">
               <div className="text-sm font-medium">API 使用说明</div>
-              <div className="text-xs text-muted-foreground mt-0.5">使用 API Key 可以通过 HTTP 请求访问 Profer API，兼容 OpenAI/Anthropic 格式。</div>
+              <div className="text-xs text-muted-foreground mt-0.5">使用 API Key 可以通过 HTTP 请求访问 Mira API，兼容 OpenAI/Anthropic 格式。</div>
             </div>
             <div className="flex items-center gap-1 text-xs text-muted-foreground shrink-0">
               {docOpen ? '收起' : '展开'}

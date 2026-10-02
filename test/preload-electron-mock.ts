@@ -86,7 +86,7 @@ mock.module('electron', () => ({
     getPath: () => '',
     isPackaged: false,
     getVersion: () => '43.0.0',
-    getName: () => 'Profer',
+    getName: () => 'Mira',
     whenReady: async () => undefined,
     on: () => undefined,
     once: () => undefined,

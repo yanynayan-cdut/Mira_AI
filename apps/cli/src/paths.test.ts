@@ -14,13 +14,13 @@ afterEach(() => {
 })
 
 describe('resolveConfigDir', () => {
-  test('defaults to the Profer production directory', () => {
+  test('defaults to the Mira production directory', () => {
     delete process.env.PROFER_DEV
     delete process.env.PROMA_DEV
     expect(resolveConfigDir()).toBe(join(homedir(), '.profer'))
   })
 
-  test('uses the Profer development directory for --dev and either development environment variable', () => {
+  test('uses the Mira development directory for --dev and either development environment variable', () => {
     expect(resolveConfigDir({ dev: true })).toBe(join(homedir(), '.profer-dev'))
     process.env.PROFER_DEV = '1'
     expect(resolveConfigDir()).toBe(join(homedir(), '.profer-dev'))

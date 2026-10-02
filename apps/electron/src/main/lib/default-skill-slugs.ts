@@ -1,5 +1,5 @@
 /**
- * Profer 自带默认 Skill 的历史 slug 兼容。
+ * Mira 自带默认 Skill 的历史 slug 兼容。
  *
  * 仅维护应用明确改名过的默认 Skill；绝不对用户自建 Skill 做模糊替换。
  */

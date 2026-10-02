@@ -1,7 +1,7 @@
 /**
  * 会话存储路径解析（electron-free）。
  *
- * Profer 主进程用 config-paths.ts 里的 getConfigDir()，其中通过 require('electron')
+ * Mira 主进程用 config-paths.ts 里的 getConfigDir()，其中通过 require('electron')
  * 判断 isPackaged 来在 .profer / .profer-dev 间切换——CLI 没有 electron 运行时，
  * 因此这里独立实现一份等价逻辑：
  *   - 默认 ~/.profer

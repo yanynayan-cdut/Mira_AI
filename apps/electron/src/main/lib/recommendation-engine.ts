@@ -38,7 +38,7 @@ export function refreshAutomationRecommendations(automations: Automation[], now 
         output.push(upsertRecommendation({
           kind: 'maintenance',
           title: `检查定时任务「${automation.name}」`,
-          reason: `该任务最近连续 ${FAILURE_THRESHOLD} 次运行失败，建议检查任务范围、权限、模型或外部数据源。Profer 不会自动修改任务。`,
+          reason: `该任务最近连续 ${FAILURE_THRESHOLD} 次运行失败，建议检查任务范围、权限、模型或外部数据源。Mira 不会自动修改任务。`,
           confidence: 0.9,
           safetyLevel: 'read_only',
           duplicateKey: failureKey,

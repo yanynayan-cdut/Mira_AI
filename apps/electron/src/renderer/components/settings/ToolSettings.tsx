@@ -375,7 +375,7 @@ function GptImageSettings(): React.ReactElement {
       await saveCredentials(nextMode)
       toast.success(
         nextMode === 'official'
-          ? '已切换为 Profer 官方生图'
+          ? '已切换为 Mira 官方生图'
           : '已切换为自带 API Key',
       )
     } catch (error) {
@@ -462,7 +462,7 @@ function GptImageSettings(): React.ReactElement {
               onClick={() => void handleModeChange('official')}
               className={`rounded-lg border p-3 text-left transition-colors ${mode === 'official' ? 'border-primary bg-primary/5' : 'border-border hover:bg-muted/50'}`}
             >
-              <p className="text-sm font-medium">Profer 官方生图（推荐）</p>
+              <p className="text-sm font-medium">Mira 官方生图（推荐）</p>
               <p className="mt-1 text-xs text-muted-foreground">
                 固定 GPT Image 2；每次成功生成或编辑 1 张扣 5 积分，失败不扣费。
               </p>
@@ -474,18 +474,18 @@ function GptImageSettings(): React.ReactElement {
             >
               <p className="text-sm font-medium">自带 API Key</p>
               <p className="mt-1 text-xs text-muted-foreground">
-                使用下方选择的图片 provider；不会扣 Profer 积分。
+                使用下方选择的图片 provider；不会扣 Mira 积分。
               </p>
             </button>
           </div>
           {mode === 'official' ? (
             <div className="rounded-lg bg-muted/50 p-3 space-y-1 text-sm text-muted-foreground">
               <p>
-                官方服务要求登录 Profer 团队账号；文生图和参考图编辑均固定输出 1
+                官方服务要求登录 Mira 团队账号；文生图和参考图编辑均固定输出 1
                 张图片。
               </p>
               <p className="text-xs">
-                模型、价格和上游服务由 Profer 管理，客户端不会保存官方上游密钥。
+                模型、价格和上游服务由 Mira 管理，客户端不会保存官方上游密钥。
               </p>
             </div>
           ) : (

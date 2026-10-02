@@ -14,7 +14,6 @@
  * - appearance: 外观设置
  * - proxy: 代理设置
  * - devices: 登录设备
- * - subscription: 立即订阅
  * - credits: 额度与用量
  * - openapi: 开放 API
  * - data-management: 数据管理（备份+磁盘）
@@ -26,7 +25,7 @@
 
 import { atom } from 'jotai'
 
-export type SettingsTab = 'general' | 'usage' | 'account' | 'channels' | 'appearance' | 'about' | 'agent' | 'prompts' | 'tools' | 'bots' | 'tutorial' | 'shortcuts' | 'team' | 'credits' | 'subscription' | 'openapi' | 'data-management' | 'developer' | 'plugins' | 'proxy' | 'devices'
+export type SettingsTab = 'general' | 'usage' | 'account' | 'channels' | 'appearance' | 'about' | 'agent' | 'prompts' | 'tools' | 'bots' | 'tutorial' | 'shortcuts' | 'team' | 'credits' | 'openapi' | 'data-management' | 'developer' | 'plugins' | 'proxy' | 'devices'
 
 /** 当前设置标签页（不持久化，每次打开设置默认显示通用偏好） */
 export const settingsTabAtom = atom<SettingsTab>('general')

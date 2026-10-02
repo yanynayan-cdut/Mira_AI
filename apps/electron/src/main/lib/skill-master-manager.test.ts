@@ -164,7 +164,7 @@ describe('skill-master-manager', () => {
     const roots = makeTempRoots()
     writeFile(
       join(roots.master, 'profer-coach', 'SKILL.md'),
-      '---\nname: profer-coach\nversion: 1.0.3\n---\n\n# Profer Coach\n',
+      '---\nname: profer-coach\nversion: 1.0.3\n---\n\n# Mira Coach\n',
     )
     __setSkillMasterRoots(roots.master, roots.workspaces)
 

@@ -40,7 +40,7 @@ export function createTextContextMenuTemplate(
 
 let textContextMenusInstalled = false
 
-/** 为 Profer 创建的所有 WebContents 安装通用复制/粘贴右键菜单。 */
+/** 为 Mira 创建的所有 WebContents 安装通用复制/粘贴右键菜单。 */
 export function installTextContextMenus(): void {
   if (textContextMenusInstalled) return
   textContextMenusInstalled = true
@@ -78,17 +78,17 @@ export function createApplicationMenu(): Menu {
     ...(isMac
       ? [
           {
-            label: 'Profer',
+            label: 'Mira',
             submenu: [
-              { role: 'about' as const, label: '关于 Profer' },
+              { role: 'about' as const, label: '关于 Mira' },
               { type: 'separator' as const },
               { role: 'services' as const, label: '服务' },
               { type: 'separator' as const },
-              { role: 'hide' as const, label: '隐藏 Profer' },
+              { role: 'hide' as const, label: '隐藏 Mira' },
               { role: 'hideOthers' as const, label: '隐藏其他' },
               { role: 'unhide' as const, label: '显示全部' },
               { type: 'separator' as const },
-              { role: 'quit' as const, label: '退出 Profer' },
+              { role: 'quit' as const, label: '退出 Mira' },
             ],
           },
         ]
@@ -147,7 +147,7 @@ export function createApplicationMenu(): Menu {
           click: () => {
             const win = BrowserWindow.getFocusedWindow()
             if (!win) return
-            // Profer 的默认缩放是 110%，不沿用 Chromium resetZoom 的 100%。
+            // Mira 的默认缩放是 110%，不沿用 Chromium resetZoom 的 100%。
             if (process.platform === 'darwin') resetWindowZoom(win)
             else win.webContents.setZoomFactor(DEFAULT_MAIN_WINDOW_ZOOM_FACTOR)
           },

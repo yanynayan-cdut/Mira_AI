@@ -37,6 +37,6 @@ function findAppBundle() {
 }
 
 const appBundle = findAppBundle()
-if (!appBundle) throw new Error(`未找到 macOS Profer.app 解包产物: ${outputDir}`)
+if (!appBundle) throw new Error(`未找到 macOS Mira.app 解包产物: ${outputDir}`)
 
 console.log(JSON.stringify(assertMacSignatureContract(appBundle), null, 2))

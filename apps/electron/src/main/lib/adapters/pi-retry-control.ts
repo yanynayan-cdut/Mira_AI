@@ -7,7 +7,7 @@ export type PiRetryUpdate =
   | { status: 'failed'; attemptData: RetryAttempt }
 
 /**
- * Pi native retry 事件（对齐 @earendil-works/pi-coding-agent@0.82.1 + Profer 引入的
+ * Pi native retry 事件（对齐 @earendil-works/pi-coding-agent@0.82.1 + Mira 引入的
  * `pi-coding-agent@0.82.1.patch` 扩展）。
  *
  * SDK 0.82.1（含 patch）的 retry 生命周期比 0.80.9 多了一个阶段：
@@ -16,7 +16,7 @@ export type PiRetryUpdate =
  *   auto_retry_end            —— 收尾，outcome 区分 succeeded / exhausted / cancelled
  *
  * 除 outcome 外的字段均来自 SDK 的 _getRetryEventDetails。total* 系列为 backoff total 预算
- * 语义（跨多个模型回合的累计），对 Profer 的尝试计数器无直接影响，故保持可选兼容。
+ * 语义（跨多个模型回合的累计），对 Mira 的尝试计数器无直接影响，故保持可选兼容。
  */
 type PiNativeRetryDetails = {
   attempt: number
@@ -63,7 +63,7 @@ export function createPiRetryTerminalGate<T>(): {
 }
 
 /**
- * 将 Pi native retry 生命周期转换为 Profer UI 已识别的 retry 事件。
+ * 将 Pi native retry 生命周期转换为 Mira UI 已识别的 retry 事件。
  *
  * 映射关系（对齐 SDK 0.82.1 三个阶段的语义）：
  *   auto_retry_start          -> starting（backoff 开始）

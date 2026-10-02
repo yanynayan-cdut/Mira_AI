@@ -130,7 +130,7 @@ Shadow options:
 
 To cast a shadow upward (e.g. on a footer bar), use `angle: 270` with a positive offset — do **not** use a negative offset.
 
-**Note**: Gradient fills are not natively supported by PptxGenJS. Use Profer 自带的渐变生成器 `scripts/gradient.js` 生成渐变 PNG，再作为背景/色块图片插入：
+**Note**: Gradient fills are not natively supported by PptxGenJS. Use Mira 自带的渐变生成器 `scripts/gradient.js` 生成渐变 PNG，再作为背景/色块图片插入：
 
 ```javascript
 const { linearGradient, gradientToBase64 } = require('./scripts/gradient');

@@ -1,7 +1,7 @@
 /**
- * ProferLogoSettings - Profer 品牌 Logo 下载
+ * ProferLogoSettings - Mira 品牌 Logo 下载
  *
- * 展示多个 Profer Logo 颜色变体网格，用户可下载用作机器人头像。
+ * 展示多个 Mira Logo 颜色变体网格，用户可下载用作机器人头像。
  */
 
 import * as React from 'react'
@@ -13,6 +13,7 @@ import { SettingsCard } from './primitives/SettingsCard'
 import { Button } from '@/components/ui/button'
 
 // ===== Logo 资源导入 =====
+import miraLogo from '@/assets/mira-icon.png'
 
 // 基础色系
 import proferBlackLogo from '@/assets/bots/profer-logos/profer-black.png'
@@ -48,6 +49,14 @@ interface LogoVariant {
 // ===== Logo 变体定义 =====
 
 const LOGO_VARIANTS: readonly LogoVariant[] = [
+  {
+    id: 'default',
+    name: 'Mira',
+    description: '当前应用图标，透明背景',
+    src: miraLogo,
+    resourcePath: 'icon.png',
+    previewBg: 'bg-muted/30',
+  },
   // 基础色系
   {
     id: 'black',
@@ -172,7 +181,7 @@ function LogoCard({ logo }: { logo: LogoVariant }): React.ReactElement {
     try {
       const saved = await window.electronAPI.saveResourceFileAs(
         logo.resourcePath,
-        `profer-${logo.id}.png`,
+        `mira-${logo.id}.png`,
       )
       if (saved) {
         toast.success(`${logo.name} 已保存`)
@@ -219,7 +228,7 @@ export function ProferLogoSettings(): React.ReactElement {
     <>
       <SettingsSection
         title="品牌 Logo"
-        description="下载 Profer Logo 用作机器人头像，让用户一眼认出你的 AI 助手"
+        description="下载 Mira Logo 用作机器人头像，让用户一眼认出你的 AI 助手"
       >
         <div className="grid grid-cols-3 gap-4">
           {LOGO_VARIANTS.map((logo) => (

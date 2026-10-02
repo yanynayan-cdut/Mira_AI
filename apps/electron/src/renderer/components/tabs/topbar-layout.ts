@@ -76,3 +76,47 @@ export function resolveTopBarGeometry({
 export function resolveTopBarDragRightInset(actionsWidth: number): number {
   return Math.max(0, actionsWidth) + TOPBAR_ACTIONS_EDGE_GAP
 }
+
+export function resolveNaturalTabLeft(input: {
+  offsetParentLeft: number
+  offsetLeft: number
+  offsetParentScrollLeft: number
+  tabScrollLeft: number
+}): number {
+  return (
+    input.offsetParentLeft +
+    input.offsetLeft -
+    input.offsetParentScrollLeft -
+    input.tabScrollLeft
+  )
+}
+
+export interface TopBarTabDragGapInput {
+  contentLeft: number
+  viewportLeft: number
+  viewportRight: number
+  lastTabRight: number
+  actionsLeft: number
+}
+
+export interface TopBarTabDragGap {
+  left: number
+  width: number
+}
+
+/** Resolve the blank title-bar region after the last visible tab and before the actions capsule. */
+export function resolveTopBarTabDragGap({
+  contentLeft,
+  viewportLeft,
+  viewportRight,
+  lastTabRight,
+  actionsLeft,
+}: TopBarTabDragGapInput): TopBarTabDragGap {
+  const gapStart = Math.max(viewportLeft, lastTabRight) + 1
+  const gapEnd = Math.min(viewportRight, actionsLeft) - 1
+  const left = Math.min(viewportRight, gapStart)
+  return {
+    left: Math.max(0, left - contentLeft),
+    width: Math.max(0, gapEnd - left),
+  }
+}

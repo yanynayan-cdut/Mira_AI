@@ -17,7 +17,7 @@ describe('Claude 适配器 Windows 清理命令', () => {
 })
 
 describe('Claude 适配器 SDK 设置隔离', () => {
-  test('Given Profer Agent SDK 查询 When 配置设置来源 Then 不加载用户级 Claude 设置', () => {
+  test('Given Mira Agent SDK 查询 When 配置设置来源 Then 不加载用户级 Claude 设置', () => {
     expect(SDK_SETTING_SOURCES).toEqual(['project'])
     expect(SDK_SETTING_SOURCES).not.toContain('user')
   })

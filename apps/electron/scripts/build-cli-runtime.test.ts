@@ -15,8 +15,8 @@ describe('Windows CLI 编译调用', () => {
     const temporaryBunPath = createTemporaryBunPath('C:\\Temp', 123, 456)
     const invocation = createBuildCliInvocation({
       bunExecutablePath: 'C:\\Users\\yuan\\bin\\bun.exe',
-      outFile: 'D:\\profer\\Profer-main\\apps\\electron\\resources\\bin\\profer.exe',
-      cliEntry: 'D:\\profer\\Profer-main\\apps\\cli\\src\\index.ts',
+      outFile: 'D:\\profer\\Mira-main\\apps\\electron\\resources\\bin\\profer.exe',
+      cliEntry: 'D:\\profer\\Mira-main\\apps\\cli\\src\\index.ts',
       compileExecutablePath: temporaryBunPath,
     })
 
@@ -26,8 +26,8 @@ describe('Windows CLI 编译调用', () => {
       'build',
       '--compile',
       '--compile-executable-path', temporaryBunPath,
-      '--outfile', 'D:\\profer\\Profer-main\\apps\\electron\\resources\\bin\\profer.exe',
-      'D:\\profer\\Profer-main\\apps\\cli\\src\\index.ts',
+      '--outfile', 'D:\\profer\\Mira-main\\apps\\electron\\resources\\bin\\profer.exe',
+      'D:\\profer\\Mira-main\\apps\\cli\\src\\index.ts',
     ])
   })
 

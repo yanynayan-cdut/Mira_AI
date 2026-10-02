@@ -128,7 +128,7 @@ export interface ClaudeAgentQueryOptions extends AgentQueryInput {
   env: Record<string, string | undefined>
   /** 最大轮次（undefined = SDK 默认） */
   maxTurns?: number
-  /** SDK 权限模式（Profer 当前三种模式直接映射 SDK 原生模式） */
+  /** SDK 权限模式（Mira 当前三种模式直接映射 SDK 原生模式） */
   sdkPermissionMode: ProferPermissionMode
   /** 是否跳过权限检查 */
   allowDangerouslySkipPermissions: boolean
@@ -203,7 +203,7 @@ const FRIENDLY_ERROR_MESSAGES: Array<{ pattern: RegExp; message: string }> = [
   },
   {
     pattern: /not logged in|please run \/login/i,
-    message: '请检查是否选择了正确的 Profer 供应渠道和模型',
+    message: '请检查是否选择了正确的 Mira 供应渠道和模型',
   },
   {
     pattern: /validation error/i,
@@ -500,7 +500,7 @@ export function mapSDKErrorToTypedError(
     }
   }
 
-  // 额度不足：Profer 自有 402 或 New API 上游 403「预扣费额度失败」（含美元文案）。
+  // 额度不足：Mira 自有 402 或 New API 上游 403「预扣费额度失败」（含美元文案）。
   // 必须在 errorMap['authentication_failed'] 之前拦截——New API 的额度 403 文本含
   // "Failed to authenticate" 会被误判成 invalid_api_key 认证失败。
   const creditInfo = detectInsufficientCredits(errorText, httpStatus ?? undefined)
@@ -696,7 +696,7 @@ const FORCE_KILL_GRACE_MS = 10_000
  */
 /**
  * SDK 只读取当前 Agent cwd 的项目级设置，不读取用户全局 ~/.claude/settings.json。
- * 用户级设置可能包含独立 Claude Code 的 Base URL、认证或模型覆盖，不能污染 Profer 渠道。
+ * 用户级设置可能包含独立 Claude Code 的 Base URL、认证或模型覆盖，不能污染 Mira 渠道。
  */
 export const SDK_SETTING_SOURCES: import('@anthropic-ai/claude-agent-sdk').SettingSource[] = ['project']
 

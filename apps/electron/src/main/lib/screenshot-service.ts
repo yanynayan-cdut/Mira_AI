@@ -348,7 +348,7 @@ export function captureScreenshot(input: ScreenshotInput): Promise<ScreenshotRes
 
       const { canceled, filePath } = await dialog.showSaveDialog({
         title: '保存截图',
-        defaultPath: join(homedir(), 'Desktop', `profer-${ts}.png`),
+        defaultPath: join(homedir(), 'Desktop', `Mira-${ts}.png`),
         filters: [{ name: 'PNG 图片', extensions: ['png'] }],
       })
 

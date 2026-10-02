@@ -98,7 +98,7 @@ export async function startAgentFabricService(): Promise<string | null> {
   const selfNode: AgentNode = {
     agentId: config.agentId,
     instanceId,
-    displayName: config.agentId === 'profer-dev' ? 'Profer 开发版' : 'Profer 稳定版',
+    displayName: config.agentId === 'profer-dev' ? 'Mira 开发版' : 'Mira 稳定版',
     version: getAppVersion(),
     status: AgentNodeStatus.ONLINE,
     endpoint: { transport: 'local-http', address: `${config.host}:${config.port}` },

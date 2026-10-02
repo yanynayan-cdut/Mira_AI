@@ -4,7 +4,7 @@
  * 首次启动时显示的全屏欢迎界面。
  *
  * 流程：
- *  Step 0：开屏水波纹动画（Profer 从水面具现，自动进入下一步）
+ *  Step 0：开屏水波纹动画（Mira 从水面具现，自动进入下一步）
  *  Step 1：欢迎
  *  Step 2：核心功能导览
  *  Step 3：Windows 环境检测（仅 Windows，其他平台自动跳过）
@@ -107,19 +107,19 @@ export function OnboardingView({
       {step === 'welcome' && (
         <>
           <div className="mb-12 text-center">
-            <h1 className="text-4xl font-bold mb-4">欢迎使用 Profer</h1>
+            <h1 className="text-4xl font-bold mb-4">欢迎使用 Mira</h1>
             <p className="text-lg text-muted-foreground">
               下一代桌面 AI 软件，让通用 Agent 触手可及
             </p>
             <p className="text-sm text-muted-foreground/60 mt-2">
-              基于开源项目 Proma 深度改造
+              专注于本地数据与多种 Agent 工作流
             </p>
           </div>
 
           <div className="w-full max-w-2xl mt-8 flex flex-col items-center gap-2">
             <Button className="w-full h-12 text-base" onClick={handleNextFromWelcome}>
               <>
-                了解 Profer 能做什么
+                了解 Mira 能做什么
                 <ChevronRight className="ml-1 h-4 w-4" />
               </>
             </Button>
@@ -143,7 +143,7 @@ export function OnboardingView({
           <div className="mb-6 text-center">
             <h2 className="text-2xl font-semibold mb-2">先检查一下环境</h2>
             <p className="text-sm text-muted-foreground">
-              Profer 在 Windows 上需要 Git Bash 或 WSL 才能执行命令
+              Mira 在 Windows 上需要 Git Bash 或 WSL 才能执行命令
             </p>
           </div>
 
@@ -178,7 +178,7 @@ export function OnboardingView({
           <div className="mb-12 text-center">
             <h2 className="text-4xl font-bold mb-4">导入已有数据</h2>
             <p className="text-lg text-muted-foreground">
-              自己或身边的人已经在用 Profer？直接导入现有配置
+              自己或身边的人已经在用 Mira？直接导入现有配置
             </p>
           </div>
 
@@ -224,7 +224,7 @@ export function OnboardingView({
           <div className="w-full max-w-2xl mt-8 flex flex-col items-center gap-2">
             <Button className="w-full h-12 text-base" onClick={() => handleFinish()}>
               <>
-                开始使用 Profer
+                开始使用 Mira
                 <ChevronRight className="ml-1 h-4 w-4" />
               </>
             </Button>

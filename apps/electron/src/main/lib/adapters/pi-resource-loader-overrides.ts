@@ -6,13 +6,13 @@ interface AgentsFilesResult {
 
 const LEGACY_AGENT_CONTEXT_FILE_NAMES = new Set(['CLAUDE.md', 'CLAUDE.MD'])
 
-/** Profer 已验证的项目指令文件（显式路径 + 内容，禁止 Pi 磁盘自动发现）。 */
+/** Mira 已验证的项目指令文件（显式路径 + 内容，禁止 Pi 磁盘自动发现）。 */
 export interface ProferProjectInstructionFile {
   path: string
   content: string
 }
 
-/** Profer-managed Pi 模式显式关闭 Pi 的 ambient 本地资源加载。 */
+/** Mira-managed Pi 模式显式关闭 Pi 的 ambient 本地资源加载。 */
 export function createProferManagedResourceLoaderOptions() {
   return {
     noContextFiles: true,
@@ -24,7 +24,7 @@ export function createProferManagedResourceLoaderOptions() {
 }
 
 /**
- * Pi 仍负责最终的 <project_context> 格式化；Profer 仅在验证显式工作区路径与
+ * Pi 仍负责最终的 <project_context> 格式化；Mira 仅在验证显式工作区路径与
  * 用户授权项目路径后提供此 override，不重新启用 ambient 上下文文件发现。
  */
 export function createProferProjectInstructionFilesOverride(files: ProferProjectInstructionFile[]) {

@@ -96,8 +96,8 @@ import MiniMaxLogo from '@/assets/models/minimax.png'
 // Xiaomi / MiMo
 import XiaomiLogo from '@/assets/models/xiaomi.png'
 
-// Profer
-import ProferLogo from '@/assets/models/profer.png'
+// Mira
+import ProferLogo from '@/assets/mira-icon.png'
 
 // Cohere
 import CohereLogo from '@/assets/models/cohere.png'

@@ -1,15 +1,16 @@
 /**
  * SidebarBalanceBar — 侧栏底部积分条
  *
- * 仅在代管模式（commercialMode）且已加载到余额时显示。
- * 积分 = 美元余额 × 10，纯展示层换算。
+ * 已订阅账号优先显示订阅额度，否则显示账户余额。
+ * 积分只在显示层换算，底层余额和告警判断保持服务端原始值。
  * 随主题变化：正常态用 primary，低积分用琥珀色，耗尽用 destructive。
  * 点击进入「积分与用量」设置页。
  */
 import * as React from 'react'
 import { useAtomValue, useSetAtom } from 'jotai'
-import { Coins } from 'lucide-react'
+import { Coins, Crown } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { settingsOpenAtom, settingsTabAtom } from '@/atoms/settings-tab'
 import {
   creditsPointsAtom,
@@ -20,6 +21,9 @@ import {
   balancePackagePointsAtom,
   balanceReferralPointsAtom,
   balancePurchasedPointsAtom,
+  quotaToPoints,
+  subscriptionAtom,
+  subscriptionsAtom,
 } from '@/atoms/credits-atoms'
 import { useCreditsLoader } from '@/hooks/useCreditsLoader'
 
@@ -29,7 +33,32 @@ interface SidebarBalanceBarProps {
 
 /** 积分显示（保留 1 位小数） */
 function formatPoints(n: number): string {
-  return n.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 1 }) + ' 积分'
+  const displayValue = n * 0.1
+  return displayValue.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 1 }) + ' 积分'
+}
+
+function formatPointValue(n: number): string {
+  return (n * 0.1).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 1 })
+}
+
+function timestampToMs(value: number | undefined): number | null {
+  if (value === undefined || !Number.isFinite(value) || value <= 0) return null
+  return value >= 1_000_000_000_000 ? value : value * 1000
+}
+
+function formatDateTime(value: number | undefined): string {
+  const timestamp = timestampToMs(value)
+  return timestamp === null ? '长期有效' : new Date(timestamp).toLocaleString('zh-CN')
+}
+
+function formatRefreshCountdown(value: number | undefined): string | null {
+  const timestamp = timestampToMs(value)
+  if (timestamp === null || timestamp <= Date.now()) return null
+  const totalMinutes = Math.max(1, Math.ceil((timestamp - Date.now()) / 60_000))
+  const days = Math.floor(totalMinutes / 1440)
+  const hours = Math.floor(totalMinutes / 60) % 24
+  const minutes = totalMinutes % 60
+  return `${days}d ${hours}h ${minutes}min 后刷新`
 }
 
 export function SidebarBalanceBar({ collapsed = false }: SidebarBalanceBarProps): React.ReactElement | null {
@@ -43,16 +72,99 @@ export function SidebarBalanceBar({ collapsed = false }: SidebarBalanceBarProps)
   const pkgPts = useAtomValue(balancePackagePointsAtom)
   const refPts = useAtomValue(balanceReferralPointsAtom)
   const purPts = useAtomValue(balancePurchasedPointsAtom)
+  const subscription = useAtomValue(subscriptionAtom)
+  const subscriptions = useAtomValue(subscriptionsAtom)
   const setSettingsOpen = useSetAtom(settingsOpenAtom)
   const setSettingsTab = useSetAtom(settingsTabAtom)
-
-  // 未加载到余额（非代管 / 未登录 / 拉取失败）不显示
-  if (points === null) return null
 
   const openCredits = (): void => {
     setSettingsTab('credits')
     setSettingsOpen(true)
   }
+
+  const activeSubscription = subscriptions.find((item) => item.status === 'active')
+  const hasActiveSubscription = subscription?.hasSubscription === true
+    && (subscription.status === undefined || subscription.status === 'active')
+
+  if (hasActiveSubscription) {
+    const planName = subscription.plan || activeSubscription?.planTitle || '当前订阅'
+    const totalQuota = activeSubscription?.quotaTotal ?? 0
+    const remainingQuota = activeSubscription?.quotaRemaining ?? Math.max(0, totalQuota - (activeSubscription?.quotaUsed ?? 0))
+    const remainingPercent = totalQuota > 0
+      ? Math.min(100, Math.max(0, Math.round((remainingQuota / totalQuota) * 100)))
+      : 0
+    const expiresAt = subscription.expiresAt ?? activeSubscription?.end_time
+    const refreshLabel = formatRefreshCountdown(activeSubscription?.next_reset_time)
+    const subscriptionTooltip = [
+      refreshLabel,
+      `到期时间：${formatDateTime(expiresAt)}`,
+    ].filter(Boolean).join('\n')
+    const tooltipText = collapsed
+      ? `${planName} · ${formatPointValue(quotaToPoints(remainingQuota))} / ${formatPointValue(quotaToPoints(totalQuota))}\n${subscriptionTooltip}`
+      : subscriptionTooltip
+    const subscriptionTone = 'border-primary/40 bg-primary text-primary-foreground hover:bg-primary/90'
+
+    if (collapsed) {
+      return (
+        <Tooltip delayDuration={0}>
+          <TooltipTrigger asChild>
+            <button
+              type="button"
+              onClick={openCredits}
+              aria-label={`订阅 ${planName}`}
+              className={cn(
+                'w-full flex items-center justify-center py-2 rounded-[10px] border transition-colors titlebar-no-drag',
+                subscriptionTone,
+              )}
+            >
+              <Crown className="size-4" />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent side="top" className="max-w-[min(320px,calc(100vw-24px))] whitespace-pre-line border border-border/60">
+            {tooltipText}
+          </TooltipContent>
+        </Tooltip>
+      )
+    }
+
+    return (
+      <Tooltip delayDuration={0}>
+        <TooltipTrigger asChild>
+          <button
+            type="button"
+            onClick={openCredits}
+            aria-label={`订阅 ${planName}，剩余 ${formatPointValue(quotaToPoints(remainingQuota))} / ${formatPointValue(quotaToPoints(totalQuota))}`}
+            className={cn(
+              'w-full flex flex-col gap-1.5 px-3 py-2 rounded-[10px] border transition-colors titlebar-no-drag text-left',
+              subscriptionTone,
+            )}
+          >
+            <div className="flex items-start gap-2">
+              <div className="flex min-w-0 flex-1 items-center gap-2">
+                <span className="inline-flex shrink-0 items-center gap-1 rounded-md bg-white/15 px-1.5 py-0.5 text-[10px] font-medium">
+                  <Crown size={11} />
+                  订阅
+                </span>
+                <span className="min-w-0 truncate text-[11px] font-medium">{planName}</span>
+              </div>
+              <span className="shrink-0 text-xs font-semibold tabular-nums">
+                {formatPointValue(quotaToPoints(remainingQuota))} / {formatPointValue(quotaToPoints(totalQuota))}
+              </span>
+            </div>
+            <div className="h-1 overflow-hidden rounded-full bg-black/15 dark:bg-white/20" aria-label={`周期内剩余 ${remainingPercent}%`}>
+              <div className="h-full rounded-full bg-zinc-600 transition-all duration-500 dark:bg-zinc-700" style={{ width: `${remainingPercent}%` }} />
+            </div>
+          </button>
+        </TooltipTrigger>
+        <TooltipContent side="top" className="max-w-[min(320px,calc(100vw-24px))] whitespace-pre-line border border-border/60">
+          {tooltipText}
+        </TooltipContent>
+      </Tooltip>
+    )
+  }
+
+  // 未加载到余额（非代管 / 未登录 / 拉取失败）不显示
+  if (points === null) return null
 
   // 进度条必须与积分页一致，以服务端的当前结算周期分母计算；绝不混入历史累计消耗。
   const cycleTotalPoints = cycleSummary ? Math.round(cycleSummary.totalAllocated * 100) / 10 : null

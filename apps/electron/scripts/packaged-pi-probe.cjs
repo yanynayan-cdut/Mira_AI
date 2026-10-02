@@ -4,7 +4,7 @@
  *
  * 必须使用刚生成的 packaged Electron 自带 Node ABI 运行：
  *   $env:ELECTRON_RUN_AS_NODE='1'
- *   .\out\win-unpacked\Profer.exe .\scripts\packaged-pi-probe.cjs .\out\win-unpacked\resources
+ *   .\out\win-unpacked\Mira.exe .\scripts\packaged-pi-probe.cjs .\out\win-unpacked\resources
  *
  * 该 probe 只验证 app.asar 的 ESM 导入、当前 Pi 0.84.2 的内存 model runtime/session
  * 初始化，以及 native/WASM 是否位于 app.asar.unpacked。它不发送真实渠道请求。
@@ -95,7 +95,7 @@ async function runProbe(resourcesDir) {
   })
   const providerId = 'profer-packaged-probe'
   modelRuntime.registerProvider(providerId, {
-    name: 'Profer packaged probe',
+    name: 'Mira packaged probe',
     apiKey: 'offline-probe-key',
     api: 'openai-completions',
     baseUrl: 'http://127.0.0.1:1',

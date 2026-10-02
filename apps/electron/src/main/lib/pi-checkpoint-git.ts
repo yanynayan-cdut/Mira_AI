@@ -15,7 +15,7 @@ import { findGitPath } from './git-detector'
  * - 每个检查点一个 ref（不做父子链），删 ref 即可让 git 回收对象，
  *   避免「父提交把已删除检查点的对象钉住」
  *
- * 本层刻意不依赖 Pi / Profer 业务类型，便于独立测试。
+ * 本层刻意不依赖 Pi / Mira 业务类型，便于独立测试。
  */
 
 /** 首次快照可能要哈希整个目录，超时给足；实际增量快照在几十毫秒级 */
@@ -27,7 +27,7 @@ const ADD_BATCH_SIZE = 100
 const SHADOW_REPO_DIR_NAME = 'shadow.git'
 const REF_PREFIX = 'refs/profer/checkpoints/'
 /** 未配置 git 身份的机器上 commit-tree 会失败，显式给一个本地身份 */
-const COMMIT_IDENTITY = ['-c', 'user.name=Profer', '-c', 'user.email=profer@localhost']
+const COMMIT_IDENTITY = ['-c', 'user.name=Mira', '-c', 'user.email=profer@localhost']
 
 let cachedGitPath: string | null | undefined
 let gitPathOverride: { value: string | null } | undefined

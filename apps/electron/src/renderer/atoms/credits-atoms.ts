@@ -75,6 +75,19 @@ export const isVipAtom = atom<boolean>(false)
 export const multiplierAtom = atom<number>(1.0)
 export const inviteCodeAtom = atom<string | null>(null)
 
+/** 当前登录账号资料，由 Gateway 的 credits 接口返回。 */
+export interface AccountUser {
+  id?: number | string
+  username?: string
+  email?: string
+  display_name?: string
+  group?: string
+  quota?: number
+  used_quota?: number
+}
+
+export const accountUserAtom = atom<AccountUser | null>(null)
+
 // ---- 阈值 ----
 /** 积分偏低阈值：< 50 积分告警 */
 export const CREDITS_LOW_POINTS = 50
@@ -111,6 +124,23 @@ export interface SubscriptionStatus {
 }
 
 export const subscriptionAtom = atom<SubscriptionStatus | null>(null)
+
+/** new-api 返回的账户订阅明细（quota 字段保持服务端原始单位）。 */
+export interface AccountSubscription {
+  id?: number | string
+  plan_id?: number
+  planTitle?: string
+  status?: string
+  start_time?: number
+  end_time?: number
+  next_reset_time?: number
+  quotaTotal?: number
+  quotaUsed?: number
+  quotaRemaining?: number
+}
+
+/** 当前账户的全部订阅，按 new-api 返回顺序保留。 */
+export const subscriptionsAtom = atom<AccountSubscription[]>([])
 
 /** 本周可领 drip 积分数（保留 1 位小数） */
 export const dripAvailablePointsAtom = atom((get) => {

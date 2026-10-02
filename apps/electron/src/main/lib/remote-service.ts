@@ -1,5 +1,5 @@
 /**
- * Profer Remote Service — 移动端（Pocket）远程接入服务
+ * Mira Remote Service — 移动端（Pocket）远程接入服务
  *
  * 目标：在不破坏现有桌面版的前提下，为「手机/平板等外部设备」提供
  * 一条独立的 HTTP + WebSocket 通道，用来传输 Agent 工作过程与用户输入，
@@ -15,7 +15,7 @@
  *     默认不启动，确保桌面版行为零变化。
  *
  * 注：本文件**不含静态 UI 服务**（原平板静态页面已随 tablet 线退役移除，2026-09-11）；
- *     当前仅提供 /health 与 /ws（WebSocket 命令通道），供移动端（Profer-pocket）客户端接入。
+ *     当前仅提供 /health 与 /ws（WebSocket 命令通道），供移动端（Mira-pocket）客户端接入。
  *
  * 依赖说明：
  *  本文件使用 Node 原生 http/https + ws 库（已于 apps/electron 安装）。
@@ -1744,7 +1744,7 @@ export async function handleRemoteCommand(
 // ===== 生命周期 =====
 
 /**
- * 启动 Profer Remote Service。
+ * 启动 Mira Remote Service。
  * 仅当 isRemoteEnabled() 为真时才会真正启动；否则为 no-op。
  * @returns 启动后的监听地址（未启用时返回 null）
  */
@@ -1769,7 +1769,7 @@ export function startRemoteService(): string | null {
       return
     }
     // 本机不再提供静态 UI 服务（原平板页面已随 tablet 线退役移除，2026-09-11）：非 /health 的 HTTP 请求一律 404。
-    // WS 客户端（Profer-pocket）直接连 /ws，不依赖 HTTP 根路径。
+    // WS 客户端（Mira-pocket）直接连 /ws，不依赖 HTTP 根路径。
     res.writeHead(404, { 'content-type': 'text/plain; charset=utf-8' })
     res.end('Not Found')
   })
@@ -1949,7 +1949,7 @@ export function startRemoteService(): string | null {
     isStarted = false
     listenAddress = null
     remoteError = err.code === 'EADDRINUSE'
-      ? `端口 ${port} 已被占用，请关闭占用它的 Profer 实例，或在设置中改用其他端口。`
+      ? `端口 ${port} 已被占用，请关闭占用它的 Mira 实例，或在设置中改用其他端口。`
       : `移动模式服务启动失败：${err.message || '未知错误'}`
     console.error('[Remote]', remoteError, err)
 
@@ -1982,7 +1982,7 @@ export function startRemoteService(): string | null {
       }
     } catch { /* ignore */ }
     console.log('\n════════════════════════════════════════════════════')
-    console.log('[Remote] Profer 移动版已启动')
+    console.log('[Remote] Mira 移动版已启动')
     console.log(`[Remote] 本机访问:  ${listenAddress}`)
     console.log(`[Remote] 移动端访问:  http://${lanIp}:${actualPort}`)
     console.log(`[Remote] 访问 Token: ${accessToken}（首次在移动端输入一次）`)
@@ -1998,7 +1998,7 @@ export function startRemoteService(): string | null {
   return listenAddress
 }
 
-/** 停止 Profer Remote Service */
+/** 停止 Mira Remote Service */
 export function stopRemoteService(): void {
   remoteRelayClient?.stop()
   remoteRelayClient = null

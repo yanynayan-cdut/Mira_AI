@@ -126,7 +126,7 @@ class FeishuBridgeManager {
     return this.bridges
   }
 
-  /** 为桌面端 Profer Session 创建或恢复飞书镜像群。 */
+  /** 为桌面端 Mira Session 创建或恢复飞书镜像群。 */
   async ensureSessionMirror(session: AgentSessionMeta): Promise<void> {
     const config = getFeishuMultiBotConfig()
     const bot = resolveSessionMirrorBot(getSettings().feishuSessionMirror, config.bots)

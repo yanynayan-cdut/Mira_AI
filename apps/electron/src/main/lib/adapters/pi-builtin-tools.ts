@@ -313,7 +313,7 @@ export function buildPiPlanningTools(
     sdk.defineTool({
       name: 'mcp__planning__list_calendar_events',
       label: '列出本地日程',
-      description: '列出当前 Profer 工作区的本地日程；用户未明确要求外部日历时，日程默认指这里。',
+      description: '列出当前 Mira 工作区的本地日程；用户未明确要求外部日历时，日程默认指这里。',
       parameters: Type.Object({ from: Type.Optional(Type.Number({ exclusiveMinimum: 0 })), to: Type.Optional(Type.Number({ exclusiveMinimum: 0 })), limit: Type.Optional(Type.Integer({ minimum: 1, maximum: 500 })) }),
       async execute(_toolCallId, params) {
         try { return jsonToolResult({ events: await listPlanningCalendarEvents({ sessionId: ctx.sessionId, workspaceId: ctx.workspaceId, isTeamWorkspace: ctx.isTeamWorkspace }, params as CalendarEventListQuery) }) } catch (error) { return jsonToolResult({ error: error instanceof Error ? error.message : String(error) }) }
@@ -322,7 +322,7 @@ export function buildPiPlanningTools(
     sdk.defineTool({
       name: 'mcp__planning__get_calendar_event',
       label: '读取本地日程',
-      description: '读取当前 Profer 工作区本地日程的最新记录；更新前必须先读取。',
+      description: '读取当前 Mira 工作区本地日程的最新记录；更新前必须先读取。',
       parameters: Type.Object({ id: Type.String({ minLength: 1 }) }),
       async execute(_toolCallId, params) {
         try { return jsonToolResult({ event: await getPlanningCalendarEvent({ sessionId: ctx.sessionId, workspaceId: ctx.workspaceId, isTeamWorkspace: ctx.isTeamWorkspace }, (params as { id: string }).id) }) } catch (error) { return jsonToolResult({ error: error instanceof Error ? error.message : String(error) }) }
@@ -331,7 +331,7 @@ export function buildPiPlanningTools(
     sdk.defineTool({
       name: 'mcp__planning__create_calendar_event',
       label: '创建本地日程',
-      description: '在当前 Profer 工作区创建本地日程。除非用户明确要求 Google、Outlook 或其他外部日历，否则不要询问日历平台。',
+      description: '在当前 Mira 工作区创建本地日程。除非用户明确要求 Google、Outlook 或其他外部日历，否则不要询问日历平台。',
       parameters: Type.Object({
         title: Type.String({ minLength: 1, maxLength: 500 }), notes: Type.Optional(Type.String()), startAt: Type.Number({ exclusiveMinimum: 0 }), endAt: Type.Optional(Type.Number({ exclusiveMinimum: 0 })), allDay: Type.Optional(Type.Boolean()), groupId: Type.Optional(Type.String({ minLength: 1 })), tagIds: Type.Optional(Type.Array(Type.String({ minLength: 1 }))), reminders: Type.Optional(Type.Array(Type.Object({ triggerAt: Type.Number({ exclusiveMinimum: 0 }) }))), todoId: Type.Optional(Type.String({ minLength: 1 })),
       }),
@@ -342,7 +342,7 @@ export function buildPiPlanningTools(
     sdk.defineTool({
       name: 'mcp__planning__update_calendar_event',
       label: '更新本地日程',
-      description: '更新当前 Profer 工作区本地日程；必须先读取最新日程并传入 expectedUpdatedAt。',
+      description: '更新当前 Mira 工作区本地日程；必须先读取最新日程并传入 expectedUpdatedAt。',
       parameters: Type.Object({ id: Type.String({ minLength: 1 }), expectedUpdatedAt: Type.Number({ exclusiveMinimum: 0 }), title: Type.Optional(Type.String({ minLength: 1, maxLength: 500 })), notes: Type.Optional(Type.String()), startAt: Type.Optional(Type.Number({ exclusiveMinimum: 0 })), endAt: Type.Optional(Type.Union([Type.Number({ exclusiveMinimum: 0 }), Type.Null()])), allDay: Type.Optional(Type.Boolean()), groupId: Type.Optional(Type.Union([Type.String({ minLength: 1 }), Type.Null()])), tagIds: Type.Optional(Type.Array(Type.String({ minLength: 1 }))), todoId: Type.Optional(Type.Union([Type.String({ minLength: 1 }), Type.Null()])), }),
       async execute(_toolCallId, params) {
         try { return jsonToolResult({ event: await updatePlanningCalendarEvent({ sessionId: ctx.sessionId, workspaceId: ctx.workspaceId, isTeamWorkspace: ctx.isTeamWorkspace }, params as Omit<UpdateCalendarEventInput, 'workspaceId'>) }) } catch (error) { return jsonToolResult({ error: error instanceof Error ? error.message : String(error) }) }
@@ -351,7 +351,7 @@ export function buildPiPlanningTools(
     sdk.defineTool({
       name: 'mcp__planning__delete_calendar_event',
       label: '删除本地日程',
-      description: '仅在用户明确要求时删除当前 Profer 工作区本地日程。',
+      description: '仅在用户明确要求时删除当前 Mira 工作区本地日程。',
       parameters: Type.Object({ id: Type.String({ minLength: 1 }) }),
       async execute(_toolCallId, params) {
         try { return jsonToolResult({ deleted: await deletePlanningCalendarEvent({ sessionId: ctx.sessionId, workspaceId: ctx.workspaceId, isTeamWorkspace: ctx.isTeamWorkspace }, (params as { id: string }).id) }) } catch (error) { return jsonToolResult({ error: error instanceof Error ? error.message : String(error) }) }
@@ -471,7 +471,7 @@ export function buildPiGoalTools(sdk: PiSdk, ctx: Pick<PiBuiltinToolsContext, 'g
   return [sdk.defineTool({
     name: 'update_goal',
     label: '更新 Goal 状态',
-    description: '向 Profer Goal 控制器报告当前轮次结果。该工具是内部控制通道，不是用户可见消息；complete 必须带真实证据，blocked 仅用于需要用户输入或外部状态变化的阻塞。',
+    description: '向 Mira Goal 控制器报告当前轮次结果。该工具是内部控制通道，不是用户可见消息；complete 必须带真实证据，blocked 仅用于需要用户输入或外部状态变化的阻塞。',
     promptSnippet: 'update_goal: report structured Goal status to the host runtime',
     parameters: Type.Object({
       status: Type.Union([Type.Literal('continue'), Type.Literal('complete'), Type.Literal('blocked')]),
@@ -718,8 +718,8 @@ function buildPiAgentImageOutputTools(sdk: PiSdk, ctx: PiBuiltinToolsContext): T
     sdk.defineTool({
       name: 'send_local_image',
       label: '发送本地图片',
-      description: 'Send an existing local PNG/JPEG/GIF/WebP as an image in the final Agent response. The path must be inside the current session workspace or an explicitly authorized attached directory. Profer automatically attaches the verified image to the conversation; do not output internal image protocol markers. This tool does not generate or edit images.',
-      promptSnippet: 'SendLocalImage: safely copy an authorized local image to the session output; Profer automatically attaches the verified image, so do not output internal image protocol markers.',
+      description: 'Send an existing local PNG/JPEG/GIF/WebP as an image in the final Agent response. The path must be inside the current session workspace or an explicitly authorized attached directory. Mira automatically attaches the verified image to the conversation; do not output internal image protocol markers. This tool does not generate or edit images.',
+      promptSnippet: 'SendLocalImage: safely copy an authorized local image to the session output; Mira automatically attaches the verified image, so do not output internal image protocol markers.',
       parameters: Type.Object({
         path: Type.String({ minLength: 1, maxLength: 4096 }),
         caption: Type.Optional(Type.String({ maxLength: 500 })),
@@ -751,9 +751,9 @@ function buildPiAgentPreviewTools(sdk: PiSdk, ctx: PiBuiltinToolsContext): ToolD
   return [
     sdk.defineTool({
       name: 'open_file_preview',
-      label: '打开 Profer 文件预览',
-      description: 'Open an authorized local PPTX in Profer’s official current-session file preview. The user and Agent continue working from the same visible preview context. Do not create Preview.html, open a browser, or capture a screenshot.',
-      promptSnippet: 'OpenFilePreview: open PPTX in Profer official preview; never create Preview.html or use a browser screenshot.',
+      label: '打开 Mira 文件预览',
+      description: 'Open an authorized local PPTX in Mira’s official current-session file preview. The user and Agent continue working from the same visible preview context. Do not create Preview.html, open a browser, or capture a screenshot.',
+      promptSnippet: 'OpenFilePreview: open PPTX in Mira official preview; never create Preview.html or use a browser screenshot.',
       parameters: Type.Object({
         filePath: Type.String({ minLength: 1, maxLength: 4096 }),
         readOnly: Type.Optional(Type.Boolean()),
@@ -768,9 +768,9 @@ function buildPiAgentPreviewTools(sdk: PiSdk, ctx: PiBuiltinToolsContext): ToolD
     }),
     sdk.defineTool({
       name: 'inspect_file_preview',
-      label: '检查 Profer PPTX 正式预览',
-      description: 'Inspect one or more slides from the current user-visible Profer PPTX preview. This reads the same ready viewer and revision opened by open_file_preview; it never creates a hidden renderer or browser preview.',
-      promptSnippet: 'InspectFilePreview: inspect slides from the same user-visible Profer PPTX viewer opened by open_file_preview.',
+      label: '检查 Mira PPTX 正式预览',
+      description: 'Inspect one or more slides from the current user-visible Mira PPTX preview. This reads the same ready viewer and revision opened by open_file_preview; it never creates a hidden renderer or browser preview.',
+      promptSnippet: 'InspectFilePreview: inspect slides from the same user-visible Mira PPTX viewer opened by open_file_preview.',
       parameters: Type.Object({
         filePath: Type.String({ minLength: 1, maxLength: 4096 }),
         scope: Type.Optional(Type.Union([Type.Literal('overview'), Type.Literal('page'), Type.Literal('all')])),
@@ -867,7 +867,7 @@ function buildPiAgentGptImageTools(sdk: PiSdk, ctx: PiBuiltinToolsContext): Tool
       name: AGENT_GPT_IMAGE_TOOL_NAME,
       label: '生成图片',
       description: AGENT_GPT_IMAGE_DESCRIPTION,
-      promptSnippet: 'GenerateImage: generate one image or edit up to four authorized local reference images; Profer automatically attaches the verified result, so do not output internal image protocol markers.',
+      promptSnippet: 'GenerateImage: generate one image or edit up to four authorized local reference images; Mira automatically attaches the verified result, so do not output internal image protocol markers.',
       parameters: Type.Object({
         prompt: Type.String({ minLength: 1, maxLength: 10_000 }),
         size: Type.Optional(Type.Union(GPT_IMAGE_SIZES.map((value) => Type.Literal(value)))),
@@ -896,7 +896,7 @@ function buildWebTools(sdk: PiSdk): ToolDefinition[] {
     sdk.defineTool({
       name: 'WebSearch',
       label: '搜索网页',
-      description: 'Search the web for up-to-date information through Profer\'s Tavily integration. Use for current events, recent data, facts that may be stale, or when the user explicitly asks to search.',
+      description: 'Search the web for up-to-date information through Mira\'s Tavily integration. Use for current events, recent data, facts that may be stale, or when the user explicitly asks to search.',
       promptSnippet: 'WebSearch: search the web for current information and cite source URLs in the final answer.',
       parameters: Type.Object({
         query: Type.String({ description: 'Search query. Keep it concise and avoid including private local file contents, API keys, tokens, or secrets.' }),
@@ -923,7 +923,7 @@ function buildWebTools(sdk: PiSdk): ToolDefinition[] {
     sdk.defineTool({
       name: 'WebFetch',
       label: '抓取网页',
-      description: 'Fetch and extract readable Markdown content from a URL through Profer\'s Tavily integration. Use after WebSearch or when the user gives a URL and asks to inspect page content.',
+      description: 'Fetch and extract readable Markdown content from a URL through Mira\'s Tavily integration. Use after WebSearch or when the user gives a URL and asks to inspect page content.',
       promptSnippet: 'WebFetch: fetch readable webpage content by URL. Use it to inspect source pages and cite URLs.',
       parameters: Type.Object({
         url: Type.String({ description: 'HTTP/HTTPS URL to fetch.' }),
@@ -1080,7 +1080,7 @@ function buildAutomationTools(sdk: PiSdk, ctx: PiBuiltinToolsContext): ToolDefin
     sdk.defineTool({
       name: 'mcp__automation__list_automations',
       label: '列出定时任务',
-      description: '列出 Profer 持久化定时任务。用于查看已有长期反复任务、判断是否需要新建任务、检查运行状态和最近失败情况。',
+      description: '列出 Mira 持久化定时任务。用于查看已有长期反复任务、判断是否需要新建任务、检查运行状态和最近失败情况。',
       parameters: Type.Object({
         active: Type.Optional(Type.Boolean({ description: '只列出启用或暂停任务；不传则列出全部' })),
         includeHistory: Type.Optional(Type.Boolean({ description: '是否包含运行历史，默认 false' })),
@@ -1096,7 +1096,7 @@ function buildAutomationTools(sdk: PiSdk, ctx: PiBuiltinToolsContext): ToolDefin
     sdk.defineTool({
       name: 'mcp__automation__get_automation',
       label: '查看定时任务',
-      description: '读取单个 Profer 定时任务详情和运行记录。定时任务自动执行中可以省略 id 来读取当前任务，用于自检和自迭代。',
+      description: '读取单个 Mira 定时任务详情和运行记录。定时任务自动执行中可以省略 id 来读取当前任务，用于自检和自迭代。',
       parameters: Type.Object({
         id: Type.Optional(Type.String({ description: '定时任务 ID；定时任务自动执行中可省略以读取当前任务' })),
       }),
@@ -1112,7 +1112,7 @@ function buildAutomationTools(sdk: PiSdk, ctx: PiBuiltinToolsContext): ToolDefin
     sdk.defineTool({
       name: 'mcp__automation__create_automation',
       label: '创建定时任务',
-      description: '创建 Profer 持久化定时任务。适合无人值守、有稳定价值的场景。纯提醒/闹钟、需要用户实时参与判断、或现在就该做完即终结的事不要创建。',
+      description: '创建 Mira 持久化定时任务。适合无人值守、有稳定价值的场景。纯提醒/闹钟、需要用户实时参与判断、或现在就该做完即终结的事不要创建。',
       parameters: Type.Object({
         name: Type.String({ description: '任务名，简短说明长期反复执行的目标' }),
         prompt: Type.String({ description: '每次触发时发送给 Agent 的完整自然语言指令' }),
@@ -1182,7 +1182,7 @@ function buildAutomationTools(sdk: PiSdk, ctx: PiBuiltinToolsContext): ToolDefin
     sdk.defineTool({
       name: 'mcp__automation__update_automation',
       label: '修改定时任务',
-      description: '修改 Profer 定时任务，包括名称、执行提示词、频率和启用状态。定时任务自动执行中可以省略 id 来修改当前任务。',
+      description: '修改 Mira 定时任务，包括名称、执行提示词、频率和启用状态。定时任务自动执行中可以省略 id 来修改当前任务。',
       parameters: Type.Object({
         id: Type.Optional(Type.String({ description: '定时任务 ID；定时任务自动执行中可省略以更新当前任务' })),
         name: Type.Optional(Type.String({ description: '新的任务名' })),
@@ -1243,7 +1243,7 @@ function buildAutomationTools(sdk: PiSdk, ctx: PiBuiltinToolsContext): ToolDefin
     sdk.defineTool({
       name: 'mcp__automation__delete_automation',
       label: '删除定时任务',
-      description: '删除 Profer 定时任务。只在用户明确要求删除，或任务已经长期无价值且用户确认后使用。',
+      description: '删除 Mira 定时任务。只在用户明确要求删除，或任务已经长期无价值且用户确认后使用。',
       parameters: Type.Object({
         id: Type.String({ description: '要删除的定时任务 ID' }),
       }),
@@ -1257,7 +1257,7 @@ function buildAutomationTools(sdk: PiSdk, ctx: PiBuiltinToolsContext): ToolDefin
     sdk.defineTool({
       name: 'mcp__automation__run_automation_now',
       label: '立即运行定时任务',
-      description: '立即运行 Profer 定时任务。用于用户要求马上验证，或修改任务后需要试跑一次。',
+      description: '立即运行 Mira 定时任务。用于用户要求马上验证，或修改任务后需要试跑一次。',
       parameters: Type.Object({
         id: Type.Optional(Type.String({ description: '要立即运行的定时任务 ID；定时任务自动执行中可省略以运行当前任务' })),
       }),
@@ -1566,10 +1566,10 @@ function buildBrowserTools(sdk: PiSdk, ctx: PiBuiltinToolsContext): ToolDefiniti
   ] as ToolDefinition[]
 }
 
-// ===== Profer Cloud 工具 =====
+// ===== Mira Cloud 工具 =====
 
 function buildProferCloudTools(sdk: PiSdk, _ctx: PiBuiltinToolsContext): ToolDefinition[] {
-  // profer-cloud MCP 工具（get_credentials / create_app_key）通常由 Profer 的
+  // profer-cloud MCP 工具（get_credentials / create_app_key）通常由 Mira 的
   // 内置 MCP server 进程独立提供（非 SDK in-process），Pi adapter 在 orchestrator
   // 构建 mcpServers 后通过 customTools 或 MCP stdio 通道访问。
   // 如果 profer-cloud 是 SDK in-process MCP，需要在此桥接：
@@ -1613,7 +1613,7 @@ function buildWindowsShellInstallerTools(sdk: PiSdk, ctx: PiBuiltinToolsContext)
           installer: 'git-for-windows',
           version: source.version,
           filePath: result.filePath,
-          message: '已下载并打开 Git for Windows 安装程序。请完成安装后重试原任务；Profer 会在下次运行时自动检测 Git Bash。',
+          message: '已下载并打开 Git for Windows 安装程序。请完成安装后重试原任务；Mira 会在下次运行时自动检测 Git Bash。',
         })
       },
     }),
@@ -1703,7 +1703,7 @@ export async function buildPiBuiltinTools(
     console.error('[Pi 桥接] 注入个人记忆、任务图或规划中心工具失败:', error)
   }
 
-  // Automation 是 Profer 已有的本地能力，不依赖上游 builtin-MCP catalog。
+  // Automation 是 Mira 已有的本地能力，不依赖上游 builtin-MCP catalog。
   if (!disabled.has('automation')) {
     try {
       tools.push(...buildAutomationTools(sdk, ctx))

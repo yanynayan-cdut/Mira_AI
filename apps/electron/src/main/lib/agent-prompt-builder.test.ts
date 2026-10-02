@@ -151,7 +151,7 @@ describe('buildSystemPrompt', () => {
     }
   })
 
-  test('工作区会话恢复指向 Profer workspace profile，而非用户项目指令文件', () => {
+  test('工作区会话恢复指向 Mira workspace profile，而非用户项目指令文件', () => {
     const slug = 'demo-workspace'
     const sessionId = 'session-123'
     const configDirName = getConfigDirName()
@@ -164,15 +164,15 @@ describe('buildSystemPrompt', () => {
 
     const workspaceRoot = join(homedir(), configDirName, 'agent-workspaces', slug)
     const workspaceProfile = join(workspaceRoot, 'workspace-profile.md')
-    expect(prompt).toContain(`**Profer 工作区资料**: ${workspaceProfile}`)
-    expect(prompt).toContain(`③ Profer 工作区资料（\`${workspaceProfile}\``)
-    expect(prompt).toContain('旧版 Profer 工作区资料（仅兼容读取）')
+    expect(prompt).toContain(`**Mira 工作区资料**: ${workspaceProfile}`)
+    expect(prompt).toContain(`③ Mira 工作区资料（\`${workspaceProfile}\``)
+    expect(prompt).toContain('旧版 Mira 工作区资料（仅兼容读取）')
     expect(prompt).toContain('项目中的 `AGENTS.md` / `CLAUDE.md` 属于用户资产')
     expect(prompt).toContain('不要读取当前 cwd 下不存在的相对路径 `CLAUDE.md`')
     expect(prompt).not.toContain('维护工作区根目录下的 CLAUDE.md')
     expect(prompt).toContain(join(workspaceRoot, 'workspace-files', '.context'))
     expect(prompt).toContain(join(workspaceRoot, '.profer', 'memory', 'MEMORY.md'))
-    expect(prompt).not.toContain('Profer 脱胎于开源项目')
+    expect(prompt).not.toContain('Mira 脱胎于开源项目')
   })
 
   test('Context 恢复先发现目录内容，不默认读取或创建 note.md', () => {
@@ -186,7 +186,7 @@ describe('buildSystemPrompt', () => {
 
     expect(prompt).toContain('先列出两个目录；只读取**实际存在且与当前任务相关**的文件')
     expect(prompt).toContain('不得默认创建或读取 `note.md`、`todo.md`')
-    expect(prompt).toContain('Profer Memory')
+    expect(prompt).toContain('Mira Memory')
     expect(prompt).not.toContain('按主题命名的 Markdown — 研究与分析输出')
     expect(prompt).toContain('按需检索和读取，不默认创建或读取通用 `note.md`')
     expect(prompt).not.toContain('会话级 `.context/`（note.md、todo.md）')
@@ -334,10 +334,10 @@ describe('buildSystemPrompt', () => {
     // 隐藏：任务图、委派、记忆、规划及所有增强型产品能力说明。
     expect(minimalPrompt).not.toContain('proma_task_create')
     expect(minimalPrompt).not.toContain('## SubAgent 委派策略')
-    expect(minimalPrompt).not.toContain('## Profer 知识维护架构')
+    expect(minimalPrompt).not.toContain('## Mira 知识维护架构')
     expect(minimalPrompt).not.toContain('### Pi Runtime 与文件记忆')
     expect(minimalPrompt).not.toContain('create_todo')
-    expect(minimalPrompt).not.toContain('## Profer 受管浏览器')
+    expect(minimalPrompt).not.toContain('## Mira 受管浏览器')
     expect(minimalPrompt).not.toContain('`inspect_preview`')
     expect(minimalPrompt).not.toContain('`generate_image`')
     expect(minimalPrompt).not.toContain('`WebSearch`')
@@ -359,7 +359,7 @@ describe('buildSystemPrompt', () => {
     expect(standardPrompt).toContain('## SubAgent 委派策略')
     expect(standardPrompt).toContain('presetReference')
     expect(standardPrompt).toContain('不传时子 Agent 继承当前父会话的稳定预设引用')
-    expect(standardPrompt).toContain('## Profer 知识维护架构')
+    expect(standardPrompt).toContain('## Mira 知识维护架构')
     expect(standardPrompt).toContain('### Pi Runtime 与文件记忆')
   })
 
@@ -427,7 +427,7 @@ describe('buildSystemPrompt', () => {
     expect(ordinary).toContain('## 做事方式')
     expect(ordinary).toContain('修改后必须闭环')
     expect(ordinary).toContain('计划模式文件路径')
-    expect(ordinary).not.toContain('## Profer 受管浏览器')
+    expect(ordinary).not.toContain('## Mira 受管浏览器')
     expect(ordinary).not.toContain('PPT 视觉交付门禁')
     expect(ordinary).not.toContain('7. **定时任务**')
     expect(ordinary).not.toContain('## SubAgent 委派策略')
@@ -443,7 +443,7 @@ describe('buildSystemPrompt', () => {
       toolNames,
       pptCapabilityActive: true,
     })
-    expect(webAndPpt).toContain('## Profer 受管浏览器')
+    expect(webAndPpt).toContain('## Mira 受管浏览器')
     // PPT 任务走 PptxGenJS Skill；已移除 generate_pptx_fast 的专属提示词。
     expect(webAndPpt).not.toContain('快速 PPTX 生成')
     expect(webAndPpt).not.toContain('generate_pptx_fast')
@@ -477,7 +477,7 @@ describe('buildSystemPrompt', () => {
     expect(prompt).not.toContain('`BrowserPreviewOpen`')
     expect(prompt).not.toContain('`WebSearch`')
     expect(prompt).not.toContain('`WebFetch`')
-    expect(prompt).toContain('## Profer 受管浏览器')
+    expect(prompt).toContain('## Mira 受管浏览器')
     expect(prompt).toContain('BrowserObserve')
     expect(prompt).toContain('BrowserScreenshot')
   })
@@ -490,7 +490,7 @@ describe('buildSystemPrompt', () => {
       permissionMode: 'auto',
       disabledTools: ['BrowserScreenshot'],
     })
-    expect(browserScreenshotDisabled).toContain('## Profer 受管浏览器')
+    expect(browserScreenshotDisabled).toContain('## Mira 受管浏览器')
     expect(browserScreenshotDisabled).toContain('BrowserObserve')
     expect(browserScreenshotDisabled).toContain('BrowserPreviewOpen')
     expect(browserScreenshotDisabled).not.toContain('BrowserScreenshot')
@@ -503,7 +503,7 @@ describe('buildSystemPrompt', () => {
       permissionMode: 'auto',
       disabledTools: ['BrowserObserve'],
     })
-    expect(browserObserveDisabled).toContain('## Profer 受管浏览器')
+    expect(browserObserveDisabled).toContain('## Mira 受管浏览器')
     expect(browserObserveDisabled).toContain('BrowserScreenshot')
     expect(browserObserveDisabled).not.toContain('BrowserObserve')
     expect(browserObserveDisabled).not.toContain('先调用 `BrowserObserve`')
@@ -529,7 +529,7 @@ describe('buildSystemPrompt', () => {
     expect(openPreviewDisabled).toContain('inspect_preview')
     expect(openPreviewDisabled).toContain('inspect_file_preview')
     expect(openPreviewDisabled).not.toContain('必须先用 `open_file_preview`')
-    expect(openPreviewDisabled).toContain('使用 `inspect_file_preview` 检查当前用户可见的 Profer PPTX 正式预览')
+    expect(openPreviewDisabled).toContain('使用 `inspect_file_preview` 检查当前用户可见的 Mira PPTX 正式预览')
 
     const inspectFilePreviewDisabled = buildSystemPrompt({
       workspaceName: 'Demo',
@@ -541,7 +541,7 @@ describe('buildSystemPrompt', () => {
     expect(inspectFilePreviewDisabled).toContain('inspect_preview')
     expect(inspectFilePreviewDisabled).toContain('open_file_preview')
     expect(inspectFilePreviewDisabled).not.toContain('inspect_file_preview')
-    expect(inspectFilePreviewDisabled).toContain('PPTX 必须先用 `open_file_preview` 打开 Profer 正式文件预览')
+    expect(inspectFilePreviewDisabled).toContain('PPTX 必须先用 `open_file_preview` 打开 Mira 正式文件预览')
 
     const allPreviewDisabled = buildSystemPrompt({
       workspaceName: 'Demo',
@@ -566,15 +566,15 @@ describe('buildSystemPrompt', () => {
     })
     expect(prompt).toContain('proma_task_create')
     expect(prompt).toContain('## SubAgent 委派策略')
-    expect(prompt).toContain('## Profer 知识维护架构')
+    expect(prompt).toContain('## Mira 知识维护架构')
     expect(prompt).toContain('`inspect_preview`')
     expect(prompt).toContain('`WebSearch`')
     expect(prompt).toContain('`send_local_image`')
     expect(prompt).not.toContain('create_todo')
-    expect(prompt).not.toContain('## Profer 受管浏览器')
+    expect(prompt).not.toContain('## Mira 受管浏览器')
     expect(prompt).not.toContain('`generate_image`')
     // create_skin 归属 image 组：代码预设声明生图关闭时，皮肤创建工具及其 SOP 也必须一并消失
-    expect(prompt).not.toContain('10. **创建 Profer 皮肤**')
+    expect(prompt).not.toContain('10. **创建 Mira 皮肤**')
   })
 
   test('六类能力硬禁用时 Prompt 与动态浏览器上下文不暴露对应入口', () => {
@@ -586,7 +586,7 @@ describe('buildSystemPrompt', () => {
       permissionMode: 'auto',
       disabledToolGroups: disabled,
     })
-    expect(prompt).not.toContain('## Profer 受管浏览器')
+    expect(prompt).not.toContain('## Mira 受管浏览器')
     expect(prompt).not.toContain('`inspect_preview`')
     expect(prompt).not.toContain('`generate_image`')
     expect(prompt).not.toContain('`WebSearch`')
@@ -650,7 +650,7 @@ describe('buildSystemPrompt', () => {
     expect(taskPrompt).toContain('## 当前预设已关闭的能力')
     expect(taskPrompt).toContain('clipboard')
     expect(taskPrompt).not.toContain('### Pi Runtime 与文件记忆')
-    expect(taskPrompt).not.toContain('## Profer 受管浏览器')
+    expect(taskPrompt).not.toContain('## Mira 受管浏览器')
   })
 
   test('动态上下文只展示当前预设实际允许的 MCP，且不泄露命令和 URL', () => {
@@ -707,7 +707,7 @@ describe('buildSystemPrompt 皮肤创建指引', () => {
   test('create_skin 可用时给出固定皮肤目录，并要求不要全盘扫描', () => {
     const prompt = buildSystemPrompt(base)
     const userSkinDir = `~/${getConfigDirName()}/skins/`
-    expect(prompt).toContain('10. **创建 Profer 皮肤**')
+    expect(prompt).toContain('10. **创建 Mira 皮肤**')
     expect(prompt).toContain(userSkinDir)
     expect(prompt).toContain('installedPath')
     // 措辞必须涵盖 Windows 侧的递归搜索命令，而不只是 macOS/Linux 的 find/ls
@@ -719,6 +719,6 @@ describe('buildSystemPrompt 皮肤创建指引', () => {
 
   test('create_skin 被禁用时不再注入皮肤创建 SOP', () => {
     const prompt = buildSystemPrompt({ ...base, disabledTools: ['create_skin'] })
-    expect(prompt).not.toContain('10. **创建 Profer 皮肤**')
+    expect(prompt).not.toContain('10. **创建 Mira 皮肤**')
   })
 })

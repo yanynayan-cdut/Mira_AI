@@ -75,6 +75,8 @@ import { registerShortcut } from "@/lib/shortcut-registry";
 import { cn } from "@/lib/utils";
 import { replaceAgentSessionInFreshnessOrder } from "@/lib/agent-session-list";
 import { isAgentWorkspaceIdVisible } from "@/lib/product-feature-flags";
+import { resolveNaturalTabLeft } from "./topbar-layout";
+import { resolveTabDragTransition, TAB_DRAG_THRESHOLD } from "./tab-drag-intent";
 
 import { promoteMru } from "@profer/shared";
 import { resolveWindowControlsRightInset } from "@/lib/window-controls-layout";
@@ -82,6 +84,7 @@ import {
   TOPBAR_CONTENT_HEIGHT,
   TOPBAR_CONTENT_OFFSET,
   TOPBAR_HEIGHT,
+  resolveTopBarTabDragGap,
 } from "./topbar-layout";
 
 export function TabBar({
@@ -205,8 +208,6 @@ export function TabBar({
   }, [activeTabId, agentSessions, requestClose, store, tabs]);
 
   // 拖拽状态
-  /** 进行中的标签排序的取消句柄（合并手势中途接管时调用） */
-  const sortCancelRef = React.useRef<(() => void) | null>(null);
   const dragState = React.useRef<{
     dragging: boolean;
     tabId: string;
@@ -347,11 +348,15 @@ export function TabBar({
     ],
   );
 
+  const contextTabIds = React.useMemo(
+    () => new Set(contextTabs.map((tab) => tab.id)),
+    [contextTabs],
+  );
+
   const handleDragStart = React.useCallback(
-    (tabId: string, e: React.PointerEvent) => {
+    (tabId: string, e: React.PointerEvent, initialMove?: PointerEvent) => {
       if (e.button !== 0) return; // 只处理左键
-      const idx = tabs.findIndex((t) => t.id === tabId);
-      if (idx === -1) return;
+      if (!contextTabIds.has(tabId)) return;
 
       if (dragSettleCleanupRef.current !== null) {
         clearTimeout(dragSettleCleanupRef.current);
@@ -375,7 +380,15 @@ export function TabBar({
         const offsetParent = node.offsetParent as HTMLElement | null;
         if (!offsetParent) return node.getBoundingClientRect().left;
         const parentRect = offsetParent.getBoundingClientRect();
-        return parentRect.left + node.offsetLeft - offsetParent.scrollLeft;
+        return resolveNaturalTabLeft({
+          offsetParentLeft: parentRect.left,
+          offsetLeft: node.offsetLeft,
+          offsetParentScrollLeft: offsetParent.scrollLeft,
+          tabScrollLeft:
+            offsetParent === node.closest<HTMLElement>(".topbar-tabs-scroll")
+              ? 0
+              : (node.closest<HTMLElement>(".topbar-tabs-scroll")?.scrollLeft ?? 0),
+        });
       };
 
       const applyDraggedTransform = (): void => {
@@ -403,7 +416,8 @@ export function TabBar({
 
         const dx = Math.abs(me.clientX - current.startX);
         const dy = Math.abs(me.clientY - current.startY);
-        if (!current.dragging && Math.max(dx, dy) <= 5) return;
+        if (!current.dragging && Math.max(dx, dy) <= TAB_DRAG_THRESHOLD) return;
+
         current.dragging = true;
         current.latestX = me.clientX;
         me.preventDefault();
@@ -424,13 +438,20 @@ export function TabBar({
         const direction = movementX < 0 ? -1 : 1;
 
         setTabs((previous) => {
+          const visibleTabs = previous.filter((tab) => contextTabIds.has(tab.id));
+          const visibleIndex = visibleTabs.findIndex(
+            (tab) => tab.id === current.tabId,
+          );
+          if (visibleIndex === -1) return previous;
+          const targetVisibleIndex = visibleIndex + direction;
+          const targetTab = visibleTabs[targetVisibleIndex];
+          if (!targetTab || targetTab.id === current.tabId) return previous;
+
           const fromIndex = previous.findIndex(
             (tab) => tab.id === current.tabId,
           );
-          const toIndex = fromIndex + direction;
-          const targetTab = previous[toIndex];
-          if (fromIndex === -1 || !targetTab || targetTab.id === current.tabId)
-            return previous;
+          const toIndex = previous.findIndex((tab) => tab.id === targetTab.id);
+          if (fromIndex === -1 || toIndex === -1) return previous;
 
           const targetNode = document.querySelector<HTMLElement>(
             `[data-tab-id="${CSS.escape(targetTab.id)}"]`,
@@ -494,7 +515,6 @@ export function TabBar({
 
       const handleUp = (): void => {
         detachListeners();
-        sortCancelRef.current = null;
         if (moveFrame !== null) {
           cancelAnimationFrame(moveFrame);
           moveFrame = null;
@@ -509,26 +529,14 @@ export function TabBar({
         dragState.current = null;
       };
 
-      // 中途取消：排序已触发后合并手势接管时调用，避免两个手势同时生效。
-      // 注意：已经发生的顺序调换不回滚（标签可能已移动一格），但不会再继续跟随指针。
-      sortCancelRef.current = (): void => {
-        detachListeners();
-        sortCancelRef.current = null;
-        if (moveFrame !== null) {
-          cancelAnimationFrame(moveFrame);
-          moveFrame = null;
-        }
-        pendingMove = null;
-        const current = dragState.current;
-        if (current?.dragging) settleDraggedNode(current.tabId);
-        dragState.current = null;
-      };
-
       document.addEventListener("pointermove", handleMove);
       document.addEventListener("pointerup", handleUp);
       document.addEventListener("pointercancel", handleUp);
+      // 组合手势在本次 pointermove 中才决定进入排序；补处理这次移动，
+      // 否则快速横向拖动后立即松手时，排序监听器会错过唯一一次移动事件。
+      if (initialMove) processMove(initialMove);
     },
-    [setTabs, tabs],
+    [contextTabIds, setTabs],
   );
 
   React.useEffect(() => {
@@ -564,7 +572,6 @@ export function TabBar({
         onActivate={handleActivate}
         onClose={requestClose}
         onDragStart={handleDragStart}
-        onCancelSort={() => sortCancelRef.current?.()}
         teamMode={teamMode}
       />
     </>
@@ -582,7 +589,6 @@ function TabBarInner({
   onActivate,
   onClose,
   onDragStart,
-  onCancelSort,
   teamMode,
 }: {
   tabs: TabItem[];
@@ -593,9 +599,8 @@ function TabBarInner({
   hasPluginPages: boolean;
   onActivate: (tabId: string) => void;
   onClose: (tabId: string) => void;
-  onDragStart: (tabId: string, e: React.PointerEvent) => void;
-  /** 取消进行中的标签排序（合并手势中途接管时调用） */
-  onCancelSort: () => void;
+  onDragStart: (tabId: string, e: React.PointerEvent, initialMove?: PointerEvent) => void;
+
   teamMode: boolean;
 }): React.ReactElement {
   const agentSessions = useAtomValue(agentSessionsAtom);
@@ -820,6 +825,7 @@ function TabBarInner({
   // 滚动容器 ref
   const scrollRef = React.useRef<HTMLDivElement>(null);
   const topbarContentRef = React.useRef<HTMLDivElement>(null);
+  const tabDragSurfaceRef = React.useRef<HTMLDivElement>(null);
   const visibleTopBarToolIds = topBarTools
     .filter((tool) => tool.visible)
     .map((tool) => tool.id)
@@ -846,6 +852,71 @@ function TabBarInner({
     if (actions) observer.observe(actions);
     return () => observer.disconnect();
   }, [visibleTopBarToolIds, showTabBarWindowControls]);
+
+  // The window drag hitbox follows only the blank gap after the last visible tab.
+  React.useLayoutEffect(() => {
+    const content = topbarContentRef.current;
+    const viewport = content?.querySelector<HTMLElement>(".topbar-tabs-viewport");
+    const scroll = scrollRef.current;
+    const dragSurface = tabDragSurfaceRef.current;
+    if (!content || !viewport || !scroll || !dragSurface) return;
+
+    const updateDragGap = (): void => {
+      const contentRect = content.getBoundingClientRect();
+      const viewportRect = viewport.getBoundingClientRect();
+      const actions = content.querySelector<HTMLElement>(".topbar-actions-slot");
+      const actionsLeft = actions?.getBoundingClientRect().left ?? contentRect.right;
+      const visibleTabRights = Array.from(
+        scroll.querySelectorAll<HTMLElement>("[data-tab-id]"),
+      )
+        .map((tab) => tab.getBoundingClientRect())
+        .filter((rect) => rect.right > viewportRect.left && rect.left < viewportRect.right)
+        .map((rect) => Math.min(rect.right, viewportRect.right));
+      const lastTabRight = visibleTabRights.length
+        ? Math.max(...visibleTabRights)
+        : viewportRect.left;
+      const gap = resolveTopBarTabDragGap({
+        contentLeft: contentRect.left,
+        viewportLeft: viewportRect.left,
+        viewportRight: viewportRect.right,
+        lastTabRight,
+        actionsLeft,
+      });
+
+      dragSurface.style.left = `${gap.left}px`;
+      dragSurface.style.width = `${gap.width}px`;
+    };
+
+    updateDragGap();
+    const resizeObserver = new ResizeObserver(updateDragGap);
+    resizeObserver.observe(content);
+    resizeObserver.observe(viewport);
+    resizeObserver.observe(scroll);
+    const observeTabs = (): void => {
+      scroll.querySelectorAll<HTMLElement>("[data-tab-id]").forEach((tab) =>
+        resizeObserver.observe(tab),
+      );
+      updateDragGap();
+    };
+    observeTabs();
+
+    const mutationObserver = new MutationObserver(observeTabs);
+    mutationObserver.observe(scroll, { childList: true, subtree: true });
+    const handleTransitionEnd = (event: TransitionEvent): void => {
+      if (event.propertyName === "transform") updateDragGap();
+    };
+    scroll.addEventListener("scroll", updateDragGap, { passive: true });
+    scroll.addEventListener("transitionend", handleTransitionEnd);
+    window.addEventListener("resize", updateDragGap);
+
+    return () => {
+      resizeObserver.disconnect();
+      mutationObserver.disconnect();
+      scroll.removeEventListener("scroll", updateDragGap);
+      scroll.removeEventListener("transitionend", handleTransitionEnd);
+      window.removeEventListener("resize", updateDragGap);
+    };
+  }, [tabs, visibleTopBarToolIds, showTabBarWindowControls]);
 
   // Tab ??????????????????????????????
   // ????????????? flex-shrink ????????
@@ -927,18 +998,27 @@ function TabBarInner({
         const dy = me.clientY - startY;
 
         if (mode === "pending") {
-          if (Math.abs(dx) <= 5 && Math.abs(dy) <= 5) return;
-          // 轴向判定：纵向起步 → 合并手势；横向 → 交回排序。
-          if (Math.abs(dy) > Math.abs(dx) && dy > 0) {
-            mode = "group";
+          const transition = resolveTabDragTransition({
+            mode,
+            dx,
+            dy,
+          });
+          if (transition.mode === "pending") return;
+          mode = transition.mode;
+          // 轴向判定：首次明确向下 → 合并手势；横向 → 交回排序。
+          if (transition.started === "group") {
             // 复用高亮反馈：让用户知道这个标签已被"拿起来"
             setTearingOff(tabId);
-          } else {
-            mode = "sorting";
-            onDragStart(tabId, e);
+          } else if (transition.started === "sorting") {
+            onDragStart(tabId, e, me);
+            // 排序控制器接管后移除组合的移动监听，保留 pointerup/cancel 做状态清理。
+            document.removeEventListener("pointermove", handleMove);
             return;
           }
         }
+
+        // 排序模式一旦接管，后续的垂直偏移也只属于排序手势，不能再升级为组合。
+        if (mode === "sorting") return;
 
         const barRect = barRef.current?.getBoundingClientRect();
         if (!barRect) return;
@@ -954,15 +1034,6 @@ function TabBarInner({
           me.clientX <= regionRect.right;
 
         if (!regionRect) return;
-
-        // 已经进入排序后仍允许"改主意"：指针落到标签栏下方主区 → 取消排序，改为合并手势。
-        // 否则横向一动就会被排序占住，再也下拉不到投放区。
-        if (mode === "sorting") {
-          if (!insideRegion) return;
-          mode = "group";
-          onCancelSort();
-          setTearingOff(tabId);
-        }
 
         if (!insideRegion) {
           if (hoveredSide) clearDropState();
@@ -1017,7 +1088,7 @@ function TabBarInner({
       document.addEventListener("pointerup", handleUp);
       document.addEventListener("pointercancel", handleUp);
     },
-    [onCancelSort, onDragStart, setTabGroupDrag, setTabMru],
+    [onDragStart, setTabGroupDrag, setTabMru],
   );
 
   /**
@@ -1025,17 +1096,17 @@ function TabBarInner({
    * 落入投放区 → 组合；没落入 → 取消。并排分屏统一由组合承担，不再有 tear-off 回落。
    */
   const handleDragStartWithTearOff = React.useCallback(
-    (tabId: string, e: React.PointerEvent) => {
+    (tabId: string, e: React.PointerEvent, initialMove?: PointerEvent) => {
       const tab = tabs.find((t) => t.id === tabId);
       if (!tab) {
-        onDragStart(tabId, e);
+        onDragStart(tabId, e, initialMove);
         return;
       }
       if (isGroupEligibleTab(tab)) {
         handleGroupTabDrag(tabId, e);
         return;
       }
-      onDragStart(tabId, e);
+      onDragStart(tabId, e, initialMove);
     },
     [tabs, onDragStart, handleGroupTabDrag],
   );
@@ -1236,10 +1307,7 @@ function TabBarInner({
       className="topbar-editorial relative tabbar-bg"
       style={{ height: TOPBAR_HEIGHT }}
     >
-      {/* 顶栏不整条声明 drag：Tab、工具组、窗口按钮都是 no-drag，整条 drag 只能靠
-          从大矩形里扣除小块矩形来放行交互，正是 Windows 高 DPI 点击失效的成因。
-          这里改为单一拖拽层，并在右侧操作胶囊左缘精确结束（见 .topbar-drag-surface）。 */}
-
+      {/* The topbar drag hitbox is measured into this gap only; Tab pointer handlers remain untouched. */}
       {tearingOff && (
         <div className="pointer-events-none absolute -bottom-px left-0 right-0 h-px bg-primary/60 shadow-[0_0_8px_rgba(0,0,0,0.2)]" />
       )}
@@ -1251,8 +1319,11 @@ function TabBarInner({
         className="topbar-content absolute inset-x-0 z-10"
         style={{ top: TOPBAR_CONTENT_OFFSET, height: TOPBAR_CONTENT_HEIGHT }}
       >
-        <div className="topbar-drag-surface absolute inset-y-0 left-0 titlebar-drag-region" />
-
+        <div
+          ref={tabDragSurfaceRef}
+          className="topbar-tab-drag-surface absolute inset-y-0 z-[15] titlebar-drag-region"
+          aria-hidden="true"
+        />
         <div className="topbar-tabs-viewport absolute inset-0 overflow-hidden rounded-r-full">
           <div
             ref={scrollRef}

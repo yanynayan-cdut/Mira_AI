@@ -22,7 +22,6 @@ import {
   Keyboard,
   Users,
   Coins,
-  CreditCard,
   Database,
   Network,
   UserRound,
@@ -63,7 +62,6 @@ import { ShortcutSettings } from "./ShortcutSettings";
 import { DataManagementSettings } from "./DataManagementSettings";
 import { TeamWorkspaceSettings } from "./TeamWorkspaceSettings";
 import { CreditsSettings } from "./CreditsSettings";
-import { SubscriptionSettings } from "./SubscriptionSettings";
 import { OpenApiSettings } from "./OpenApiSettings";
 import { ProxySettings } from "./ProxySettings";
 import { PluginSettings } from "./PluginSettings";
@@ -88,7 +86,6 @@ export interface SettingsTabGroup {
 const ACCOUNT_GROUP_ITEMS: SettingsTabItem[] = [
   { id: "account", label: "账户与资料", icon: <UserRound size={16} /> },
   { id: "credits", label: "额度与用量", icon: <Coins size={16} /> },
-  { id: "subscription", label: "订阅方案", icon: <CreditCard size={16} /> },
   ...(TEAM_WORKSPACE_UI_ENABLED
     ? [{ id: "team" as const, label: "团队管理", icon: <Users size={16} /> }]
     : []),
@@ -121,7 +118,7 @@ const SYSTEM_GROUP_ITEMS: SettingsTabItem[] = [
 
 /** 帮助：教程 / 关于与更新 */
 const HELP_GROUP_ITEMS: SettingsTabItem[] = [
-  { id: "tutorial", label: "Profer 教程", icon: <GraduationCap size={16} /> },
+  { id: "tutorial", label: "Mira 教程", icon: <GraduationCap size={16} /> },
   { id: "about", label: "关于/更新", icon: <Info size={16} /> },
 ];
 
@@ -140,7 +137,6 @@ const PLUGIN_SYSTEM_ITEM: SettingsTabItem = {
 /** 依赖团队账号登录的 Tab（未登录时不展示） */
 const AUTH_REQUIRED_TABS: ReadonlySet<SettingsTab> = new Set([
   "credits",
-  "subscription",
   "team",
 ]);
 
@@ -179,8 +175,6 @@ function renderTabContent(tab: SettingsTab): React.ReactElement {
       return <TeamWorkspaceSettings />;
     case "credits":
       return <CreditsSettings />;
-    case "subscription":
-      return <SubscriptionSettings />;
     // 开放 API 暂无导航入口；保留渲染分支以兼容既有内部跳转和后续恢复。
     case "openapi":
       return <OpenApiSettings />;
@@ -222,7 +216,7 @@ export function SettingsPanel({
   /** 完成导航（仅在无需确认或用户明确放弃后调用）。 */
   const navigateToTab = (tabId: SettingsTab): void => {
     if (tabId === 'tutorial') {
-      const result = openTab(mainTabs, { type: 'tutorial', sessionId: TUTORIAL_TAB_ID, title: 'Profer 使用教程' })
+      const result = openTab(mainTabs, { type: 'tutorial', sessionId: TUTORIAL_TAB_ID, title: 'Mira 使用教程' })
       setMainTabs(result.tabs)
       setMainActiveTabId(result.activeTabId)
       setSettingsOpen(false)

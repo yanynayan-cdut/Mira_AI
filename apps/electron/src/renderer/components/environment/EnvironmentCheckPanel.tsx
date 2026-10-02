@@ -118,8 +118,8 @@ export function EnvironmentCheckPanel({
           </h3>
           <p className="text-xs text-muted-foreground mt-0.5">
             {isWindows
-              ? 'Profer 在 Windows 上需要 Git Bash 或 WSL 才能运行 Agent'
-              : '检查 Profer 运行 Agent 所需的本地工具'}
+              ? 'Mira 在 Windows 上需要 Git Bash 或 WSL 才能运行 Agent'
+              : '检查 Mira 运行 Agent 所需的本地工具'}
           </p>
         </div>
         <Button

@@ -54,7 +54,7 @@ describe('Agent preview Claude adapter', () => {
     expect(result.content[0]).toMatchObject({ type: 'text' })
   })
 
-  test('opens PPTX through the official Profer preview event without returning screenshot bytes', async () => {
+  test('opens PPTX through the official Mira preview event without returning screenshot bytes', async () => {
     const dir = mkdtempSync(join(tmpdir(), 'profer-ppt-preview-'))
     try {
       const filePath = join(dir, 'deck.pptx')

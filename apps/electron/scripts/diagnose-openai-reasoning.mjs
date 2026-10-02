@@ -1,7 +1,7 @@
 /**
  * OpenAI-compatible reasoning diagnostics.
  *
- * Sends a single streaming Chat Completions request matching Profer's OpenAI
+ * Sends a single streaming Chat Completions request matching Mira's OpenAI
  * compatibility transport and reports which public reasoning fields the relay
  * returns. It never writes secrets or response bodies to disk.
  *

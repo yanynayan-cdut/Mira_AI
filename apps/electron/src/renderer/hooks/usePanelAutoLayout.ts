@@ -28,6 +28,7 @@ import { findTabGroup, tabGroupsAtom } from '@/atoms/tab-group-atoms'
 import { appModeAtom } from '@/atoms/app-mode'
 import {
   computeVisibility,
+  resolvePanelLayoutState,
   type PanelLayoutState,
   type PanelVisibility,
 } from '@/lib/panel-layout'
@@ -43,16 +44,18 @@ function getCurrentLayout(): PanelLayoutState {
   const scopeActive = store.get(layoutScopeActiveAtom)
   const appMode = store.get(appModeAtom)
   const sessionId = store.get(currentAgentSessionIdAtom)
-  const agentSessionActive = scopeActive && appMode === 'agent' && !!sessionId
   // 主区栏数：用与 MainArea 相同的纯判定（isGroupActive），
   // 避免"预算算几栏"和"实际渲染几栏"各写一套。
   const group = findTabGroup(store.get(tabGroupsAtom), store.get(activeTabIdAtom))
   const groupViewActive = !!group && (!!group.leftTabId || !!group.rightTabId)
-  return {
-    sidebar: !store.get(sidebarCollapsedAtom),
-    filePanel: agentSessionActive && store.get(agentSidePanelOpenAtom),
-    mainPaneCount: groupViewActive ? 2 : 1,
-  }
+  return resolvePanelLayoutState({
+    scopeActive,
+    appMode,
+    sessionId,
+    sidebarExpanded: !store.get(sidebarCollapsedAtom),
+    filePanelOpenIntent: store.get(agentSidePanelOpenAtom),
+    groupActive: groupViewActive,
+  })
 }
 
 /**

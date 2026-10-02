@@ -42,8 +42,7 @@ function seed() {
 08-08 正式版 GPU 进程 693MB 私有内存高：高分屏+Intel Arc+Electron 43 常态非泄漏。`)
   writeFileSync(join(memoryDir, 'pr-wflow.md'), `# 干净 PR 工作流
 每个独立功能使用从最新 origin/main 建立的隔离 worktree + 精确暂存 + cherry-pick。合并后删除临时分支。`)
-  writeFileSync(join(memoryDir, 'prod-server-ops.md'), `# 生产运维
-服务器拓扑 47.109.108.57，docker 手动构建，部署规则：换用户/uid 必须 chown 数据卷。`)
+  writeFileSync(join(memoryDir, 'private-fixture.md'), `# Internal fixture\nPrivate test marker: 192.0.2.10.\n`)
 }
 
 let pass = 0
@@ -61,7 +60,7 @@ const cases = [
   ['中文单字', '引', 1, 'skin-engine.md'],
   ['英文整词', 'worktree', 1, 'pr-wflow.md'],
   ['路径片段', 'profer-skin', 1, 'skin-engine.md'],
-  ['版本号', '47.109.108.57', 1, 'prod-server-ops.md'],
+  ['版本号', '192.0.2.10', 1, 'private-fixture.md'],
   ['英文+版本混合', 'Electron 43', 1, 'profer-performance-issues.md'],
   ['英文大小写', 'WORKTREE', 1, 'pr-wflow.md'],
   ['无关查询', '量子计算', 0, null],

@@ -1,4 +1,4 @@
-/** 全局 Skill 列表：复用安装版“我的 Skills / Profer 内置”分组结构。 */
+/** 全局 Skill 列表：复用安装版“我的 Skills / Mira 内置”分组结构。 */
 import * as React from "react";
 import { toast } from "sonner";
 import { Blocks, RefreshCw, Plus, Upload } from "lucide-react";
@@ -186,7 +186,7 @@ export function MasterSkillsTab({
       )}
       {builtinSkills.length > 0 && (
         <SkillSection
-          title={globalMode ? "元 Skills" : "Profer 内置"}
+          title={globalMode ? "元 Skills" : "Mira 内置"}
           skills={builtinSkills}
           onOpen={setSelected}
         />
@@ -200,12 +200,12 @@ export function MasterSkillsTab({
         <div className="flex flex-col items-center gap-3 py-20 text-center">
           <Blocks size={32} className="text-foreground/30" />
           <div className="text-sm font-medium text-foreground/80">
-            暂无{globalMode ? "全局 Skill" : "Profer 内置"}
+            暂无{globalMode ? "全局 Skill" : "Mira 内置"}
           </div>
           <div className="max-w-sm text-[13px] text-foreground/50">
             {globalMode
               ? "全局 Skill 可跨工作区使用，创建后可在详情中管理生效范围。"
-              : "Profer 内置 Skill 会显示在这里。"}
+              : "Mira 内置 Skill 会显示在这里。"}
           </div>
           {globalMode && (
             <button

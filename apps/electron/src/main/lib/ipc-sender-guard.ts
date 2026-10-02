@@ -29,6 +29,6 @@ export function isMainWindowSender(event: IpcEventLike, getMainWindow: MainWindo
 /** 在 IPC handler 开始处拒绝非主窗口、已销毁 sender 或已销毁主窗口。 */
 export function assertMainWindowSender(event: IpcEventLike, getMainWindow: MainWindowGetter): void {
   if (!isMainWindowSender(event, getMainWindow)) {
-    throw new Error('仅允许 Profer 主窗口调用此 Agent IPC')
+    throw new Error('仅允许 Mira 主窗口调用此 Agent IPC')
   }
 }

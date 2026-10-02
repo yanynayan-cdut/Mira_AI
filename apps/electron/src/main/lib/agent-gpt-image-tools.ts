@@ -7,7 +7,7 @@ import { filterDisabledTools } from '@profer/shared'
 
 export const AGENT_GPT_IMAGE_TOOL_NAME = 'generate_image'
 
-const DESCRIPTION = 'Generate one image from a prompt, edit 1–4 authorized local PNG/JPEG/GIF/WebP reference files, or edit the latest successful image generated in this current Agent session with useLastGeneratedImage. useLastGeneratedImage cannot be combined with referenceImagePaths. Official mode charges 5 Profer credits only after successful delivery. Profer automatically attaches the delivered image to the conversation; do not output internal image protocol markers.'
+const DESCRIPTION = 'Generate one image from a prompt, edit 1–4 authorized local PNG/JPEG/GIF/WebP reference files, or edit the latest successful image generated in this current Agent session with useLastGeneratedImage. useLastGeneratedImage cannot be combined with referenceImagePaths. Official mode charges 5 Mira credits only after successful delivery. Mira automatically attaches the delivered image to the conversation; do not output internal image protocol markers.'
 
 type ToolResult = { content: Array<{ type: 'text'; text: string }>; details?: unknown; isError?: boolean }
 

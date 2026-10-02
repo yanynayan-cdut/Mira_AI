@@ -1,5 +1,5 @@
 /**
- * 读出 app 文档上**实际生效**的 Profer token 值，交给浏览器列里的 viewer 页。
+ * 读出 app 文档上**实际生效**的 Mira token 值，交给浏览器列里的 viewer 页。
  *
  * 为什么不是照抄 `globals.css` 的默认值：真正决定观感的是"此刻生效的变量"——
  * 皮肤通过 `<style id="skin-css">` 覆写 `:root`，用户皮肤还可能直接改别名

@@ -4,7 +4,7 @@
  * @deprecated 已废弃：意见反馈已内联到 AboutSettings.tsx 的 FeedbackSection，
  * 本文件未被任何入口引用。保留仅作历史参考，新代码请勿在此接线。
  *
- * 向 Profer 服务端提交意见反馈，无需登录态。
+ * 向 Mira 服务端提交意见反馈，无需登录态。
  * 也展示提交历史（如果有团队登录态）。
  */
 import * as React from 'react'
@@ -56,7 +56,7 @@ export function FeedbackSettings(): React.ReactElement {
     try {
       const auth = await getAuth()
       if (!auth?.baseUrl) {
-        setErrorMsg('未连接到 Profer 服务端，请先在通用设置中登录团队账号。')
+        setErrorMsg('未连接到 Mira 服务端，请先在通用设置中登录团队账号。')
         setSubmitState('error')
         return
       }
@@ -196,7 +196,7 @@ export function FeedbackSettings(): React.ReactElement {
         <div className="flex items-start gap-2.5 text-xs text-muted-foreground bg-muted/30 rounded-lg p-3">
           <MessageSquareText size={14} className="flex-shrink-0 mt-0.5" />
           <span>
-            你的意见将发送到 Profer 服务端。如需查看历史反馈或追踪处理进度，请联系管理员。提交内容请勿包含敏感信息（如密码、密钥等）。
+            你的意见将发送到 Mira 服务端。如需查看历史反馈或追踪处理进度，请联系管理员。提交内容请勿包含敏感信息（如密码、密钥等）。
           </span>
         </div>
       </SettingsSection>

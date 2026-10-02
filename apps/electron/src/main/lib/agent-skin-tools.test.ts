@@ -49,7 +49,7 @@ mock.module('./agent-image-output-service', () => ({ readAuthorizedAgentImage: a
 
 const { AGENT_SKIN_TOOL_NAME, injectAgentSkinMcpServer, derivePreviewImage } = await import('./agent-skin-tools')
 
-describe('Agent Profer skin tool', () => {
+describe('Agent Mira skin tool', () => {
   test('Given a workspace-backed Claude session When injecting skin tools Then create_skin is available with CSS and wallpaper inputs', async () => {
     const captured: Array<{ name: string; parameters: unknown }> = []
     const sdk = {

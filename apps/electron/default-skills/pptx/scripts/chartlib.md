@@ -1,4 +1,4 @@
-# chartlib.py —— Profer 高级图表封装库使用文档
+# chartlib.py —— Mira 高级图表封装库使用文档
 
 > 解决 pptxgenjs 做不了的高级图表：**组合图 / 双 Y 轴 / 84 种图表类型 / 精细美化**。
 > 基于 python-pptx，统一接口 `add_chart()`，Agent 传数据 + 选类型 + 选配色即可，不碰底层 XML。

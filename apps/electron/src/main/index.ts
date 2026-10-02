@@ -1,7 +1,7 @@
 import { app, BrowserWindow, dialog, Menu, powerMonitor, protocol, screen, shell } from 'electron'
 import { join } from 'path'
 import { createConnection } from 'net'
-import { existsSync, cpSync, mkdirSync, readdirSync } from 'fs'
+import { existsSync, cpSync, mkdirSync, readdirSync, readFileSync } from 'fs'
 import { getDevInstanceId, resolveDevAppName, resolveDevUserDataPath } from './lib/dev-instance'
 import { appendDevDiagnostic } from './lib/dev-diagnostics-log'
 
@@ -43,7 +43,7 @@ if (devInstanceId) {
   console.log(`[启动] 开发隔离实例: ${devInstanceId}，userData=${app.getPath('userData')}`)
 }
 
-// 一次性迁移：把存量 Profer 用户遗留在 @proma/electron 的浏览器层数据搬到新目录。
+// 一次性迁移：把存量 Mira 用户遗留在 @proma/electron 的浏览器层数据搬到新目录。
 // 登录态/会话/自动任务/device_id 都在 ~/.profer（不涉及），这里只搬 Chromium 层，避免用户升级后
 // 首屏缓存/cookie 凭空清空。copy 而非 move（保住原版 Proma 的目录）；跳过可再生大缓存；静默降级。
 migrateUserDataFromProferIfNeeded()
@@ -84,7 +84,7 @@ function migrateUserDataFromProferIfNeeded(): void {
   }
 }
 
-// 仅正式 Windows 安装版声明 AUMID，使任务栏与 Profer.exe / 开始菜单快捷方式绑定。
+// 仅正式 Windows 安装版声明 AUMID，使任务栏与 Mira.exe / 开始菜单快捷方式绑定。
 // 开发版由裸 electron.exe 承载，刻意不声明 AUMID：任务栏使用 Electron 默认图标，
 // 避免开发环境向 Windows Shell 注册或污染生产 com.profer.app 身份。
 if (process.platform === 'win32' && app.isPackaged) {
@@ -95,8 +95,8 @@ if (process.platform === 'win32' && app.isPackaged) {
 // 单实例锁：防止重复启动同一个版本
 if (!app.requestSingleInstanceLock()) {
   console.warn(
-    '[启动] 已有 Profer 进程持有单实例锁，本次启动将退出。\n' +
-      '  如果窗口未出现，可能旧进程已卡死。请运行 `killall Profer` 后重试。',
+    '[启动] 已有 Mira 进程持有单实例锁，本次启动将退出。\n' +
+      '  如果窗口未出现，可能旧进程已卡死。请运行 `killall Mira` 后重试。',
   )
   app.quit()
 } else {
@@ -150,6 +150,7 @@ function registerProtocolsAndHandlers(): void {
 import { getSettings, updateSettings } from './lib/settings-service'
 import { resolveAppThemeIsDark } from './lib/app-theme-service'
 import { createCenteredStartupSplashBounds, createStartupSplashHtml } from './lib/startup-splash'
+import { MIRA_STARTUP_MIN_MS } from '../shared/mira-intro'
 import { handleProferFileRequest } from './lib/local-file-protocol'
 import { handleProferSkinRequest } from './lib/skin-service'
 import { disposeAgentPreviewRenderer } from './lib/agent-preview-renderer'
@@ -343,7 +344,7 @@ function parseDiagnosticPayload(raw: string): unknown {
 let startupSplashWindow: BrowserWindow | null = null
 
 // CSS 圆环会在约 2.4 秒内陆续扩散；保留足够展示时间以便用户观察启动反馈。
-const STARTUP_SPLASH_MIN_MS = 2400
+const STARTUP_SPLASH_MIN_MS = MIRA_STARTUP_MIN_MS
 
 /** 启动闪屏的背景明暗：与「Agent 打开的本地预览」共用同一套解析（皮肤 tone 优先于 id 后缀启发式） */
 const resolveStartupSplashDark = resolveAppThemeIsDark
@@ -658,11 +659,17 @@ function createWindow(): void {
     splashWindow.setAlwaysOnTop(true, 'floating')
 
     splashWindow.webContents.once('did-finish-load', () => {
+      // 从开场可见时开始计时，避免主进程初始化耗时截断图标组装与字母回弹。
+      splashStartedAt = Date.now()
       splashShown = true
       startupSplashWindow?.show()
       showWhenReady()
     })
-    void splashWindow.loadURL(`data:text/html;charset=utf-8,${encodeURIComponent(createStartupSplashHtml(resolveStartupSplashDark()))}`)
+    const splashIconPath = join(app.isPackaged ? process.resourcesPath : join(__dirname, 'resources'), 'icon.png')
+    const splashIconUrl = existsSync(splashIconPath)
+      ? `data:image/png;base64,${readFileSync(splashIconPath).toString('base64')}`
+      : ''
+    void splashWindow.loadURL(`data:text/html;charset=utf-8,${encodeURIComponent(createStartupSplashHtml(resolveStartupSplashDark(), splashIconUrl))}`)
   }
 
   /**
@@ -874,7 +881,7 @@ async function bootstrap(): Promise<void> {
   // Electron 不会自动提供文本右键菜单；先注册监听，确保主窗口和后续子窗口都能使用。
   installTextContextMenus()
 
-  // 初始化 Profer 版本号（供 User-Agent 等全局标识使用）
+  // 初始化 Mira 版本号（供 User-Agent 等全局标识使用）
   setProferVersion(app.getVersion())
 
   // 注册自定义协议 profer-file:// 用于内联预览本地文件。
@@ -889,7 +896,7 @@ async function bootstrap(): Promise<void> {
   // 热启动时从磁盘缓存恢复，耗时 < 10ms
   await safeAwait('initializeRuntime', () => initializeRuntime())
 
-  // 从旧 Proma 数据目录迁移到 Profer（一次性）
+  // 从旧 Proma 数据目录迁移到 Mira（一次性）
   const { migrateFromProferIfNeeded } = require('./lib/config-paths')
   safeRun('migrateFromProfer', migrateFromProferIfNeeded)
 
@@ -953,7 +960,7 @@ async function bootstrap(): Promise<void> {
   })
 
   // 开发态由裸 electron.exe 承载；维护 .dev AUMID 的专属 Shell 快捷方式，
-  // 防止它注册为 Electron 或污染正式 Profer 的任务栏身份。
+  // 防止它注册为 Electron 或污染正式 Mira 的任务栏身份。
   safeRun('maintainDevShellShortcut', maintainDevShellShortcut)
   createTray({
     showMainWindow: showAndFocusMainWindow,
@@ -1164,11 +1171,11 @@ function handleBootstrapFailure(err: unknown): void {
   try {
     const message = err instanceof Error ? (err.stack ?? err.message) : String(err)
     dialog.showErrorBox(
-      'Profer 启动遇到错误',
+      'Mira 启动遇到错误',
       `部分功能可能不可用：\n\n${message}\n\n` +
         `日志位置：${app.getPath('logs')}\n\n` +
         `常见原因与排查：\n` +
-        `1. 旧版 Profer 进程未退出（终端运行 killall Profer 后重试）\n` +
+        `1. 旧版 Mira 进程未退出（终端运行 killall Mira 后重试）\n` +
         `2. ~/.profer/ 配置损坏（重命名 ~/.profer 后重启）\n` +
         `3. 系统 Keychain 无法解密保存的凭证（删除 ~/.profer/feishu.json 等后重新登录）\n\n` +
         `如需协助请到 GitHub Issues 反馈。`,

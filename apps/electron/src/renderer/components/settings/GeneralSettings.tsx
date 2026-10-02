@@ -147,7 +147,7 @@ export function GeneralSettings(): React.ReactElement {
           <SettingsToggle
             label={`快速任务（${quickTaskShortcut || '快捷键已禁用'}）`}
             description={quickTaskShortcut
-              ? `启用后预创建全局唤起窗口，在任意应用按 ${quickTaskShortcut} 快速向 Profer 发送任务；可在快捷键管理中修改`
+              ? `启用后预创建全局唤起窗口，在任意应用按 ${quickTaskShortcut} 快速向 Mira 发送任务；可在快捷键管理中修改`
               : '快捷键已禁用，可在快捷键管理中重新设置全局唤起组合键'}
             checked={quickTaskEnabled}
             onCheckedChange={handleQuickTaskToggle}
@@ -179,12 +179,12 @@ export function GeneralSettings(): React.ReactElement {
 
       <SettingsSection
         title="系统环境"
-        description="配置 Profer 的启动方式、命令执行环境和新标签页"
+        description="配置 Mira 的启动方式、命令执行环境和新标签页"
       >
         <SettingsCard>
           <SettingsToggle
             label="开机自启动"
-            description="系统启动时自动运行 Profer"
+            description="系统启动时自动运行 Mira"
             checked={autoLaunch}
             disabled={autoLaunchBusy}
             onCheckedChange={handleAutoLaunchChange}

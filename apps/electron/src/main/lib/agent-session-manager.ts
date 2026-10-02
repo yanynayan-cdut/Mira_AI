@@ -41,14 +41,14 @@ import { adoptPiFileCheckpoints, loadPiFileCheckpoint, restorePiFileCheckpoint, 
 // Claude Code CLI（或 shell/CI 里）本就设了 CLAUDE_CONFIG_DIR，旧守卫会跳过覆盖 →
 // 进程内的 sdk.forkSession（只读 process.env，不像 orchestrator query 子进程那样显式传参）
 // 会去读用户/CLI 的配置目录，导致 dev/生产/CLI 三方 SDK 会话数据互相污染、fork 报
-// "Session not found"。这里强制指向 Profer 隔离目录，检测到外部不同值时打 warn 以便排查。
+// "Session not found"。这里强制指向 Mira 隔离目录，检测到外部不同值时打 warn 以便排查。
 {
   const proferSdkConfigDir = getSdkConfigDir()
   const ambientConfigDir = process.env.CLAUDE_CONFIG_DIR
   if (ambientConfigDir && ambientConfigDir !== proferSdkConfigDir) {
     console.warn(
       `[Agent 会话] 检测到外部 CLAUDE_CONFIG_DIR=${ambientConfigDir}（可能来自 Claude Code CLI / shell / CI），` +
-      `已强制覆盖为 Profer 隔离目录: ${proferSdkConfigDir}（配置隔离，避免 SDK 会话数据串目录）`,
+      `已强制覆盖为 Mira 隔离目录: ${proferSdkConfigDir}（配置隔离，避免 SDK 会话数据串目录）`,
     )
   }
   process.env.CLAUDE_CONFIG_DIR = proferSdkConfigDir
@@ -282,7 +282,7 @@ function writeIndex(index: AgentSessionsIndex): void {
  * 为委派子会话创建 agent-sessions.json 索引条目。
  *
  * 协作 MCP 工具（由平台层提供）创建子 SDK 会话后，需调用此函数将元数据
- * 写入 Profer 的 agent-sessions.json，否则侧栏无法发现和显示该子会话。
+ * 写入 Mira 的 agent-sessions.json，否则侧栏无法发现和显示该子会话。
  */
 export function createDelegatedChildSessionMeta(params: {
   childSessionId: string
@@ -1382,7 +1382,7 @@ export function deleteAgentSession(id: string): void {
   }
   writeIndex(index)
 
-  // 删除消息与任务图文件。任务图和会话消息均属于该 Profer session，删除必须同步清理。
+  // 删除消息与任务图文件。任务图和会话消息均属于该 Mira session，删除必须同步清理。
   for (const [label, filePath] of [
     ['消息', getAgentSessionMessagesPath(id)],
     ['任务图', getGraphJsonlPath(getAgentSessionsDir(), id)],
@@ -1531,7 +1531,7 @@ export function findOrphanSessions(): SessionHealth[] {
       isOrphan: false,
     }
 
-    // 检查 Profer JSONL。Harness sidecar 缺失仅表示历史会话可从空 snapshot 降级，不是孤儿条件。
+    // 检查 Mira JSONL。Harness sidecar 缺失仅表示历史会话可从空 snapshot 降级，不是孤儿条件。
     health.hasProferJsonl = existsSync(getAgentSessionMessagesPath(session.id))
     health.hasPiHarnessJsonl = existsSync(getPiHarnessEventsPath(session.id))
 
@@ -1554,7 +1554,7 @@ export function findOrphanSessions(): SessionHealth[] {
     // 判定孤儿
     const reasons: string[] = []
     if (!health.hasProferJsonl && !health.hasSdkJsonl) {
-      reasons.push('Profer 和 SDK JSONL 均缺失')
+      reasons.push('Mira 和 SDK JSONL 均缺失')
     } else if (session.sdkSessionId && !health.hasSdkJsonl) {
       reasons.push('SDK JSONL 缺失（无法 resume，每次打开都会触发 session-not-found 恢复）')
     }
@@ -1704,7 +1704,7 @@ export function migrateChatToAgentSession(conversationId: string, agentSessionId
  * 分叉 Pi Agent 会话。
  *
  * Pi 的 session 是 append-only tree。分叉必须由 SessionManager 导出目标 branch，
- * 不能只复制 Profer 的展示 JSONL，否则下一轮 resume 仍会看到被截断的上下文。
+ * 不能只复制 Mira 的展示 JSONL，否则下一轮 resume 仍会看到被截断的上下文。
  */
 async function forkPiAgentSession(sourceMeta: AgentSessionMeta, input: ForkSessionInput): Promise<AgentSessionMeta> {
   const targetUuid = input.upToMessageUuid
@@ -1890,7 +1890,7 @@ function extractTextFromSDKMessage(message: SDKMessage): string {
 /**
  * 回退 Pi Agent 会话（同一会话内截断到指定 assistant 消息）。
  *
- * Pi 的 session 是 append-only tree，但 Profer 每次 sendMessage 都会重新
+ * Pi 的 session 是 append-only tree，但 Mira 每次 sendMessage 都会重新
  * `SessionManager.open()` 会话文件，leaf 指针 = 文件中最后一个 entry。因此
  * 不能只改内存 leaf，必须**物理截断 JSONL**：保留 header + root→目标 entry
  * 的主路径（getBranch），丢弃其余 entry（含未激活分支与目标之后的 turn）。
@@ -1997,7 +1997,7 @@ export async function rewindPiSession(
   }
   console.log(`[Agent 会话] Pi session 已截断: sessionId=${sessionId}, 保留 ${keptEntries.length} 条 entry (entry=${entryId})`)
 
-  // 4. 截断 Profer 展示 JSONL（与 Pi 文件保持一致）
+  // 4. 截断 Mira 展示 JSONL（与 Pi 文件保持一致）
   const kept = truncateSDKMessages(sessionId, cutMessageUuid)
 
   // 4. 清理 piEntryBindings：删除已截断 entry 的映射，避免残留脏映射；
@@ -2191,7 +2191,7 @@ async function forkAgentSessionUnlocked(sourceMeta: AgentSessionMeta, input: For
 
   // 2.5 校验目标消息并确定其所属的 SDK session ID
   // - 当会话经历过 "session not found" 恢复后，sdkSessionId 会被替换为新的，
-  //   但旧消息仍保留在 Profer JSONL 中，其 session_id 指向旧的 SDK session。
+  //   但旧消息仍保留在 Mira JSONL 中，其 session_id 指向旧的 SDK session。
   // - 若目标消息是 sub-agent 输出（parent_tool_use_id 非空），SDK forkSession
   //   会过滤掉 sidechain 后再查 upToMessageId，必然报 "not found"，
   //   这里自动回溯到最近的主线 assistant uuid。
@@ -2275,7 +2275,7 @@ async function forkAgentSessionUnlocked(sourceMeta: AgentSessionMeta, input: For
   // 3.5 校验 SDK forkSession 是否真的产生了 JSONL 文件
   // SDK forkSession 在某些边缘场景（如源会话为 collaboration 子会话、project-hash
   // 不匹配等）可能返回 sessionId 但实际未落盘 JSONL。若不校验，后续步骤会创建
-  // Profer 会话元数据但 SDK 侧无对应文件，导致 "No conversation found" 错误。
+  // Mira 会话元数据但 SDK 侧无对应文件，导致 "No conversation found" 错误。
   const forkJsonlPath = findSdkSessionJsonl(forkResult.sessionId)
   if (!forkJsonlPath) {
     throw new Error(
@@ -2286,7 +2286,7 @@ async function forkAgentSessionUnlocked(sourceMeta: AgentSessionMeta, input: For
   }
   console.log(`[Agent 会话] SDK forkSession JSONL 已确认: ${forkJsonlPath}`)
 
-  // 4. 创建 Profer 新会话，立即设置 sdkSessionId
+  // 4. 创建 Mira 新会话，立即设置 sdkSessionId
   const forkTitle = `${sourceMeta.title} (fork)`
   const newMeta = createAgentSession(
     forkTitle,
@@ -2306,7 +2306,7 @@ async function forkAgentSessionUnlocked(sourceMeta: AgentSessionMeta, input: For
   newMeta.forkSourceDir = sourceDir
   newMeta.forkSourceSdkSessionId = forkSourceSdkSessionId
 
-  // 4.4-7 包装在 try-catch 中，关键步骤失败时回滚已创建的 Profer 会话记录，
+  // 4.4-7 包装在 try-catch 中，关键步骤失败时回滚已创建的 Mira 会话记录，
   // 避免产生孤儿条目（agent-sessions.json 有记录但无有效 SDK session 数据）。
   try {
     // 4.4 计算 fork 目标会话的 cwd（新会话目录），后续多个步骤需要用到
@@ -2337,7 +2337,7 @@ async function forkAgentSessionUnlocked(sourceMeta: AgentSessionMeta, input: For
 
     // 5. 复制源会话工作区文件到新会话目录
     // 仅排除 .claude/（settings.json 启动时会重建）、.DS_Store、.git。
-    // .context/ 必须保留 — Profer 约定 .context/note.md、todo.md、plan/ 等是会话上下文，
+    // .context/ 必须保留 — Mira 约定 .context/note.md、todo.md、plan/ 等是会话上下文，
     // 如果不复制，fork 后这些参考资料会丢失或被 Claude 误回源目录读取。
     if (sourceDir && destDir) {
       const copyResult = copyForkWorkspaceFiles(sourceDir, destDir)
@@ -2381,7 +2381,7 @@ async function forkAgentSessionUnlocked(sourceMeta: AgentSessionMeta, input: For
     console.log(`[Agent 会话] 分叉会话已创建（SDK 原生 fork）: ${sourceMeta.title} → ${forkTitle} (${messagesToCopy.length} 条消息, sdkSessionId=${forkResult.sessionId})`)
     return newMeta
   } catch (err) {
-    // 回滚：删除已创建的 Profer 会话记录，避免孤儿条目
+    // 回滚：删除已创建的 Mira 会话记录，避免孤儿条目
     console.error(`[Agent 会话] fork 关键步骤失败，回滚会话记录 (${newMeta.id}):`, err)
     try {
       deleteAgentSession(newMeta.id)
@@ -2543,10 +2543,10 @@ export function truncateSDKMessages(id: string, upToUuidInclusive: string): SDKM
  * 从 SDK session JSONL 中查找指定 assistant message 之后最近的 user message UUID
  *
  * SDK session JSONL（~/.proma/sdk-config/projects/...）中的消息都带有 uuid，
- * 但 Profer 自己构造的 user message 没有 uuid。此函数直接读取 SDK 的 JSONL
+ * 但 Mira 自己构造的 user message 没有 uuid。此函数直接读取 SDK 的 JSONL
  * 来解析 rewindFiles 所需的 user message UUID。
  *
- * 对于 fork 会话：Profer JSONL 中的 UUID 来自**源会话**（fork 时直接复制），
+ * 对于 fork 会话：Mira JSONL 中的 UUID 来自**源会话**（fork 时直接复制），
  * 而 forked SDK JSONL 中的 UUID 已被重映射。因此 fork 会话需要搜索**源**
  * SDK JSONL 来匹配 assistant UUID。通过 forkSourceSdkSessionId 参数指定。
  *
@@ -2577,7 +2577,7 @@ export function resolveUserUuidFromSDK(
         } catch { return false }
       })
       if (!hasUuidAsField) {
-        // Profer JSONL 中的 UUID 来自源会话，forked JSONL 中已重映射
+        // Mira JSONL 中的 UUID 来自源会话，forked JSONL 中已重映射
         const sourceFilePath = findSdkSessionJsonl(forkSourceSdkSessionId, projectDir)
         if (sourceFilePath) {
           console.log(`[Agent 会话] resolveUserUuid: fork 会话 UUID 不匹配（非 .uuid 字段），切换到源会话 ${forkSourceSdkSessionId}`)
@@ -2657,7 +2657,7 @@ function findSdkSessionJsonl(sdkSessionId: string, _projectDir?: string): string
   const sdkConfigDir = getSdkConfigDir()
 
   // 遍历所有项目目录查找匹配的 session JSONL
-  // （SDK 的目录命名规则与 Profer 不完全一致，直接遍历最可靠）
+  // （SDK 的目录命名规则与 Mira 不完全一致，直接遍历最可靠）
   const projectsDir = join(sdkConfigDir, 'projects')
   if (existsSync(projectsDir)) {
     for (const dir of readdirSync(projectsDir)) {

@@ -1,7 +1,7 @@
 /**
  * 预览扩展名集合 —— 单一来源（从 DiffTabContent 抽出，供各预览路由共用）。
  *
- * `UNSUPPORTED_EXTS`：Profer 现有链路明确不支持预览的格式（历史上直接给"不支持"提示）。
+ * `UNSUPPORTED_EXTS`：Mira 现有链路明确不支持预览的格式（历史上直接给"不支持"提示）。
  * `NON_PREVIEWABLE_BINARY_EXTS`：其中**连 OFV 也无法有意义预览**的纯二进制 / 磁盘映像 ——
  *   保留原"不支持"提示，不交给 OFV 试（免得被它的 textPlugin 当成文本渲染出一屏乱码）。
  * `IMAGE_PREVIEW_EXTS`：静态图清单。普通打开路径统一交给 OFV viewer；

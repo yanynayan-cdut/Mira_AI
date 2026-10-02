@@ -26,7 +26,7 @@ export function EnvironmentCheckDialog({ open, onOpenChange }: EnvironmentCheckD
         <DialogHeader>
           <DialogTitle>环境检测</DialogTitle>
           <DialogDescription>
-            检查并修复 Profer 运行所需的本地环境
+            检查并修复 Mira 运行所需的本地环境
           </DialogDescription>
         </DialogHeader>
         <EnvironmentCheckPanel autoDetectOnMount={open} />

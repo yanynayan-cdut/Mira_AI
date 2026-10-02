@@ -17,7 +17,7 @@ import {
 } from './preview-inspection-service'
 
 export const AGENT_INSPECT_PREVIEW_TOOL_NAME = 'inspect_preview'
-export const AGENT_INSPECT_PREVIEW_DESCRIPTION = 'Inspect an authorized local file using current on-disk content and, when requested or appropriate, visual preview images. Use for Markdown, HTML, images, PDF, DOCX, XLSX, or text. Do not use this tool for PPTX; use open_file_preview so the user and Agent stay in Profer’s official file preview workflow. mode is content, visual, or both; scope is overview, page (with 1-based page), or all. Every call returns the current revision, and previousRevision tells whether the file changed since the last observation. The tool never accepts arbitrary file URLs or paths outside the Agent workspace and attached directories.'
+export const AGENT_INSPECT_PREVIEW_DESCRIPTION = 'Inspect an authorized local file using current on-disk content and, when requested or appropriate, visual preview images. Use for Markdown, HTML, images, PDF, DOCX, XLSX, or text. Do not use this tool for PPTX; use open_file_preview so the user and Agent stay in Mira’s official file preview workflow. mode is content, visual, or both; scope is overview, page (with 1-based page), or all. Every call returns the current revision, and previousRevision tells whether the file changed since the last observation. The tool never accepts arbitrary file URLs or paths outside the Agent workspace and attached directories.'
 
 type RuntimeImageBlock = { type: 'image'; data: string; mimeType: string }
 type RuntimeTextBlock = { type: 'text'; text: string }
@@ -37,7 +37,7 @@ function isInside(root: string, target: string): boolean {
 async function resolveAuthorizedPptx(filePath: string, context: OpenFilePreviewContext): Promise<{ filePath: string; basePaths: string[] }> {
   const raw = filePath.trim()
   if (!raw) throw new Error('filePath 必须是非空字符串')
-  if (extname(raw).toLowerCase() !== '.pptx') throw new Error('open_file_preview 仅用于 PPTX；其他文件请使用 inspect_preview 或对应的 Profer 文件预览入口。')
+  if (extname(raw).toLowerCase() !== '.pptx') throw new Error('open_file_preview 仅用于 PPTX；其他文件请使用 inspect_preview 或对应的 Mira 文件预览入口。')
   if (!context.agentCwd.trim()) throw new Error('当前会话没有可用的 Agent 工作目录')
   const target = await realpath(isAbsolute(raw) ? raw : resolve(context.agentCwd, raw))
   if (!(await stat(target)).isFile()) throw new Error('预览路径必须指向普通文件')
@@ -58,7 +58,7 @@ async function resolveAuthorizedPptx(filePath: string, context: OpenFilePreviewC
 
 /** 请求主窗口复用现有人类预览，不创建 Preview.html、不打开浏览器、不返回截图。 */
 export async function executeOpenFilePreviewTool(input: { filePath: string; readOnly?: boolean }, context: OpenFilePreviewContext): Promise<AgentPreviewToolResult> {
-  if (!context.onRequest) throw new Error('当前会话未连接 Profer 正式文件预览入口，未执行预览请求。')
+  if (!context.onRequest) throw new Error('当前会话未连接 Mira 正式文件预览入口，未执行预览请求。')
   const resolved = await resolveAuthorizedPptx(input.filePath, context)
   const data = await readFile(resolved.filePath)
   const metadata = await stat(resolved.filePath)
@@ -72,7 +72,7 @@ export async function executeOpenFilePreviewTool(input: { filePath: string; read
     basePaths: resolved.basePaths,
     readOnly: input.readOnly !== false,
   })
-  const message = `Profer 正式文件预览已就绪：${basename(resolved.filePath)}，${report.slideCount ?? 0} 页，revision ${revision}。`
+  const message = `Mira 正式文件预览已就绪：${basename(resolved.filePath)}，${report.slideCount ?? 0} 页，revision ${revision}。`
   return {
     content: [{ type: 'text', text: message }],
     details: {
@@ -114,7 +114,7 @@ export async function executeInspectFilePreviewTool(
   input: { filePath: string; scope?: 'overview' | 'page' | 'all'; page?: number },
   context: OpenFilePreviewContext,
 ): Promise<AgentPreviewToolResult> {
-  if (!context.onInspectRequest) throw new Error('当前会话未连接 Profer 正式文件预览观察入口。')
+  if (!context.onInspectRequest) throw new Error('当前会话未连接 Mira 正式文件预览观察入口。')
   const resolved = await resolveAuthorizedPptx(input.filePath, context)
   const data = await readFile(resolved.filePath)
   const metadata = await stat(resolved.filePath)
@@ -145,7 +145,7 @@ export async function executeAgentPreviewTool(input: InspectPreviewInput, contex
     return formatAgentPreviewToolResult({
       error: {
         code: 'unsupported_file_type',
-        message: 'PPTX 请使用 open_file_preview 进入 Profer 正式文件预览；不要为 PPTX 创建浏览器页面或旁路截图。',
+        message: 'PPTX 请使用 open_file_preview 进入 Mira 正式文件预览；不要为 PPTX 创建浏览器页面或旁路截图。',
         retryable: false,
       },
     })
@@ -169,7 +169,7 @@ export async function injectAgentPreviewMcpServer(
     tools: [
       sdk.tool(
         'open_file_preview',
-        'Open an authorized local PPTX in Profer’s official current-session file preview. The user and Agent continue working from the same visible preview context. Do not create Preview.html, open a browser, or capture a screenshot.',
+        'Open an authorized local PPTX in Mira’s official current-session file preview. The user and Agent continue working from the same visible preview context. Do not create Preview.html, open a browser, or capture a screenshot.',
         {
           filePath: z.string().min(1).max(4096),
           readOnly: z.boolean().optional(),
@@ -178,7 +178,7 @@ export async function injectAgentPreviewMcpServer(
       ),
       sdk.tool(
         'inspect_file_preview',
-        'Inspect one or more slides from the current user-visible Profer PPTX preview. This reads the same ready viewer and revision opened by open_file_preview; it never creates a hidden renderer or browser preview.',
+        'Inspect one or more slides from the current user-visible Mira PPTX preview. This reads the same ready viewer and revision opened by open_file_preview; it never creates a hidden renderer or browser preview.',
         {
           filePath: z.string().min(1).max(4096),
           scope: z.enum(['overview', 'page', 'all']).optional(),

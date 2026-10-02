@@ -129,7 +129,7 @@ export function registerPendingPiRuntimeProcess(
   const existing = data.records.find((r) => r.sessionId === sessionId && r.command === command && r.cwd === serviceCwd && r.launcher === launcher
     && r.status !== 'exited' && now - r.launchedAt < 15_000)
   if (existing) {
-    // A pre-spawn observation may already exist. Upgrade it as soon as Profer's
+    // A pre-spawn observation may already exist. Upgrade it as soon as Mira's
     // controlled launcher receives the real OS PID; do not create a duplicate.
     if (shellPid && existing.shellPid !== shellPid) {
       existing.shellPid = shellPid
@@ -154,7 +154,7 @@ export function registerPendingPiRuntimeProcess(
 }
 
 /**
- * Records a PID obtained directly from Profer's own shell spawn. This is launch
+ * Records a PID obtained directly from Mira's own shell spawn. This is launch
  * evidence, not yet the managed service PID: package managers and `nohup &`
  * frequently fork the eventual listener, so the normal observer still confirms
  * `{pid,startTime,ports}` before enabling termination.

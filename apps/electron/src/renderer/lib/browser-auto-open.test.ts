@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'bun:test'
 import type { BrowserTabSummary, BrowserTraceItem, BrowserViewState } from '@profer/shared'
-import { shouldAutoOpenBrowserFromPush } from './browser-auto-open'
+import { resolveBrowserTabSyncOptions, shouldAutoOpenBrowserFromPush } from './browser-auto-open'
 
 type BrowserPushSnapshot = Pick<BrowserViewState, 'agentTabId' | 'tabs' | 'activity'>
 
@@ -35,6 +35,23 @@ describe('浏览器状态推送自动打开门禁', () => {
   test('Given Agent 导航或新建标签 When 收到状态推送 Then 自动打开浏览器面板', () => {
     expect(shouldAutoOpenBrowserFromPush(snapshot({ activity: trace('navigate') }))).toBe(true)
     expect(shouldAutoOpenBrowserFromPush(snapshot({ activity: trace('tab') }))).toBe(true)
+  })
+
+  test('Given Agent 实时展示动作 When 同步浏览器 Then 首次状态只建立基线，后续新活动才自动组合', () => {
+    expect(resolveBrowserTabSyncOptions('agent-push', true, 'nav-1', null, false)).toEqual({ autoOpen: true, autoGroup: false })
+    expect(resolveBrowserTabSyncOptions('agent-push', true, 'nav-1', null, true)).toEqual({ autoOpen: true, autoGroup: true })
+    expect(resolveBrowserTabSyncOptions('agent-push', true, 'nav-1', 'nav-1', true)).toEqual({ autoOpen: true, autoGroup: false })
+    expect(resolveBrowserTabSyncOptions('agent-push', true, 'nav-2', 'nav-1', true)).toEqual({ autoOpen: true, autoGroup: true })
+  })
+
+  test('Given 切回 Agent 恢复已有浏览器 When 同步浏览器 Then 只恢复标签而不创建组合', () => {
+    expect(resolveBrowserTabSyncOptions('session-restore', true, 'nav-1', null, false)).toEqual({ autoOpen: true, autoGroup: false })
+  })
+
+  test('Given 浏览器已关闭或没有新的活动 When 同步浏览器 Then 不自动打开或组合', () => {
+    expect(resolveBrowserTabSyncOptions('agent-push', false, 'nav-1', null, true)).toEqual({ autoOpen: false, autoGroup: false })
+    expect(resolveBrowserTabSyncOptions('session-restore', false, 'nav-1', null, true)).toEqual({ autoOpen: false, autoGroup: false })
+    expect(resolveBrowserTabSyncOptions('agent-push', true, null, null, true)).toEqual({ autoOpen: true, autoGroup: false })
   })
 
   test('Given 只读动作 When 收到状态推送 Then 不打开浏览器面板', () => {

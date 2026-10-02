@@ -8,7 +8,7 @@
  * 因此只读预览放宽为「路径真实存在 + 不在系统敏感位置 + 不在凭据/隐私位置」即放行。
  * 仍然保留两条硬边界，避免渲染层（不可信）拿到无差别读取能力：
  *   1. 系统敏感目录（/etc、/usr/bin、C:\Windows 等）不预览；
- *   2. 凭据与浏览器隐私目录（~/.ssh、~/.aws、~/Library/Keychains、Profer 自身 token 文件等）不预览。
+ *   2. 凭据与浏览器隐私目录（~/.ssh、~/.aws、~/Library/Keychains、Mira 自身 token 文件等）不预览。
  *
  * 写操作（`file:write-text`、重命名、移动、删除、移入回收站）与「用默认应用打开文件」
  * （`shell:system-open-file`，本质是启动进程）不受本策略影响，继续走 ipc.ts 的授权根校验。
@@ -57,7 +57,7 @@ export function getCredentialSensitiveRoots(configDir: string = getConfigDir(), 
     join(home, 'Library', 'Application Support', 'BraveSoftware'),
     join(home, 'Library', 'Application Support', 'Microsoft Edge'),
     join(home, 'Library', 'Cookies'),
-    // Profer 自身的凭据与渠道密钥
+    // Mira 自身的凭据与渠道密钥
     join(configDir, 'auth-tokens.enc'),
     join(configDir, 'remote-token.json'),
     join(configDir, 'channels.json'),

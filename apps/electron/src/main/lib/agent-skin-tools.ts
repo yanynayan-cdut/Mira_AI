@@ -304,7 +304,7 @@ async function createSkin(
 }
 
 export const AGENT_SKIN_TOOL_NAME = 'create_skin'
-export const AGENT_SKIN_TOOL_DESCRIPTION = 'Create and install a Profer user skin from manifest metadata, complete skin.css, and an optional authorized local wallpaper. skinCss must include a :root token table and may only reference local assets/ images. The wallpaper is copied into assets/ and the CSS must reference it as url("assets/<filename>"). A skin-library thumbnail is written to the package root as preview.<ext>: pass previewPath to use a specific authorized image, otherwise one is derived from the wallpaper automatically (omitting both leaves the skin card thumbnail blank). Validation, installation and library refresh all happen inside this tool; the result returns installedPath, so never search the filesystem (find/ls/recursive scan) to locate the skin directory afterwards. Use only when the user explicitly asks to create or apply a Profer skin.'
+export const AGENT_SKIN_TOOL_DESCRIPTION = 'Create and install a Mira user skin from manifest metadata, complete skin.css, and an optional authorized local wallpaper. skinCss must include a :root token table and may only reference local assets/ images. The wallpaper is copied into assets/ and the CSS must reference it as url("assets/<filename>"). A skin-library thumbnail is written to the package root as preview.<ext>: pass previewPath to use a specific authorized image, otherwise one is derived from the wallpaper automatically (omitting both leaves the skin card thumbnail blank). Validation, installation and library refresh all happen inside this tool; the result returns installedPath, so never search the filesystem (find/ls/recursive scan) to locate the skin directory afterwards. Use only when the user explicitly asks to create or apply a Mira skin.'
 
 type AgentSkinToolContext = { agentCwd?: string; allowedRoots?: string[]; workspaceSlug?: string }
 
@@ -315,7 +315,7 @@ export function buildPiAgentSkinTools(
   if (!context.agentCwd || !context.workspaceSlug) return []
   return [sdk.defineTool({
     name: AGENT_SKIN_TOOL_NAME,
-    label: '创建 Profer 皮肤',
+    label: '创建 Mira 皮肤',
     description: AGENT_SKIN_TOOL_DESCRIPTION,
     promptSnippet: 'CreateSkin: create and install a user skin; copies the authorized wallpaper into assets/, writes a preview thumbnail (previewPath or derived from the wallpaper), validates the CSS reference, and returns the definitive installedPath — do not search the filesystem afterwards.',
     parameters: Type.Object({

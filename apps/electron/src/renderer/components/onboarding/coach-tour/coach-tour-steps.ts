@@ -105,11 +105,12 @@ export const COACH_TOUR_STEPS: CoachTourStep[] = [
   {
     key: 'outro',
     title: '开始你的第一个任务',
-    body: '最能感受 Profer 的起点：切到 Agent 模式，让它「分析工作区里的一个文件并给出结论」，观察它如何自己规划和执行。这段引导随时可以从顶栏指南针按钮或设置里重播。',
+    body: '最能感受 Mira 的起点：切到 Agent 模式，让它「分析工作区里的一个文件并给出结论」，观察它如何自己规划和执行。这段引导随时可以从顶栏指南针按钮或设置里重播。',
     selectors: [],
     placement: 'auto',
   },
 ]
 
 /** 引导内容版本：增删步骤/大改文案时 +1，老用户升级后自动重播一次新指引 */
-export const CURRENT_COACH_TOUR_VERSION = 5
+// 品牌更新后让已完成旧版引导的用户重新看到一次聚焦点击教程。
+export const CURRENT_COACH_TOUR_VERSION = 6

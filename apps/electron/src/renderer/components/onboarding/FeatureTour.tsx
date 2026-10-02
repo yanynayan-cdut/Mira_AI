@@ -109,7 +109,7 @@ export function FeatureTour({ onNext, onSkip, finishLabel }: FeatureTourProps): 
   }, [next, onSkip, previous])
 
   return (
-    <section className="relative -m-8 flex h-screen w-screen overflow-hidden bg-black text-white" aria-label="Profer 功能导览">
+    <section className="relative -m-8 flex h-screen w-screen overflow-hidden bg-black text-white" aria-label="Mira 功能导览">
       {/* 背景一次挂载、18 秒一轮循环流动；翻页不再重建/重播，全程保持波纹明显。 */}
       <IntroFluidBackground durationMs={18000} repeat />
       <div className="feature-tour-veil pointer-events-none absolute inset-0 z-[1] bg-[linear-gradient(90deg,rgba(0,0,0,.82)_0%,rgba(0,0,0,.52)_42%,rgba(0,0,0,.12)_100%)]" />
@@ -117,7 +117,7 @@ export function FeatureTour({ onNext, onSkip, finishLabel }: FeatureTourProps): 
 
       <div className="relative z-10 flex w-full flex-col px-8 py-7 sm:px-14 sm:py-10">
         <header className="flex items-center justify-between">
-          <span className="font-mono text-[10px] tracking-[0.3em] text-white/45">PROFER / 00{activeIndex + 1}</span>
+          <span className="font-mono text-[10px] tracking-[0.3em] text-white/45">MIRA / 00{activeIndex + 1}</span>
           <Button variant="ghost" size="icon" onClick={onSkip} className="text-white/55 hover:bg-white/10 hover:text-white" aria-label="跳过介绍">
             <X className="h-4 w-4" />
           </Button>
@@ -184,7 +184,7 @@ function TourSlide({
         direction === 1 ? 'feature-tour-forward' : 'feature-tour-backward',
       )}
     >
-      <p className="feature-tour-kicker font-mono text-[11px] tracking-[0.24em] text-white/45">WHAT PROFER CAN DO</p>
+      <p className="feature-tour-kicker font-mono text-[11px] tracking-[0.24em] text-white/45">WHAT MIRA CAN DO</p>
       <h2 className="feature-tour-title mt-4 text-5xl font-semibold tracking-normal sm:text-7xl">{slide.title}</h2>
       <p className="feature-tour-summary mt-5 text-lg text-white/70 sm:text-xl">{slide.summary}</p>
       <div className="feature-tour-example mt-11 flex items-center gap-3 border-b border-white/30 pb-3 text-sm text-white/90 sm:text-base">

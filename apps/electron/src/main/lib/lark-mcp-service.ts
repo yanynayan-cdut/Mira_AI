@@ -236,7 +236,7 @@ export async function testLarkMcpConnection(): Promise<LarkMcpSetupResult> {
       jsonrpc: '2.0',
       id: 1,
       method: 'initialize',
-      params: { protocolVersion: '2025-03-26', capabilities: {}, clientInfo: { name: 'Profer connection test', version: '1.0.0' } },
+      params: { protocolVersion: '2025-03-26', capabilities: {}, clientInfo: { name: 'Mira connection test', version: '1.0.0' } },
     })}\n`)
     child.stdout?.on('data', () => {
       if (!output.includes('"id":1')) return
@@ -325,7 +325,7 @@ export function disableLarkMcpForWorkspace(workspaceSlug: string): LarkMcpSetupR
       return { success: true, message: 'Lark MCP is not enabled for this workspace', workspaceSlug }
     } catch { return { success: false, message: 'Unable to clear the Lark MCP workspace binding' } }
   }
-  if (!isLarkMcpEntry(LARK_MCP_SERVER_NAME, current)) return { success: false, message: 'Existing lark-mcp entry is not managed by Profer' }
+  if (!isLarkMcpEntry(LARK_MCP_SERVER_NAME, current)) return { success: false, message: 'Existing lark-mcp entry is not managed by Mira' }
   try {
     const servers = { ...config.servers }
     delete servers[LARK_MCP_SERVER_NAME]

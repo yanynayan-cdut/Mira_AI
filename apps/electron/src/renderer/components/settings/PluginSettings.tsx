@@ -129,7 +129,7 @@ export function PluginSettings(): React.ReactElement {
     <div className="space-y-6">
       <SettingsSection
         title="插件系统"
-        description="通过插件扩展 Profer 的能力；插件管理使用 Profer 原生控件，插件页面在独立标签页和任务入口中运行。"
+        description="通过插件扩展 Mira 的能力；插件管理使用 Mira 原生控件，插件页面在独立标签页和任务入口中运行。"
         action={(
           <div className="flex flex-wrap justify-end gap-2">
             <Button type="button" variant="outline" size="sm" onClick={() => void refresh()} disabled={loading}>

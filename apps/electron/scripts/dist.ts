@@ -192,7 +192,7 @@ function main(): void {
   }
 
   // 打印配置信息
-  console.log(`\n${color.bgBlue}${color.bold} Profer 打包工具 ${color.reset}\n`)
+  console.log(`\n${color.bgBlue}${color.bold} Mira 打包工具 ${color.reset}\n`)
   console.log(`  ${color.bold}平台${color.reset}:     ${opts.platform}`)
   console.log(`  ${color.bold}架构${color.reset}:     ${opts.currentArch ? arch + ' (仅当前)' : opts.platform === 'mac' ? 'arm64' : 'arm64 + x64'}`)
   console.log(`  ${color.bold}格式${color.reset}:     ${opts.targetFormat}`)
@@ -232,9 +232,9 @@ function main(): void {
 
   // ── 步骤 4: 编译随包 CLI ──
   step++
-  printStepStart(step, totalSteps, '编译 Profer CLI (bun --compile)')
+  printStepStart(step, totalSteps, '编译 Mira CLI (bun --compile)')
   results.push(
-    runStep('编译 Profer CLI', 'bun', ['run', 'build:cli'], { verbose: opts.verbose })
+    runStep('编译 Mira CLI', 'bun', ['run', 'build:cli'], { verbose: opts.verbose })
   )
   printStepResult(results[results.length - 1])
   if (!results[results.length - 1].success) return printSummary(results)

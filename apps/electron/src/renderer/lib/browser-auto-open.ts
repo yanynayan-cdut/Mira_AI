@@ -1,5 +1,28 @@
 import type { BrowserViewState } from '@profer/shared'
 
+export type BrowserSyncSource = 'agent-push' | 'session-restore'
+
+/** 恢复只补齐浏览器标签；自动组合仅属于 Agent 的实时展示动作。 */
+export function resolveBrowserTabSyncOptions(
+  source: BrowserSyncSource,
+  autoOpen: boolean,
+  activityId: string | null = null,
+  previousActivityId: string | null = null,
+  hasPreviousState = false,
+): {
+  autoOpen: boolean
+  autoGroup: boolean
+} {
+  return {
+    autoOpen,
+    autoGroup: source === 'agent-push'
+      && autoOpen
+      && hasPreviousState
+      && !!activityId
+      && activityId !== previousActivityId,
+  }
+}
+
 /**
  * 能代表「浏览器工作已经实际开始」的展示型动作。
  *
@@ -13,10 +36,8 @@ const BROWSER_DISPLAY_ACTIONS: ReadonlySet<string> = new Set(['navigate', 'tab']
  *
  * 两道防线中的第二道：主进程已不再为只读查询广播状态（BrowserListTabs 是无副作用查询），
  * 这里再要求「当前会话确实有 Agent 工作标签」且「最近一次操作是 navigate/tab」，
- * 防止未来任何只读状态同步重新触发 UI。
- *
- * 注意：切回会话时由 getAgentBrowserState 恢复已有浏览器的路径不走这里，
- * 那条路径是「用户回到该会话」的显式意图，仍需保留自动恢复。
+ * 并只对已建立基线后的新 activity 自动组合，避免重复状态推送重放旧导航后改写用户布局。
+ * 切回会话时仍恢复浏览器标签，但不因历史 activity 自动创建组合。
  */
 export function shouldAutoOpenBrowserFromPush(
   state: Pick<BrowserViewState, 'agentTabId' | 'tabs' | 'activity'>,

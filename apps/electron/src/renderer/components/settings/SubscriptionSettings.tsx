@@ -376,7 +376,7 @@ export function SubscriptionSettings(): React.ReactElement {
             <Users size={18} className="text-green-600" />
           </div>
           <div>
-            <div className="text-sm font-semibold text-foreground">Profer 团队版</div>
+            <div className="text-sm font-semibold text-foreground">Mira 团队版</div>
             <div className="text-xs text-muted-foreground mt-0.5">
               团队额度共享，联系微信号 {adminWechat} 开通
             </div>

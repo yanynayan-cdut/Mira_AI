@@ -144,7 +144,7 @@ function BuiltinTag(): React.ReactElement {
   return (
     <span className="inline-flex items-center gap-1 rounded-md bg-blue-500/15 px-1.5 py-0.5 text-[11px] font-medium text-blue-700 dark:text-blue-300">
       <ShieldCheck size={12} />
-      Profer 内置
+      Mira 内置
     </span>
   );
 }

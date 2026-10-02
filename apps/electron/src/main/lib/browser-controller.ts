@@ -40,7 +40,7 @@ const MAX_SCREENSHOT_BYTES = 3 * 1024 * 1024
 const ACTION_HIGHLIGHT_DURATION_MS = 900
 const MAX_BROWSER_SCRIPT_RESULT_CHARS = 64_000
 
-/** 受管网页使用与 Profer 一致的细滚动条；仅影响展示，不修改页面滚动行为或内容。 */
+/** 受管网页使用与 Mira 一致的细滚动条；仅影响展示，不修改页面滚动行为或内容。 */
 const PROFER_BROWSER_SCROLLBAR_CSS = `
   html, body, * { scrollbar-width: thin !important; scrollbar-color: rgba(113, 113, 122, .42) transparent !important; }
   ::-webkit-scrollbar { width: 6px !important; height: 6px !important; }

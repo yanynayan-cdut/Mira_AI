@@ -37,7 +37,7 @@ export interface HeadlessExecutorDeps {
 function buildTaskPrompt(execution: TaskExecution): string {
   const { request } = execution.task
   const lines: string[] = [
-    `你是一个被 Profer Agent Fabric 派工的本地执行节点。任务 ID：${request.taskId}。`,
+    `你是一个被 Mira Agent Fabric 派工的本地执行节点。任务 ID：${request.taskId}。`,
     ``,
     `目标：${request.objective}`,
   ]

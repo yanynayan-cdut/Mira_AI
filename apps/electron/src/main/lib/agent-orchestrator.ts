@@ -1111,7 +1111,7 @@ export class AgentOrchestrator {
       let runtimeCredentials = credentialResult.credentials
 
     // 5. 持久化用户消息（SDKMessage 格式）——在所有 preflight 检查之前写入。
-    // Goal 内部 turn 使用 internalPrompt，仅供 runtime 消费，不写入 Profer 普通对话 transcript。
+    // Goal 内部 turn 使用 internalPrompt，仅供 runtime 消费，不写入 Mira 普通对话 transcript。
     if (!input.suppressUserMessagePersistence) {
       const userSDKMsg: SDKMessage = {
         type: 'user',
@@ -1231,7 +1231,7 @@ export class AgentOrchestrator {
               key: 'i',
               label: '报告问题',
               action: 'open_external',
-              payload: 'https://github.com/Yuan-lai-ru-ci/Profer/issues/new',
+              payload: 'https://github.com/yanynayan-cdut/Mira_AI/issues/new',
             },
           ],
           canRetry: false,
@@ -1535,7 +1535,7 @@ export class AgentOrchestrator {
       if (customMcpServers) {
         const customEntries = Object.entries(customMcpServers)
           .filter(([name]) => isEffectiveAgentPresetMcpServerAllowed(presetPolicy, name))
-          // 外部 MCP 不得覆盖 Profer 已注册的内置 MCP（如 automation/planning/team-memory）。
+          // 外部 MCP 不得覆盖 Mira 已注册的内置 MCP（如 automation/planning/team-memory）。
           .filter(([name]) => !Object.prototype.hasOwnProperty.call(mcpServers, name))
         Object.assign(mcpServers, Object.fromEntries(customEntries))
         const rejectedCount = Object.keys(customMcpServers).length - customEntries.length
@@ -1648,7 +1648,7 @@ ${enrichedMessage}`
         ),
       ]
       // Claude SDK 原生接收 mcpServers；Pi 必须将同一配置连接后转换为 customTools。
-      // 在这里复用已完成的 Profer MCP 注入和过滤流程，避免两套配置来源漂移。
+      // 在这里复用已完成的 Mira MCP 注入和过滤流程，避免两套配置来源漂移。
       const piCustomTools =
         agentRuntime === 'pi'
         ? await (async () => {
@@ -2129,7 +2129,7 @@ ${enrichedMessage}`
         canUseTool,
         ...sdkAllowedTools,
         ...(disabledClaudeTools.length > 0 && { disallowedTools: disabledClaudeTools }),
-        // 默认继续使用 claude_code preset；开发者开启开放认识论后改用 Profer 完整自管 prompt，
+        // 默认继续使用 claude_code preset；开发者开启开放认识论后改用 Mira 完整自管 prompt，
         // 避免上游本地 preset 稀释该姿态。模型服务端更高优先级规则不受此设置影响。
         systemPrompt: resolveAgentRuntimeSystemPrompt(
           agentRuntime,
@@ -2823,7 +2823,7 @@ ${enrichedMessage}`
                 }
 
                 // Thinking signature 不兼容：通常由跨模型 resume 触发。
-                // 先自动清除 SDK resume 关系，改用 Profer 已持久化上下文重跑一次；再失败才展示用户提示。
+                // 先自动清除 SDK resume 关系，改用 Mira 已持久化上下文重跑一次；再失败才展示用户提示。
                 if (typedError.code === THINKING_SIGNATURE_ERROR_CODE && canTryThinkingSignatureRecovery(attempt)) {
                   thinkingSignatureRecoveryAttempted = true
                   invisibleRecoveryAttempts += 1
@@ -3565,7 +3565,7 @@ ${enrichedMessage}`
   /**
    * 运行中动态切换会话的权限模式
    *
-   * 同时更新 Profer 侧（canUseTool 闭包读取的 Map）和 SDK 侧（query.setPermissionMode）。
+   * 同时更新 Mira 侧（canUseTool 闭包读取的 Map）和 SDK 侧（query.setPermissionMode）。
    * 典型场景：用户在 Agent 运行中通过 PermissionModeSelector 切换模式。
    */
   async updateSessionPermissionMode(sessionId: string, mode: ProferPermissionMode): Promise<void> {
@@ -3593,7 +3593,7 @@ ${enrichedMessage}`
    * 回退会话到指定消息点
    *
    * 1. 直接从 SDK JSONL 的 file-history-snapshot 恢复文件到目标时刻的状态
-   * 2. 截断 Profer JSONL 到 assistantMessageUuid（inclusive）
+   * 2. 截断 Mira JSONL 到 assistantMessageUuid（inclusive）
    * 3. 记录 resumeAtMessageUuid，下次发消息时 SDK 从该点分支继续
    *
    * 文件恢复通过解析 SDK JSONL 中的快照完成，无需运行中的 Query。
@@ -3682,7 +3682,7 @@ ${enrichedMessage}`
       }
     }
 
-    // 2. 截断 Profer JSONL
+    // 2. 截断 Mira JSONL
     const kept = truncateSDKMessages(sessionId, assistantMessageUuid)
 
     // 3. 记录 resumeAtMessageUuid，下次发消息时 SDK 从此点继续

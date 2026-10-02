@@ -252,7 +252,7 @@ export const AGENT_PRESET_CAPABILITY_GROUPS = [
     tools: [
       capabilityTool('generate_image', '生成图片', '生成或编辑图片', 'external'),
       capabilityTool('send_local_image', '输出本地图片', '把授权目录中的图片发送到当前回复', 'external'),
-      capabilityTool('create_skin', '创建 Profer 皮肤', '创建并安装用户皮肤包', 'write'),
+      capabilityTool('create_skin', '创建 Mira 皮肤', '创建并安装用户皮肤包', 'write'),
     ],
   }),
   capabilityGroup({

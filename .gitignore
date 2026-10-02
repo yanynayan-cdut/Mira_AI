@@ -100,4 +100,17 @@ apps/electron/remote-test-*.log
 # local Profer Team Server deployment (keep separate repo)
 server/
 
+# Private workspace context and local agent instructions
+.context/
+**/.context/
+.cursor/
+AGENTS.md
+CLAUDE.md
+
+# Local release packages and user configuration
+apps/electron/out/
+apps/electron/release-assets/
+.env*
+.codex-logs/
+
 .workbuddy

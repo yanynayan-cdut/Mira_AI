@@ -1,7 +1,7 @@
 /**
  * Pi 的按需提示词注入。
  *
- * Pi 不使用 Claude 的 preset，因此完整 Profer prompt 会在每一轮随 Pi systemPrompt
+ * Pi 不使用 Claude 的 preset，因此完整 Mira prompt 会在每一轮随 Pi systemPrompt
  * 进入模型上下文。这里保留运行安全与交付底线，将低频产品 SOP 仅在用户任务命中且
  * 对应工具实际注册时追加。工具本身始终由 ToolDefinition 暴露，漏判只会少辅助说明，
  * 不会隐藏能力或改变权限。
@@ -80,7 +80,7 @@ export function buildPiTaskPrompt(options: PiTaskPromptOptions): string {
   if (piMemory) {
     prompt = piMemory.rest
     const hasMemoryTool = hasAnyTool(tools, (name) => name.startsWith('mcp__memory-archive__') || name.startsWith('mcp__team-memory__'))
-    // 完整的知识维护与收尾回写规则由常驻的「Profer 知识维护架构」承载；此处只保留
+    // 完整的知识维护与收尾回写规则由常驻的「Mira 知识维护架构」承载；此处只保留
     // Pi 专属文件操作细节，按记忆任务按需恢复，避免普通本地任务重复携带长段落。
     const needsPiMemory = hasMemoryTool
       && matches(task, /(?:记住|记忆|沉淀|归档|复用|memory|memories|知识维护|经验记录|更新.*(?:MEMORY|记忆))/i)
@@ -95,7 +95,7 @@ export function buildPiTaskPrompt(options: PiTaskPromptOptions): string {
     if (needsTeamMemory) lowFrequency.push(teamMemory.text)
   }
 
-  const knowledgeGovernance = removeSection(prompt, '## Profer 知识维护架构', '## 任务完成标准')
+  const knowledgeGovernance = removeSection(prompt, '## Mira 知识维护架构', '## 任务完成标准')
   if (knowledgeGovernance) {
     prompt = knowledgeGovernance.rest
     // 知识维护是跨任务的常驻行为约束，不能只在出现“记忆”关键词时注入。
@@ -110,7 +110,7 @@ export function buildPiTaskPrompt(options: PiTaskPromptOptions): string {
     if (needsAutomation) lowFrequency.push(automation.text)
   }
 
-  const delivery = removeSection(prompt, '8. **发送既有本地图片**', '## Profer 受管浏览器')
+  const delivery = removeSection(prompt, '8. **发送既有本地图片**', '## Mira 受管浏览器')
   if (delivery) {
     prompt = delivery.rest
     const hasImageOutput = tools.has('send_local_image')
@@ -129,7 +129,7 @@ export function buildPiTaskPrompt(options: PiTaskPromptOptions): string {
     if (needsImageOutput || needsImageGenerationRouting || needsSkinCreationRouting || needsPpt) lowFrequency.push(delivery.text)
   }
 
-  const browser = removeHeadingSection(prompt, '## Profer 受管浏览器')
+  const browser = removeHeadingSection(prompt, '## Mira 受管浏览器')
   if (browser) {
     prompt = browser.rest
     const hasBrowser = hasAnyTool(tools, (name) => name.startsWith('Browser'))

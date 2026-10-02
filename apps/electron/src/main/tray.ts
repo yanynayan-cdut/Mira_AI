@@ -17,7 +17,7 @@ export interface TrayActions {
 
 /**
  * 获取托盘图标路径
- * 所有平台统一使用 Template 图标
+ * macOS 使用单色模板，Windows/Linux 使用彩色 Mira 图标。
  */
 function getTrayIconPath(): string {
   // dev: __dirname/resources（build:resources 拷贝产物）
@@ -25,7 +25,7 @@ function getTrayIconPath(): string {
   const resourcesDir = app.isPackaged
     ? join(process.resourcesPath, 'profer-logos')
     : join(__dirname, 'resources/profer-logos')
-  return join(resourcesDir, 'iconTemplate.png')
+  return join(resourcesDir, process.platform === 'darwin' ? 'iconTemplate.png' : 'tray.png')
 }
 
 /** 显示主窗口 */
@@ -101,12 +101,12 @@ function buildTrayMenu(actions: TrayActions): Menu {
     },
     { type: 'separator' },
     {
-      label: '打开 Profer',
+      label: '打开 Mira',
       click: () => actions.showMainWindow(),
     },
     { type: 'separator' },
     {
-      label: '退出 Profer',
+      label: '退出 Mira',
       click: () => {
         app.quit()
       },
@@ -148,7 +148,7 @@ export function createTray(actionsInput?: Partial<TrayActions>): Tray | null {
     tray = new Tray(image)
 
     // 设置 tooltip
-    tray.setToolTip('Profer')
+    tray.setToolTip('Mira')
 
     updateTrayMenu(actions)
 

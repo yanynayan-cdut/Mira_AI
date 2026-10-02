@@ -63,7 +63,7 @@ describe('isReadOnlyPreviewPathAllowed', () => {
 })
 
 describe('isCredentialSensitivePath 默认边界', () => {
-  test('覆盖私钥、钥匙串与 Profer 自身凭据', () => {
+  test('覆盖私钥、钥匙串与 Mira 自身凭据', () => {
     expect(isCredentialSensitivePath(join(homedir(), '.ssh', 'id_ed25519'))).toBe(true)
     expect(isCredentialSensitivePath(join(homedir(), 'Library', 'Keychains', 'login.keychain-db'))).toBe(true)
     expect(isCredentialSensitivePath(join(getConfigDir(), 'auth-tokens.enc'))).toBe(true)

@@ -3,7 +3,7 @@
  *
  * 通过 Pi Coding Agent 的公开 ModelRuntime API 完成 OAuth，避免依赖已删除的
  * `@earendil-works/pi-ai/oauth` 兼容函数。凭据仅保存在内存 store，持久化仍由
- * Profer 的 channel-manager 负责。
+ * Mira 的 channel-manager 负责。
  */
 
 import { shell } from 'electron'
@@ -28,7 +28,7 @@ function loadPiSdk(): Promise<PiSdk> {
 
 /**
  * Pi 的 ModelRuntime 只依赖 CredentialStore 的结构契约。使用内存实现，避免 Pi
- * 写入自己的配置目录；上层会在成功后将规范化凭据加密保存到 Profer 的渠道配置。
+ * 写入自己的配置目录；上层会在成功后将规范化凭据加密保存到 Mira 的渠道配置。
  */
 function createEphemeralCredentialStore(initial?: OAuthCredential) {
   let credential = initial

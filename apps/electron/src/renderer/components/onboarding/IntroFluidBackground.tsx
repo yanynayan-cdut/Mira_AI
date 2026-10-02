@@ -1,5 +1,5 @@
 /**
- * IntroFluidBackground — Profer 开屏用的轻量 WebGL 液态玻璃背景。
+ * IntroFluidBackground — Mira 开屏用的轻量 WebGL 液态玻璃背景。
  *
  * 实现参考 Pavel Dobryakov 的 WebGL-Fluid-Simulation（MIT）：使用 GPU Canvas、
  * 时间驱动的 splat（扰动）和显式 RAF/ResizeObserver 清理。但本模块重新实现为

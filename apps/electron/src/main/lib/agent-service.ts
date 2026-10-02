@@ -599,7 +599,7 @@ export function killOrphanedClaudeSubprocesses(): void {
 /**
  * 运行中动态切换会话的权限模式
  *
- * 同时更新 Profer 侧（canUseTool 动态读取）和 SDK 侧（query.setPermissionMode）。
+ * 同时更新 Mira 侧（canUseTool 动态读取）和 SDK 侧（query.setPermissionMode）。
  */
 export async function updateAgentPermissionMode(sessionId: string, mode: ProferPermissionMode): Promise<void> {
   await orchestrator.updateSessionPermissionMode(sessionId, mode)

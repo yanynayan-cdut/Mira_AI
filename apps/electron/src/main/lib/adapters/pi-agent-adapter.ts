@@ -112,7 +112,7 @@ type PiRetrySettings = {
  * Pi SDK 原生重试按 provider 隔离。
  *
  * Ollama 的兼容层可能在一次工具结果续请求失败后再次提交同一份上下文；
- * 这类重试应交给 Profer 编排层统一判断，否则会绕过 Ollama 特判并在用户看来
+ * 这类重试应交给 Mira 编排层统一判断，否则会绕过 Ollama 特判并在用户看来
  * "一发就开始重试"。GPT 等其他渠道继续保留 Pi 原生断流重试。
  */
 export function buildPiRetrySettings(provider: ProviderType): PiRetrySettings {
@@ -129,7 +129,7 @@ export interface PiAgentQueryOptions extends AgentQueryInput {
   apiKey: string
   baseUrl?: string
   provider: ProviderType
-  /** OAuth credential coordination key; equals the selected Profer channel id. */
+  /** OAuth credential coordination key; equals the selected Mira channel id. */
   channelId?: string
   channelName?: string
   /**
@@ -145,7 +145,7 @@ export interface PiAgentQueryOptions extends AgentQueryInput {
     options: CanUseToolOptions,
   ) => Promise<PermissionResult>
   systemPrompt: string
-  /** Profer 已验证的项目根 instruction files；不触发 Pi 的磁盘自动发现。 */
+  /** Mira 已验证的项目根 instruction files；不触发 Pi 的磁盘自动发现。 */
   projectInstructionFiles?: ProferProjectInstructionFile[]
   /** 用于 typed 文件工具的会话级子目录指令激活；不会解析 Bash。 */
   projectInstructionScope?: {
@@ -157,7 +157,7 @@ export interface PiAgentQueryOptions extends AgentQueryInput {
   piSessionDir: string
   customTools?: ToolDefinition[]
   onSessionId?: (sdkSessionId: string, sessionFile?: string) => void
-  /** Profer assistant UI UUID → Pi 树状 session entry ID 的持久映射；分叉/回退依赖它定位 branch 点。 */
+  /** Mira assistant UI UUID → Pi 树状 session entry ID 的持久映射；分叉/回退依赖它定位 branch 点。 */
   onPiEntryBindings?: (bindings: Record<string, string>) => void
   onModelResolved?: (model: string) => void
   onContextWindow?: (contextWindow: number) => void
@@ -196,13 +196,13 @@ export interface PiAgentQueryOptions extends AgentQueryInput {
   codexFastMode?: boolean
   /** Pi 的 OAuth credential store 使用真实 expires 和 refresh，不读取 ~/.pi。 */
   codexOAuthCredentials?: CodexOAuthCredentials
-  /** Pi 运行中刷新 OAuth 后，将新凭据回写到 Profer 渠道存储。 */
+  /** Pi 运行中刷新 OAuth 后，将新凭据回写到 Mira 渠道存储。 */
   onCodexOAuthCredentialsRefreshed?: (credentials: CodexOAuthCredentials) => void | Promise<void>
   /** xAI 认证模式；API Key 使用 Pi 内置 provider 的 runtime key。 */
   xaiCredentialMode?: 'api-key' | 'oauth'
   /** xAI OAuth credential store 使用真实 expires 和 refresh，不读取 ~/.pi。 */
   xaiOAuthCredentials?: XaiOAuthCredentials
-  /** Pi 运行中刷新 xAI OAuth 后，将新凭据回写到 Profer 渠道存储。 */
+  /** Pi 运行中刷新 xAI OAuth 后，将新凭据回写到 Mira 渠道存储。 */
   onXaiOAuthCredentialsRefreshed?: (credentials: XaiOAuthCredentials) => void | Promise<void>
   /** 会话级 OpenAI（Codex OAuth / Responses API）思考深度。 */
   openAIThinkingLevel?: AgentThinkingLevel
@@ -400,7 +400,7 @@ function createAsyncQueue<T>(): AsyncQueue<T> {
 const FRIENDLY_ERROR_MESSAGES: Array<{ pattern: RegExp; message: string }> = [
   {
     pattern: /api key|unauthorized|invalid.*key|authentication/i,
-    message: '请检查是否选择了正确的 Profer 供应渠道和模型',
+    message: '请检查是否选择了正确的 Mira 供应渠道和模型',
   },
   {
     pattern: /validation|schema/i,
@@ -672,7 +672,7 @@ export function mapSDKErrorToTypedError(errorCode: string, message: string, orig
 
   const meta = ERROR_CODE_META[code] ?? { title: 'Agent 执行失败', canRetry: false }
   // 认证/渠道配置类错误友好化后文案固定，引导用户直接重新选择模型，而非跳转设置
-  const isInvalidChannelOrModel = /请检查是否选择了正确的 Profer 供应渠道和模型/.test(message)
+  const isInvalidChannelOrModel = /请检查是否选择了正确的 Mira 供应渠道和模型/.test(message)
 
   const actions: RecoveryAction[] = [
     isInvalidChannelOrModel
@@ -1154,8 +1154,8 @@ export function buildCurrentSessionCompactionTool(
   const definition = sdk.defineTool({
     name: 'CompactContext',
     label: '压缩当前会话上下文',
-    description: 'Compact only the current Pi Agent session after this turn finishes. Before calling, persist a durable handoff or checkpoint to the session workbench or project files as appropriate. Profer will compact the current session, then automatically continue the original task from the compacted context.',
-    promptSnippet: 'CompactContext: after persisting a durable handoff/checkpoint, compact the current session context. Profer will automatically continue the original task after compaction.',
+    description: 'Compact only the current Pi Agent session after this turn finishes. Before calling, persist a durable handoff or checkpoint to the session workbench or project files as appropriate. Mira will compact the current session, then automatically continue the original task from the compacted context.',
+    promptSnippet: 'CompactContext: after persisting a durable handoff/checkpoint, compact the current session context. Mira will automatically continue the original task after compaction.',
     parameters: Type.Object({}),
     async execute() {
       requestCompaction()
@@ -1227,7 +1227,7 @@ export function buildPromaProductToolDefinitions(
     sdk.defineTool({
       name: 'EnterPlanMode',
       label: '进入计划模式',
-      description: '进入 Profer 计划模式。进入后只能调研、整理计划，并等待用户批准后再执行写操作。',
+      description: '进入 Mira 计划模式。进入后只能调研、整理计划，并等待用户批准后再执行写操作。',
       promptSnippet: '进入计划模式，先调研并输出计划，再等待用户确认。',
       parameters: Type.Object({
         reason: Type.Optional(Type.String({ description: '进入计划模式的原因。' })),
@@ -1255,7 +1255,7 @@ export function buildPromaProductToolDefinitions(
     sdk.defineTool({
       name: 'AskUserQuestion',
       label: '询问用户',
-      description: '当需要用户选择、补充信息或确认偏好时调用，Profer 会展示可交互问答横幅。',
+      description: '当需要用户选择、补充信息或确认偏好时调用，Mira 会展示可交互问答横幅。',
       promptSnippet: '向用户提出结构化问题并等待回答。',
       parameters: Type.Object({
         questions: Type.Array(Type.Object({
@@ -1756,7 +1756,7 @@ export function ensureBashWorkingDirectory(
   if (pathExists(trimmedCwd)) return
 
   try {
-    // 会话目录由 Profer 管理；如果用户在两轮之间删除它，启动下一条命令时安全重建。
+    // 会话目录由 Mira 管理；如果用户在两轮之间删除它，启动下一条命令时安全重建。
     createDirectory(trimmedCwd)
   } catch (error) {
     const wrapped = new Error(`Bash 工作目录不存在且无法重建: ${trimmedCwd}`, { cause: error }) as NodeJS.ErrnoException
@@ -2127,7 +2127,7 @@ export function createControlledLocalBashOperations(
       let shell = shellPath ?? 'bash'
       try {
         ensureBashWorkingDirectory(cwd)
-        // Pi's public API lets Profer replace BashOperations. Profer explicitly
+        // Pi's public API lets Mira replace BashOperations. Mira explicitly
         // selects the platform shell so GUI-launched sessions do not depend on
         // an accidental PATH entry. A missing Bash is a typed execution error;
         // silently using sh would change the contract of a tool named Bash.

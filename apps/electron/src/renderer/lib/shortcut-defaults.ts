@@ -190,7 +190,7 @@ export const DEFAULT_SHORTCUTS: ShortcutDefinition[] = [
   {
     id: 'show-main-window',
     name: '显示主窗口',
-    description: '显示并聚焦 Profer 主窗口',
+    description: '显示并聚焦 Mira 主窗口',
     defaultMac: 'Cmd+Shift+P',
     defaultWin: 'Ctrl+Shift+P',
     category: 'global',

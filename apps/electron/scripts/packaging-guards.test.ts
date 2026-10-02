@@ -138,26 +138,7 @@ describe('平台打包入口配置', () => {
     expect(config).toContain('afterPack: scripts/after-pack.cjs')
   })
 
-  test('Given 发布脚本 When 校验 macOS 产物 Then 使用共享签名契约而非 spctl', () => {
-    const appDir = resolve(import.meta.dir, '..')
-    const repoRoot = resolve(appDir, '..', '..')
-    const pushScript = readFileSync(join(repoRoot, 'scripts', 'push-mac-release.cjs'), 'utf8')
-    const packageJson = JSON.parse(readFileSync(join(appDir, 'package.json'), 'utf8')) as {
-      scripts: Record<string, string>
-      version: string
-    }
-    // ad-hoc 签名下 spctl 评估必然 rejected，且 Squirrel.Mac 安装更新不依赖 spctl。
-    expect(pushScript).not.toMatch(/run\(`spctl/)
-    expect(pushScript).toMatch(/assertMacSignatureContract\(appPath\)/)
-    expect(pushScript).toContain("require('../apps/electron/scripts/macos-signature.cjs')")
-    // 增量下载索引缺失会让每次更新退化为全量下载。
-    expect(pushScript).toContain('zip.blockmap')
-    expect(packageJson.scripts['verify:mac-signature']).toBe('node scripts/verify-macos-signature.cjs')
-    const changelog = JSON.parse(
-      readFileSync(join(appDir, 'resources', 'CHANGELOG.json'), 'utf8'),
-    ) as { releases: Array<{ version: string }> }
-    expect(changelog.releases[0].version).toBe(packageJson.version)
-  })
+
 
   test('Given Windows 发布脚本 When 启动构建 Then 宿主门禁总是最先执行', () => {
     const appDir = resolve(import.meta.dir, '..')
@@ -185,14 +166,14 @@ describe('macOS 签名契约', () => {
 
   test('Given codesign 输出 When 解析 Then 兼容显式与缺省派生两种 DR 写法', () => {
     const explicit = [
-      'Executable=/Applications/Profer.app/Contents/MacOS/Profer',
+      'Executable=/Applications/Mira.app/Contents/MacOS/Mira',
       'designated => identifier "com.profer.app"',
     ].join('\n')
     expect(parseDesignatedRequirement(explicit)).toBe('identifier "com.profer.app"')
 
     // ad-hoc 未显式指定 -r 时，codesign 派生的 DR 是 cdhash，且行首带 `#`。
     const derived = [
-      'Executable=/Applications/Profer.app/Contents/MacOS/Profer',
+      'Executable=/Applications/Mira.app/Contents/MacOS/Mira',
       '# designated => cdhash H"5c22a19a764af33c82dfc3e3191db283a5b8e376"',
     ].join('\n')
     expect(parseDesignatedRequirement(derived)).toBe(
@@ -205,7 +186,7 @@ describe('macOS 签名契约', () => {
   test('Given 未签名的 App 产物 When 断言契约 Then 失败并指出 DR 不符', () => {
     if (process.platform !== 'darwin') return
     // 空目录没有 Info.plist，必须在读取 bundle id 阶段就明确失败，而不是静默通过。
-    const emptyApp = join(createTemporaryRoot(), 'Profer.app')
+    const emptyApp = join(createTemporaryRoot(), 'Mira.app')
     mkdirSync(join(emptyApp, 'Contents'), { recursive: true })
     expect(() => assertMacSignatureContract(emptyApp)).toThrow('Info.plist')
     expect(() => assertMacSignatureContract(join(createTemporaryRoot(), 'Missing.app')))

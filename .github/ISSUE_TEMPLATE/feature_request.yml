@@ -1,0 +1,28 @@
+name: Feature request
+
+description: Suggest a user-facing improvement
+
+title: "feature: "
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: Please describe the problem to solve, not only a proposed implementation.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or workflow
+      placeholder: What are you trying to do, and what currently gets in the way?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed outcome
+      placeholder: Describe the user-visible behavior you would like.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered

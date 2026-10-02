@@ -170,7 +170,7 @@ export async function injectPlanningMcpServer(
       ),
       sdk.tool(
         'list_calendar_events',
-        '列出当前 Profer 工作区的本地日程。用户未明确要求同步外部日历时，日程默认指这里。',
+        '列出当前 Mira 工作区的本地日程。用户未明确要求同步外部日历时，日程默认指这里。',
         schemas.calendarList,
         async (args) => {
           try { return jsonResult({ events: await listPlanningCalendarEvents(ctx, args as CalendarEventListQuery) }) } catch (error) { return jsonError(error) }
@@ -178,7 +178,7 @@ export async function injectPlanningMcpServer(
       ),
       sdk.tool(
         'get_calendar_event',
-        '读取当前 Profer 工作区某个本地日程的最新记录；更新前必须先读取以获得 expectedUpdatedAt。',
+        '读取当前 Mira 工作区某个本地日程的最新记录；更新前必须先读取以获得 expectedUpdatedAt。',
         schemas.calendarGet,
         async (args) => {
           try { return jsonResult({ event: await getPlanningCalendarEvent(ctx, (args as { id: string }).id) }) } catch (error) { return jsonError(error) }
@@ -186,7 +186,7 @@ export async function injectPlanningMcpServer(
       ),
       sdk.tool(
         'create_calendar_event',
-        '在当前 Profer 工作区创建本地日程。除非用户明确要求 Google、Outlook 或其他外部日历，否则不要询问日历平台。',
+        '在当前 Mira 工作区创建本地日程。除非用户明确要求 Google、Outlook 或其他外部日历，否则不要询问日历平台。',
         schemas.calendarCreate,
         async (args) => {
           try { return jsonResult({ event: await createPlanningCalendarEvent(ctx, args as unknown as Omit<CreateCalendarEventInput, 'workspaceId'>) }) } catch (error) { return jsonError(error) }
@@ -194,7 +194,7 @@ export async function injectPlanningMcpServer(
       ),
       sdk.tool(
         'update_calendar_event',
-        '更新当前 Profer 工作区的本地日程；必须先读取最新日程并传入 expectedUpdatedAt，冲突时重新读取。',
+        '更新当前 Mira 工作区的本地日程；必须先读取最新日程并传入 expectedUpdatedAt，冲突时重新读取。',
         schemas.calendarUpdate,
         async (args) => {
           try { return jsonResult({ event: await updatePlanningCalendarEvent(ctx, args as unknown as Omit<UpdateCalendarEventInput, 'workspaceId'>) }) } catch (error) { return jsonError(error) }
@@ -202,7 +202,7 @@ export async function injectPlanningMcpServer(
       ),
       sdk.tool(
         'delete_calendar_event',
-        '删除当前 Profer 工作区的本地日程。仅在用户明确要求删除时使用。',
+        '删除当前 Mira 工作区的本地日程。仅在用户明确要求删除时使用。',
         schemas.calendarDelete,
         async (args) => {
           try { return jsonResult({ deleted: await deletePlanningCalendarEvent(ctx, (args as { id: string }).id) }) } catch (error) { return jsonError(error) }

@@ -65,7 +65,7 @@ function BuiltinPresetTag(): React.ReactElement {
   return (
     <span className="inline-flex items-center gap-1 rounded-md bg-blue-500/15 px-1.5 py-0.5 text-[10px] font-medium text-blue-700 dark:text-blue-300">
       <ShieldCheck size={11} />
-      Profer 内置
+      Mira 内置
     </span>
   );
 }
@@ -990,7 +990,7 @@ export function AgentPresetSettings({
               variant="outline"
               onClick={handleImport}
               disabled={fileBusy}
-              title="从 Profer 预设 JSON 文件导入"
+              title="从 Mira 预设 JSON 文件导入"
             >
               <Upload size={14} />
               <span>导入</span>
@@ -1649,7 +1649,7 @@ export function AgentPresetSettings({
           )}
           {globalMode && editing?.scope === "builtin-meta" && (
             <p className="rounded-lg bg-blue-500/10 p-3 text-xs text-blue-700 dark:text-blue-300">
-              这是 Profer 内置元预设，只读，不能编辑、重命名或删除。
+              这是 Mira 内置元预设，只读，不能编辑、重命名或删除。
             </p>
           )}
 

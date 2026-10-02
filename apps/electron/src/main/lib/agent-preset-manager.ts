@@ -355,7 +355,7 @@ function resolvePresetReferenceInternal(
   if (raw.migrationStatus === 'invalid-base') {
     throw new AgentPresetError('PRESET_INVALID_BASE', raw.migrationReason ?? `预设基座无效: ${normalized.presetId}`, { presetId: normalized.presetId })
   }
-  // builtin-meta 是随 Profer 发布演进的元预设：旧会话/派生引用中的版本只用于审计，
+  // builtin-meta 是随 Mira 发布演进的元预设：旧会话/派生引用中的版本只用于审计，
   // 不能阻断它们跟随新的元预设定义。用户全局/工作区预设仍执行严格版本校验。
   if (normalized.presetScope !== 'builtin-meta' && normalized.presetVersion && raw.version && normalized.presetVersion !== raw.version) {
     throw new AgentPresetError('PRESET_CONCURRENT_UPDATE', `预设版本已变化: ${normalized.presetId}`)
@@ -1459,7 +1459,7 @@ export function importAgentPresets(workspaceSlug: string | undefined, jsonText: 
   if (typeof parsed !== 'object' || parsed === null) throw new AgentPresetImportError('文件内容必须是 JSON 对象')
   const envelope = parsed as Record<string, unknown>
   if (envelope.format !== EXPORT_FORMAT) {
-    throw new AgentPresetImportError(`不是 Profer 预设导出文件（format 应为 ${EXPORT_FORMAT}）`)
+    throw new AgentPresetImportError(`不是 Mira 预设导出文件（format 应为 ${EXPORT_FORMAT}）`)
   }
   if (envelope.version !== EXPORT_VERSION) {
     throw new AgentPresetImportError(`导出文件版本不受支持: ${String(envelope.version)}（当前支持 ${EXPORT_VERSION}）`)

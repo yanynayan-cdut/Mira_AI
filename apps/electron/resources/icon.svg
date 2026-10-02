@@ -1,5 +1,5 @@
 <svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
-  <!-- Profer 主应用图标；主体缩小并使用更大圆角，为系统遮罩保留安全边距。 -->
+  <!-- Mira 主应用图标；主体缩小并使用更大圆角，为系统遮罩保留安全边距。 -->
   <g transform="translate(56 63) scale(0.8)">
     <rect x="2" y="5" width="1137" height="1116" rx="280" fill="#000000"/>
     <rect x="226" y="196" width="689" height="689" rx="150" fill="#F2F0EC"/>

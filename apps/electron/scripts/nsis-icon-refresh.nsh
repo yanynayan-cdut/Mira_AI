@@ -1,7 +1,7 @@
 ; ============================================================================
-; Profer NSIS customInstall hook
+; Mira NSIS customInstall hook
 ; Refresh the Windows Shell icon cache after an (upgrade/re)install so the new
-; Profer.exe icon takes effect immediately.
+; Mira.exe icon takes effect immediately.
 ;
 ; Why: Electron 43 relies on after-pack to patch the exe icon manually. When
 ; installing over the same path, the Shell icon cache (iconcache_*.db) and any

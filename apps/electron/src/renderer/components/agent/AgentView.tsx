@@ -791,6 +791,7 @@ export function AgentView({ sessionId }: AgentViewProps): React.ReactElement {
   const openPreview = useOpenPreview()
   const currentAgentInterruption = useAtomValue(agentInterruptionMapAtom).get(sessionId) ?? null
   const richTextInputRef = React.useRef<RichTextInputHandle>(null)
+  const [resizeHandleContainer, setResizeHandleContainer] = React.useState<HTMLDivElement | null>(null)
 
   /** 移除当前引用选中文本 */
   const handleRemoveQuotedSelection = React.useCallback(() => {
@@ -3283,6 +3284,7 @@ export function AgentView({ sessionId }: AgentViewProps): React.ReactElement {
             <BackgroundTaskControls sessionId={sessionId} />
             <RuntimeProcessPanel sessionId={sessionId} />
             <div
+              ref={setResizeHandleContainer}
               className={cn(
                 'agent-input-surface relative z-10 rounded-[17px] border-[0.5px] border-border bg-background/70 backdrop-blur-sm transition-[background-color,border-color,box-shadow] duration-200 [.composer-stack:has(.service-rail)_&]:-mt-5',
                 (isPlanMode || isPermissionPlanMode) && !isDragOver && 'plan-mode-border',
@@ -3427,6 +3429,8 @@ export function AgentView({ sessionId }: AgentViewProps): React.ReactElement {
               htmlValue={inputHtmlContent}
               onHtmlChange={setInputHtmlContent}
               sendWithCmdEnter={sendWithCmdEnter}
+              resizable
+              resizeHandleContainer={resizeHandleContainer}
             />
 
             {/* Footer 工具栏 — 容器变窄时尾部按钮自动折叠进「更多」Popover */}

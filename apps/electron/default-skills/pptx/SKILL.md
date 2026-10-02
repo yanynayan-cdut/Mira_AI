@@ -2,14 +2,14 @@
 name: pptx
 description: "Use this skill whenever a PowerPoint .pptx file is involved as input or output. This includes creating, reading, editing, modifying, combining, splitting, previewing, or exporting PowerPoint files; working with templates, layouts, speaker notes, comments, charts, and native editable objects. Trigger on requests to create or handle a PowerPoint file, PPT, 幻灯片, 演示文稿, or a .pptx filename. Do not introduce extra project paperwork, specification contracts, source tracking, or confirmation workflows unless the user explicitly requests formal review or submission governance."
 license: Proprietary. LICENSE.txt has complete terms
-version: "1.2.2"
+version: "1.2.3"
 ---
 
 # PPTX Skill
 
-## Profer 默认视觉约定
+## Mira 默认视觉约定
 
-除非用户明确指定模板、品牌色或其他风格，Profer 生成的 `.pptx` 默认采用 **Cloud Dancer Academic（云端舞者学术风）**。完整设计规范以工作区 `workspace-files/.context/profer-ppt-design-system.md` 为准；生成前必须先读取该文件。
+除非用户明确指定模板、品牌色或其他风格，Mira 生成的 `.pptx` 默认采用 **Cloud Dancer Academic（云端舞者学术风）**。完整设计规范以工作区 `workspace-files/.context/profer-ppt-design-system.md` 为准；生成前必须先读取该文件。
 
 最低要求：
 
@@ -158,9 +158,9 @@ Choose colors that match your topic — don't default to generic blue. Use these
 
 ---
 
-## Profer 正式预览（必须遵守）
+## Mira 正式预览（必须遵守）
 
-PPTX 生成或修改后，必须进入 Profer 当前 Agent 会话的正式文件预览，让用户与 Agent 围绕同一份文件继续工作：先使用 `open_file_preview` 请求现有 PreviewPanel/PreviewTabContent 刷新或打开 PPTX，并等待它返回与当前 revision 匹配的 viewer ready 回执；再使用 `inspect_file_preview` 从**同一用户可见 viewer**读取 overview、指定页或全部页。不要创建 `Preview.html`，不要把 PPTX 转成本地网页，不要使用 `BrowserPreviewOpen`、BrowserScreenshot、Quick Look 或任何独立截图旁路来替代 Profer PPT 预览。浏览器工具只用于用户明确要求访问网页或预览 HTML/网页 PPT。
+PPTX 生成或修改后，必须进入 Mira 当前 Agent 会话的正式文件预览，让用户与 Agent 围绕同一份文件继续工作：先使用 `open_file_preview` 请求现有 PreviewPanel/PreviewTabContent 刷新或打开 PPTX，并等待它返回与当前 revision 匹配的 viewer ready 回执；再使用 `inspect_file_preview` 从**同一用户可见 viewer**读取 overview、指定页或全部页。不要创建 `Preview.html`，不要把 PPTX 转成本地网页，不要使用 `BrowserPreviewOpen`、BrowserScreenshot、Quick Look 或任何独立截图旁路来替代 Mira PPT 预览。浏览器工具只用于用户明确要求访问网页或预览 HTML/网页 PPT。
 
 `open_file_preview` ready 只证明当前 revision 已由正式 viewer 加载，不代表视觉设计已经通过；必须通过 `inspect_file_preview` 实际观察页面后再评价。修改 PPTX 后重新调用 `open_file_preview` 等待新 revision ready，再重新观察受影响页面。结构、内容、可编辑性检查仍需单独完成。
 
@@ -188,7 +188,7 @@ If grep returns results, fix them before declaring success.
 
 ### Visual QA
 
-在 Profer 中，先 `open_file_preview`，再用 `inspect_file_preview` 读取同一正式 viewer 的页图。只有当当前 runtime 没有这两个工具时，才使用下文的离线转图方法；离线转图不能冒充 Profer 正式共同预览。
+在 Mira 中，先 `open_file_preview`，再用 `inspect_file_preview` 读取同一正式 viewer 的页图。只有当当前 runtime 没有这两个工具时，才使用下文的离线转图方法；离线转图不能冒充 Mira 正式共同预览。
 
 **⚠️ USE SUBAGENTS** — even for 2-3 slides. You've been staring at the code and will see what you expect, not what's there. Subagents have fresh eyes.
 
@@ -234,9 +234,9 @@ Report ALL issues found, including minor ones.
 
 ## Converting to Images
 
-仅在非 Profer 环境或正式预览工具不可用时，才把演示文稿离线转换为逐页图片用于辅助检查；不要用它替代 Profer 正式预览验收。
+仅在非 Mira 环境或正式预览工具不可用时，才把演示文稿离线转换为逐页图片用于辅助检查；不要用它替代 Mira 正式预览验收。
 
-**Profer 本机（Windows + Office）优先用 PowerPoint COM 转图**（已装本机 PowerPoint，未装 LibreOffice/Poppler）：
+**Mira 本机（Windows + Office）优先用 PowerPoint COM 转图**（已装本机 PowerPoint，未装 LibreOffice/Poppler）：
 
 ```bash
 powershell -File scripts/office/pptx2png.ps1 -InputPath output.pptx
